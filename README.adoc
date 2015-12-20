@@ -1,0 +1,3 @@
+## An all purpose bots written on top of Vert.x inspired from Hubot, Lita and others...
+
+Current status : playground :-)
