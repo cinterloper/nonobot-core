@@ -14,32 +14,30 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.client;
+package io.nonobot.groovy.core.handlers;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.vertx.core.AsyncResult
-import io.vertx.core.Handler
+import io.vertx.groovy.core.Vertx
+import io.nonobot.groovy.core.chat.ChatHandler
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class BotClient {
-  private final def io.nonobot.core.client.BotClient delegate;
-  public BotClient(Object delegate) {
-    this.delegate = (io.nonobot.core.client.BotClient) delegate;
+public class GiphyHandler {
+  private final def io.nonobot.core.handlers.GiphyHandler delegate;
+  public GiphyHandler(Object delegate) {
+    this.delegate = (io.nonobot.core.handlers.GiphyHandler) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public String name() {
-    def ret = this.delegate.name();
+  public static GiphyHandler create() {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handlers.GiphyHandler.create(), io.nonobot.groovy.core.handlers.GiphyHandler.class);
     return ret;
   }
-  public void process(String message, Handler<AsyncResult<String>> handler) {
-    this.delegate.process(message, handler);
-  }
-  public void close() {
-    this.delegate.close();
+  public ChatHandler toChatHandler(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(this.delegate.toChatHandler((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.chat.ChatHandler.class);
+    return ret;
   }
 }

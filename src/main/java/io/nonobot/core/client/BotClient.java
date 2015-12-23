@@ -10,7 +10,9 @@ import io.vertx.core.Handler;
 @VertxGen
 public interface BotClient {
 
-  void publish(String message, Handler<AsyncResult<String>> handler);
+  String name();
+
+  void process(String message, Handler<AsyncResult<String>> handler);
 
   void close();
 

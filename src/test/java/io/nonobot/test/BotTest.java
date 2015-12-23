@@ -2,15 +2,10 @@ package io.nonobot.test;
 
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.chat.ChatHandler;
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -68,7 +63,7 @@ public class BotTest extends BaseTest {
         }));
     NonoBot bot = NonoBot.create(vertx);
     bot.client(context.asyncAssertSuccess(client -> {
-      client.publish("nono echo hello world", ar -> {});
+      client.process("echo hello world", ar -> {});
     }));
   }
 }

@@ -13,11 +13,14 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.http.WebSocketFrame;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,6 +35,8 @@ public class SlackAdapterImpl implements SlackAdapter {
   private WebSocket websocket;
   private final Future<Void> completion = Future.future();
   private long serial;
+  private Set<String> channels = new HashSet<>(); // All channels we belong to
+  private String id; // Our own id
 
   public SlackAdapterImpl(NonoBot bot, SlackOptions options) {
     this.bot = bot;
@@ -65,10 +70,10 @@ public class SlackAdapterImpl implements SlackAdapter {
           }
         });
         resp.endHandler(v1 -> {
-          JsonObject obj = buffer.toJsonObject();
+          JsonObject respObj = buffer.toJsonObject();
           URL wsURL;
           try {
-            wsURL = new URL(obj.getString("url").replace("ws", "http"));
+            wsURL = new URL(respObj.getString("url").replace("ws", "http"));
           } catch (MalformedURLException e) {
             e.printStackTrace();
             return;
@@ -81,8 +86,18 @@ public class SlackAdapterImpl implements SlackAdapter {
               port = 80;
             }
           }
-          String id = obj.getJsonObject("self").getString("id"); // Our own id
-          client.websocket(port, wsURL.getHost(), wsURL.getPath(), ws -> wsOpen(ws, id),
+
+          // Collect all the channels we belong to
+          JsonArray channelsObj = respObj.getJsonArray("channels");
+          for (int i = 0;i < channelsObj.size();i++) {
+            JsonObject channelObj = channelsObj.getJsonObject(i);
+            if (channelObj.getBoolean("is_member")) {
+              joinChannel(channelObj.getString("id"));
+            }
+          }
+
+          id = respObj.getJsonObject("self").getString("id");
+          client.websocket(port, wsURL.getHost(), wsURL.getPath(), ws -> wsOpen(ws),
               err -> {
                 if (!completion.isComplete()) {
                   completion.fail(err);
@@ -115,7 +130,7 @@ public class SlackAdapterImpl implements SlackAdapter {
     });
   }
 
-  private void wsOpen(WebSocket ws, String id) {
+  private void wsOpen(WebSocket ws) {
     synchronized (this) {
       websocket = ws;
     }
@@ -126,10 +141,10 @@ public class SlackAdapterImpl implements SlackAdapter {
         BotClient client = ar.result();
         schedulePing(serial);
         handler.set(frame -> {
-          wsHandle(frame, client, id);
+          wsHandle(frame, client);
         });
         for (WebSocketFrame frame : pendingFrames) {
-          wsHandle(frame, client, id);
+          wsHandle(frame, client);
         }
       } else {
         close();
@@ -148,35 +163,58 @@ public class SlackAdapterImpl implements SlackAdapter {
     }
   }
 
-  void wsHandle(WebSocketFrame frame, BotClient client, String id) {
+  private synchronized void leaveChannel(String channel) {
+    channels.remove(channel);
+  }
+
+  private synchronized void joinChannel(String channel) {
+    channels.add(channel);
+  }
+
+  private synchronized void handleMessage(BotClient client, String text, String channel) {
+    String msg;
+    if (channels.contains(channel)) {
+      if (text.startsWith("<@" + id + ">")) {
+        msg = text.substring(id.length() + 3); // Replace mention to self
+      } else {
+        return;
+      }
+    } else {
+      msg = text;
+    }
+    client.process(msg, reply -> {
+      if (reply.succeeded()) {
+        synchronized (SlackAdapterImpl.this) {
+          serial++; // Need to sync on SlackAdapterImpl
+          websocket.writeFinalTextFrame(new JsonObject().
+              put("id", UUID.randomUUID().toString()).
+              put("type", "message").
+              put("channel", channel).
+              put("text", reply.result()).encode());
+        }
+      } else {
+        System.out.println("no reply for " + msg);
+        reply.cause().printStackTrace();
+      }
+    });
+  }
+
+  void wsHandle(WebSocketFrame frame, BotClient client) {
     JsonObject json = new JsonObject(frame.textData());
     System.out.println(json);
     String type = json.getString("type", "");
     switch (type) {
+      case "channel_left":
+        leaveChannel(json.getString("channel"));
+        break;
+      case "channel_joined":
+        joinChannel(json.getJsonObject("channel").getString("id"));
+        break;
       case "message":
         String text = json.getString("text");
         String channel = json.getString("channel");
         if (text != null) {
-          String msg;
-          if (text.startsWith("<@" + id + ">")) {
-            msg = "nono" + text.substring(id.length() + 3); // Replace mention to self
-          } else {
-            msg = text;
-          }
-          System.out.println("msg = " + msg);
-          client.publish(msg, reply -> {
-            if (reply.succeeded()) {
-              serial++; // Need to sync on SlackAdapterImpl
-              websocket.writeFinalTextFrame(new JsonObject().
-                  put("id", UUID.randomUUID().toString()).
-                  put("type", "message").
-                  put("channel", channel).
-                  put("text", reply.result()).encode());
-            } else {
-              System.out.println("no reply for " + msg);
-              reply.cause().printStackTrace();
-            }
-          });
+          handleMessage(client, text, channel);
         } else {
           // What case ?
         }

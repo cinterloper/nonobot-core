@@ -38,7 +38,7 @@ public class ShellAdapterImpl implements ShellAdapter {
         term.close();
       } else {
         term.write("\n");
-        client.publish(line, reply -> {
+        client.process(line, reply -> {
           if (reply.succeeded()) {
             term.write(reply.result() + "\n");
           } else {

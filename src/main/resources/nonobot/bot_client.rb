@@ -13,14 +13,21 @@ module Nonobot
     def j_del
       @j_del
     end
+    # @return [String]
+    def name
+      if !block_given?
+        return @j_del.java_method(:name, []).call()
+      end
+      raise ArgumentError, "Invalid arguments when calling name()"
+    end
     # @param [String] message 
     # @yield 
     # @return [void]
-    def publish(message=nil)
+    def process(message=nil)
       if message.class == String && block_given?
-        return @j_del.java_method(:publish, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(message,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ar.result : nil) }))
+        return @j_del.java_method(:process, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(message,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ar.result : nil) }))
       end
-      raise ArgumentError, "Invalid arguments when calling publish(message)"
+      raise ArgumentError, "Invalid arguments when calling process(message)"
     end
     # @return [void]
     def close

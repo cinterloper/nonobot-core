@@ -14,71 +14,55 @@
  * under the License.
  */
 
-/** @module nonobot-js/bot_client */
+/** @module nonobot-js/giphy_handler */
 var utils = require('vertx-js/util/utils');
+var Vertx = require('vertx-js/vertx');
+var ChatHandler = require('nonobot-js/chat_handler');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JBotClient = io.nonobot.core.client.BotClient;
+var JGiphyHandler = io.nonobot.core.handlers.GiphyHandler;
 
 /**
 
  @class
 */
-var BotClient = function(j_val) {
+var GiphyHandler = function(j_val) {
 
-  var j_botClient = j_val;
+  var j_giphyHandler = j_val;
   var that = this;
 
   /**
 
    @public
-
-   @return {string}
+   @param vertx {Vertx} 
+   @return {ChatHandler}
    */
-  this.name = function() {
+  this.toChatHandler = function(vertx) {
     var __args = arguments;
-    if (__args.length === 0) {
-      return j_botClient["name()"]();
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-
-   @public
-   @param message {string} 
-   @param handler {function} 
-   */
-  this.process = function(message, handler) {
-    var __args = arguments;
-    if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_botClient["process(java.lang.String,io.vertx.core.Handler)"](message, function(ar) {
-      if (ar.succeeded()) {
-        handler(ar.result(), null);
-      } else {
-        handler(null, ar.cause());
-      }
-    });
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-
-   @public
-
-   */
-  this.close = function() {
-    var __args = arguments;
-    if (__args.length === 0) {
-      j_botClient["close()"]();
+    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+      return utils.convReturnVertxGen(j_giphyHandler["toChatHandler(io.vertx.core.Vertx)"](vertx._jdel), ChatHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_botClient;
+  this._jdel = j_giphyHandler;
+};
+
+/**
+
+ @memberof module:nonobot-js/giphy_handler
+
+ @return {GiphyHandler}
+ */
+GiphyHandler.create = function() {
+  var __args = arguments;
+  if (__args.length === 0) {
+    return utils.convReturnVertxGen(JGiphyHandler["create()"](), GiphyHandler);
+  } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function
-module.exports = BotClient;
+module.exports = GiphyHandler;

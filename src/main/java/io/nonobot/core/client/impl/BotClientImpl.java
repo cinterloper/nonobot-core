@@ -27,26 +27,28 @@ public class BotClientImpl implements BotClient {
   }
 
   @Override
-  public void publish(String message, Handler<AsyncResult<String>> handler) {
-    if (message.length() > (botName.length() + 1) && message.startsWith(botName) && message.charAt(botName.length()) == ' ') {
-      message = message.substring(botName.length() + 1);
-      LocalMap<String, Object> shared = vertx.sharedData().getLocalMap("nonobot");
-      JsonObject handlers = (JsonObject) shared.get("handlers");
-      if (handlers != null) {
-        for (Map.Entry<String, Object> handlerDesc : handlers) {
-          JsonObject desc = (JsonObject) handlerDesc.getValue();
-          String pattern = desc.getString("pattern");
-          Matcher matcher = Pattern.compile(pattern).matcher(message);
-          if (matcher.matches()) {
-            vertx.eventBus().send(handlerDesc.getKey(), message, new DeliveryOptions().setSendTimeout(10000), reply -> {
-              if (reply.succeeded()) {
-                handler.handle(Future.succeededFuture("" + reply.result().body()));
-              } else {
-                handler.handle(Future.failedFuture(reply.cause()));
-              }
-            });
-            return;
-          }
+  public String name() {
+    return botName;
+  }
+
+  @Override
+  public void process(String message, Handler<AsyncResult<String>> handler) {
+    LocalMap<String, Object> shared = vertx.sharedData().getLocalMap("nonobot");
+    JsonObject handlers = (JsonObject) shared.get("handlers");
+    if (handlers != null) {
+      for (Map.Entry<String, Object> handlerDesc : handlers) {
+        JsonObject desc = (JsonObject) handlerDesc.getValue();
+        String pattern = desc.getString("pattern");
+        Matcher matcher = Pattern.compile(pattern).matcher(message);
+        if (matcher.matches()) {
+          vertx.eventBus().send(handlerDesc.getKey(), message, new DeliveryOptions().setSendTimeout(10000), reply -> {
+            if (reply.succeeded()) {
+              handler.handle(Future.succeededFuture("" + reply.result().body()));
+            } else {
+              handler.handle(Future.failedFuture(reply.cause()));
+            }
+          });
+          return;
         }
       }
     }

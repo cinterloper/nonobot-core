@@ -41,13 +41,18 @@ public class BotClient {
     return delegate;
   }
 
-  public void publish(String message, Handler<AsyncResult<String>> handler) { 
-    this.delegate.publish(message, handler);
+  public String name() { 
+    String ret = this.delegate.name();
+    return ret;
   }
 
-  public Observable<String> publishObservable(String message) { 
+  public void process(String message, Handler<AsyncResult<String>> handler) { 
+    this.delegate.process(message, handler);
+  }
+
+  public Observable<String> processObservable(String message) { 
     io.vertx.rx.java.ObservableFuture<String> handler = io.vertx.rx.java.RxHelper.observableFuture();
-    publish(message, handler.toHandler());
+    process(message, handler.toHandler());
     return handler;
   }
 

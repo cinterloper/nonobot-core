@@ -6,6 +6,7 @@ import io.nonobot.core.adapter.SlackOptions;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.WebSocketBase;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.NetServer;
 import io.vertx.ext.unit.Async;
@@ -17,6 +18,11 @@ import org.junit.Test;
  */
 public class SlackTest extends BaseTest {
 
+  private static JsonObject json = new JsonObject().
+      put("channels", new JsonArray()).
+      put("self", new JsonObject().put("id", "")).
+      put("url", "ws://localhost:8080/");
+
   @Test
   public void testConnectOk(TestContext context) {
     Async done = context.async(2);
@@ -25,7 +31,7 @@ public class SlackTest extends BaseTest {
         setDefaultHost("localhost").setDefaultPort(8080)));
     HttpServer server = vertx.createHttpServer();
     server.requestHandler(req -> {
-      req.response().putHeader("Content-Type", "application/json").end(new JsonObject().put("url", "ws://localhost:8080/").encode());
+      req.response().putHeader("Content-Type", "application/json").end(json.encode());
     });
     server.websocketHandler(ws -> {
       ws.close();
@@ -67,7 +73,7 @@ public class SlackTest extends BaseTest {
         setDefaultHost("localhost").setDefaultPort(8080)));
     HttpServer server = vertx.createHttpServer();
     server.requestHandler(req -> {
-      req.response().putHeader("Content-Type", "application/json").end(new JsonObject().put("url", "ws://localhost:8081/").encode());
+      req.response().putHeader("Content-Type", "application/json").end(json.copy().put("url", "ws://localhost:8081/").encode());
     });
     server.listen(8080, "localhost", context.asyncAssertSuccess(v -> {
       slackAdapter.connect(context.asyncAssertFailure());
@@ -82,7 +88,7 @@ public class SlackTest extends BaseTest {
         setDefaultHost("localhost").setDefaultPort(8080)));
     HttpServer server = vertx.createHttpServer();
     server.requestHandler(req -> {
-      req.response().putHeader("Content-Type", "application/json").end(new JsonObject().put("url", "ws://localhost:8080/").encode());
+      req.response().putHeader("Content-Type", "application/json").end(json.encode());
     });
     server.websocketHandler(WebSocketBase::close);
     slackAdapter.closeHandler(v1 -> done.complete());
@@ -101,7 +107,7 @@ public class SlackTest extends BaseTest {
         setDefaultHost("localhost").setDefaultPort(8080)));
     HttpServer server = vertx.createHttpServer();
     server.requestHandler(req -> {
-      req.response().putHeader("Content-Type", "application/json").end(new JsonObject().put("url", "ws://localhost:8080/").encode());
+      req.response().putHeader("Content-Type", "application/json").end(json.encode());
     });
     server.websocketHandler(WebSocketBase::close);
     slackAdapter.closeHandler(v -> done.complete());
