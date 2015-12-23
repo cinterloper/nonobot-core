@@ -1,6 +1,6 @@
 package io.nonobot.core.chat;
 
-import io.nonobot.core.chat.impl.ChatRouteImpl;
+import io.nonobot.core.chat.impl.ChatHandlerImpl;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
@@ -14,7 +14,7 @@ import io.vertx.core.Vertx;
 public interface ChatHandler {
 
   static ChatHandler create(Vertx vertx) {
-    return new ChatRouteImpl(vertx);
+    return new ChatHandlerImpl(vertx);
   }
 
   @Fluent

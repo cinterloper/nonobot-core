@@ -1,14 +1,11 @@
 package io.nonobot.test;
 
 import io.nonobot.core.NonoBot;
-import io.nonobot.core.adapter.ShellAdapter;
 import io.nonobot.core.adapter.SlackAdapter;
 import io.nonobot.core.adapter.SlackOptions;
 import io.nonobot.core.chat.ChatHandler;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.vertx.core.Vertx;
-import io.vertx.ext.shell.term.TelnetTermOptions;
-import io.vertx.ext.shell.term.TermServer;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

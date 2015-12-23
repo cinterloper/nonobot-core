@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ChatRouteImpl implements ChatHandler {
+public class ChatHandlerImpl implements ChatHandler {
 
   private final Vertx vertx;
   private String pattern;
@@ -24,7 +24,7 @@ public class ChatRouteImpl implements ChatHandler {
   private MessageConsumer<String> consumer;
   private String address;
 
-  public ChatRouteImpl(Vertx vertx) {
+  public ChatHandlerImpl(Vertx vertx) {
     this.vertx = vertx;
   }
 
@@ -89,7 +89,7 @@ public class ChatRouteImpl implements ChatHandler {
         }
         completionHandler.handle(Future.succeededFuture());
       } else {
-        synchronized (ChatRouteImpl.this) {
+        synchronized (ChatHandlerImpl.this) {
           consumer = null;
         }
         completionHandler.handle(Future.failedFuture(ar.cause()));
