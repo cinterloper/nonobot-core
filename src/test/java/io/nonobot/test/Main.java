@@ -5,6 +5,7 @@ import io.nonobot.core.adapter.ShellAdapter;
 import io.nonobot.core.adapter.SlackAdapter;
 import io.nonobot.core.adapter.SlackOptions;
 import io.nonobot.core.chat.ChatHandler;
+import io.nonobot.core.handlers.GiphyHandler;
 import io.vertx.core.Vertx;
 import io.vertx.ext.shell.term.TelnetTermOptions;
 import io.vertx.ext.shell.term.TermServer;
@@ -25,7 +26,11 @@ public class Main {
         messageHandler(msg -> {
           msg.reply(msg.content().substring(4));
         }).bind(ar -> {
+      System.out.println("echo handler bound");
+    });
 
+    GiphyHandler.create().toChatHandler(vertx).bind(ar -> {
+      System.out.println("Giphy handler bound");
     });
 
     SlackAdapter slack = SlackAdapter.create(bot, new SlackOptions().setToken("your-token-here"));

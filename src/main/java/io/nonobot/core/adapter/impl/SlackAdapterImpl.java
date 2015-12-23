@@ -139,18 +139,23 @@ public class SlackAdapterImpl implements SlackAdapter {
       case "message":
         String text = json.getString("text");
         String channel = json.getString("channel");
-        client.publish(text, reply -> {
-          if (reply.succeeded()) {
-            websocket.writeFinalTextFrame(new JsonObject().
-                put("id", UUID.randomUUID().toString()).
-                put("type", "message").
-                put("channel", channel).
-                put("text", reply.result()).encode());
-          } else {
-            System.out.println("no reply for " + text);
-            reply.cause().printStackTrace();
-          }
-        });
+        if (text != null) {
+          System.out.println("text = " + text);
+          client.publish(text, reply -> {
+            if (reply.succeeded()) {
+              websocket.writeFinalTextFrame(new JsonObject().
+                  put("id", UUID.randomUUID().toString()).
+                  put("type", "message").
+                  put("channel", channel).
+                  put("text", reply.result()).encode());
+            } else {
+              System.out.println("no reply for " + text);
+              reply.cause().printStackTrace();
+            }
+          });
+        } else {
+         // What case ?
+        }
         break;
     }
   }

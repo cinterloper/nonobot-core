@@ -38,7 +38,7 @@ public class BotClientImpl implements BotClient {
           String pattern = desc.getString("pattern");
           Matcher matcher = Pattern.compile(pattern).matcher(message);
           if (matcher.matches()) {
-            vertx.eventBus().send(handlerDesc.getKey(), message, new DeliveryOptions().setSendTimeout(3000), reply -> {
+            vertx.eventBus().send(handlerDesc.getKey(), message, new DeliveryOptions().setSendTimeout(10000), reply -> {
               if (reply.succeeded()) {
                 handler.handle(Future.succeededFuture("" + reply.result().body()));
               } else {

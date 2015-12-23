@@ -42,13 +42,17 @@ public class ChatRouteImpl implements ChatHandler {
 
   private void handle(Message<String> msg) {
     messageHandler.handle(new ChatMessage() {
+      boolean replied;
       @Override
       public String content() {
         return msg.body();
       }
       @Override
       public void reply(String content) {
-        msg.reply(content);
+        if (!replied) {
+          replied = true;
+          msg.reply(content);
+        }
       }
     });
   }
