@@ -31,6 +31,7 @@ public class SlackAdapterImpl implements SlackAdapter {
   private Handler<Void> closeHandler;
   private WebSocket websocket;
   private final Future<Void> completion = Future.future();
+  private long serial;
 
   public SlackAdapterImpl(NonoBot bot, SlackOptions options) {
     this.bot = bot;
@@ -101,6 +102,19 @@ public class SlackAdapterImpl implements SlackAdapter {
     req.end();
   }
 
+  private synchronized void schedulePing(long expectedSerial) {
+    bot.vertx().setTimer(4000, timerID -> {
+      synchronized (SlackAdapterImpl.this) {
+        if (websocket != null) {
+          if (expectedSerial == serial) {
+            websocket.writeFinalTextFrame(new JsonObject().put("type", "ping").put("id", UUID.randomUUID().toString()).encode());
+          }
+          schedulePing(++serial);
+        }
+      }
+    });
+  }
+
   private void wsOpen(WebSocket ws, String id) {
     synchronized (this) {
       websocket = ws;
@@ -110,6 +124,7 @@ public class SlackAdapterImpl implements SlackAdapter {
     bot.client(ar -> {
       if (ar.succeeded()) {
         BotClient client = ar.result();
+        schedulePing(serial);
         handler.set(frame -> {
           wsHandle(frame, client, id);
         });
@@ -151,6 +166,7 @@ public class SlackAdapterImpl implements SlackAdapter {
           System.out.println("msg = " + msg);
           client.publish(msg, reply -> {
             if (reply.succeeded()) {
+              serial++; // Need to sync on SlackAdapterImpl
               websocket.writeFinalTextFrame(new JsonObject().
                   put("id", UUID.randomUUID().toString()).
                   put("type", "message").
