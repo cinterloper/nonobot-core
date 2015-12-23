@@ -80,11 +80,13 @@ public class SlackAdapterImpl implements SlackAdapter {
               port = 80;
             }
           }
-          client.websocket(port, wsURL.getHost(), wsURL.getPath(), this::wsOpen, err -> {
-            if (!completion.isComplete()) {
-              completion.fail(err);
-            }
-          });
+          String id = obj.getJsonObject("self").getString("id"); // Our own id
+          client.websocket(port, wsURL.getHost(), wsURL.getPath(), ws -> wsOpen(ws, id),
+              err -> {
+                if (!completion.isComplete()) {
+                  completion.fail(err);
+                }
+              });
         });
       } else {
         System.out.println("Got response " + resp.statusCode() + " / " + resp.statusMessage());
@@ -99,7 +101,7 @@ public class SlackAdapterImpl implements SlackAdapter {
     req.end();
   }
 
-  private void wsOpen(WebSocket ws) {
+  private void wsOpen(WebSocket ws, String id) {
     synchronized (this) {
       websocket = ws;
     }
@@ -109,10 +111,10 @@ public class SlackAdapterImpl implements SlackAdapter {
       if (ar.succeeded()) {
         BotClient client = ar.result();
         handler.set(frame -> {
-          wsHandle(frame, client);
+          wsHandle(frame, client, id);
         });
         for (WebSocketFrame frame : pendingFrames) {
-          wsHandle(frame, client);
+          wsHandle(frame, client, id);
         }
       } else {
         close();
@@ -131,7 +133,7 @@ public class SlackAdapterImpl implements SlackAdapter {
     }
   }
 
-  void wsHandle(WebSocketFrame frame, BotClient client) {
+  void wsHandle(WebSocketFrame frame, BotClient client, String id) {
     JsonObject json = new JsonObject(frame.textData());
     System.out.println(json);
     String type = json.getString("type", "");
@@ -140,8 +142,14 @@ public class SlackAdapterImpl implements SlackAdapter {
         String text = json.getString("text");
         String channel = json.getString("channel");
         if (text != null) {
-          System.out.println("text = " + text);
-          client.publish(text, reply -> {
+          String msg;
+          if (text.startsWith("<@" + id + ">")) {
+            msg = "nono" + text.substring(id.length() + 3); // Replace mention to self
+          } else {
+            msg = text;
+          }
+          System.out.println("msg = " + msg);
+          client.publish(msg, reply -> {
             if (reply.succeeded()) {
               websocket.writeFinalTextFrame(new JsonObject().
                   put("id", UUID.randomUUID().toString()).
@@ -149,12 +157,12 @@ public class SlackAdapterImpl implements SlackAdapter {
                   put("channel", channel).
                   put("text", reply.result()).encode());
             } else {
-              System.out.println("no reply for " + text);
+              System.out.println("no reply for " + msg);
               reply.cause().printStackTrace();
             }
           });
         } else {
-         // What case ?
+          // What case ?
         }
         break;
     }
