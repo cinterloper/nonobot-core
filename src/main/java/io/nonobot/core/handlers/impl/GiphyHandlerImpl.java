@@ -23,8 +23,7 @@ public class GiphyHandlerImpl implements GiphyHandler {
   public ChatHandler toChatHandler(Vertx vertx) {
     HttpClient client = vertx.createHttpClient();
     ChatHandler handler = ChatHandler.create(vertx);
-    handler.pattern(p.pattern());
-    handler.messageHandler(msg -> {
+    handler.respond(p.pattern(), msg -> {
       Matcher matcher = p.matcher(msg.content());
       if (matcher.matches()) {
         String query = matcher.group(1);

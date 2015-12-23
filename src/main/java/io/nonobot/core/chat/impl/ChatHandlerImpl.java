@@ -8,9 +8,12 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.shareddata.LocalMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,42 +22,72 @@ import java.util.UUID;
 public class ChatHandlerImpl implements ChatHandler {
 
   private final Vertx vertx;
-  private String pattern;
-  private Handler<ChatMessage> messageHandler;
   private MessageConsumer<String> consumer;
   private String address;
+  private final List<Matcher> matchers = new ArrayList<>();
+
+  private class Matcher {
+    final boolean respond;
+    final String pattern;
+    final Handler<ChatMessage> handler;
+    private Matcher(boolean respond, String pattern, Handler<ChatMessage> handler) {
+      this.respond = respond;
+      this.pattern = pattern;
+      this.handler = handler;
+    }
+    void handle(Message<String> msg) {
+      handler.handle(new ChatMessage() {
+        boolean replied;
+        @Override
+        public String content() {
+          return msg.body();
+        }
+        @Override
+        public void reply(String content) {
+          if (!replied) {
+            replied = true;
+            msg.reply(content);
+          }
+        }
+      });
+    }
+  }
 
   public ChatHandlerImpl(Vertx vertx) {
     this.vertx = vertx;
   }
 
   @Override
-  public ChatHandler pattern(String regex) {
-    pattern = regex;
+  public ChatHandler match(String pattern, Handler<ChatMessage> handler) {
+    matchers.add(new Matcher(false, pattern, handler));
     return this;
   }
 
   @Override
-  public ChatHandler messageHandler(Handler<ChatMessage> handler) {
-    this.messageHandler = handler;
+  public ChatHandler respond(String pattern, Handler<ChatMessage> handler) {
+    matchers.add(new Matcher(true, pattern, handler));
     return this;
   }
 
-  private void handle(Message<String> msg) {
-    messageHandler.handle(new ChatMessage() {
-      boolean replied;
-      @Override
-      public String content() {
-        return msg.body();
+  private JsonObject createDesc() {
+    JsonObject desc = new JsonObject();
+    desc.put("matchers", new JsonArray());
+    for (Matcher matcher : matchers) {
+      desc.getJsonArray("matchers").add(
+          new JsonObject().
+              put("pattern", matcher.pattern).
+              put("respond", matcher.respond));
+    }
+    return desc;
+  }
+
+  private Handler<Message<String>> createHandlers() {
+    List<Matcher> copy = new ArrayList<>(matchers);
+    return msg -> {
+      for (Matcher matcher : copy) {
+        matcher.handle(msg);
       }
-      @Override
-      public void reply(String content) {
-        if (!replied) {
-          replied = true;
-          msg.reply(content);
-        }
-      }
-    });
+    };
   }
 
   @Override
@@ -63,7 +96,7 @@ public class ChatHandlerImpl implements ChatHandler {
       throw new IllegalStateException();
     }
     address = UUID.randomUUID().toString();
-    consumer = vertx.eventBus().consumer(address, this::handle);
+    consumer = vertx.eventBus().consumer(address, createHandlers());
     consumer.completionHandler(ar -> {
       if (ar.succeeded()) {
         while (true) {
@@ -75,8 +108,7 @@ public class ChatHandlerImpl implements ChatHandler {
           } else {
             nextHandlers = prevHandlers.copy();
           }
-          JsonObject desc = new JsonObject().put("pattern", pattern);
-          nextHandlers.put(address, desc);
+          nextHandlers.put(address, createDesc());
           if (prevHandlers == null) {
             if (registry.putIfAbsent("handlers", nextHandlers) == null) {
               break;

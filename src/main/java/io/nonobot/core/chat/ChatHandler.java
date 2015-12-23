@@ -18,10 +18,10 @@ public interface ChatHandler {
   }
 
   @Fluent
-  ChatHandler pattern(String regex);
+  ChatHandler match(String pattern, Handler<ChatMessage> handler);
 
   @Fluent
-  ChatHandler messageHandler(Handler<ChatMessage> handler);
+  ChatHandler respond(String pattern, Handler<ChatMessage> handler);
 
 //  void bind();
 

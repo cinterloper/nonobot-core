@@ -2,6 +2,7 @@ package io.nonobot.test;
 
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.chat.ChatHandler;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -25,23 +26,19 @@ public class BotTest extends BaseTest {
   public void testBindHandler(TestContext context) {
     assertBind(context, ChatHandler.
         create(vertx).
-        pattern("^echo\\s+(.+)").
-        messageHandler(msg -> {
-        }));
+        respond("^echo\\s+(.+)", msg -> {}));
     JsonObject handlers = (JsonObject) vertx.sharedData().getLocalMap("nonobot").get("handlers");
     context.assertNotNull(handlers);
     context.assertEquals(1, handlers.size());
     JsonObject desc = handlers.getJsonObject(handlers.fieldNames().iterator().next());
-    context.assertEquals(new JsonObject().put("pattern", "^echo\\s+(.+)"), desc);
+    context.assertEquals(new JsonObject().put("matchers", new JsonArray().add(new JsonObject().put("pattern", "^echo\\s+(.+)").put("respond", true))), desc);
   }
 
   @Test
   public void testUnbindHandler(TestContext context) {
     ChatHandler handler = assertBind(context, ChatHandler.
         create(vertx).
-        pattern("^echo\\s+(.+)").
-        messageHandler(msg -> {
-        }));
+        respond("^echo\\s+(.+)", msg -> {}));
     Async async = context.async();
     handler.unbind(context.asyncAssertSuccess(v ->
         async.complete()
@@ -52,12 +49,45 @@ public class BotTest extends BaseTest {
   }
 
   @Test
-  public void testRouteMessage(TestContext context) {
+  public void testRespondToMessage1(TestContext context) {
+    testRespondToMessage(context, "nono echo hello world");
+  }
+
+  @Test
+  public void testRespondToMessage2(TestContext context) {
+    testRespondToMessage(context, "nono:echo hello world");
+  }
+
+  @Test
+  public void testRespondToMessage3(TestContext context) {
+    testRespondToMessage(context, "@nono echo hello world");
+  }
+
+  @Test
+  public void testRespondToMessage4(TestContext context) {
+    testRespondToMessage(context, "@nono:echo hello world");
+  }
+
+  private void testRespondToMessage(TestContext context, String message) {
     Async msgLatch = context.async();
     assertBind(context, ChatHandler.
         create(vertx).
-        pattern("^echo\\s+(.+)").
-        messageHandler(msg -> {
+        respond("^echo\\s+(.+)", msg -> {
+          context.assertEquals("echo hello world", msg.content());
+          msgLatch.complete();
+        }));
+    NonoBot bot = NonoBot.create(vertx);
+    bot.client(context.asyncAssertSuccess(client -> {
+      client.process(message, ar -> {});
+    }));
+  }
+
+  @Test
+  public void testMatchMessage(TestContext context) {
+    Async msgLatch = context.async();
+    assertBind(context, ChatHandler.
+        create(vertx).
+        match("^echo\\s+(.+)", msg -> {
           context.assertEquals("echo hello world", msg.content());
           msgLatch.complete();
         }));

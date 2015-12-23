@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -37,6 +38,7 @@ public class SlackAdapterImpl implements SlackAdapter {
   private long serial;
   private Set<String> channels = new HashSet<>(); // All channels we belong to
   private String id; // Our own id
+  private Pattern respondMatcher;
 
   public SlackAdapterImpl(NonoBot bot, SlackOptions options) {
     this.bot = bot;
@@ -175,12 +177,12 @@ public class SlackAdapterImpl implements SlackAdapter {
     String msg;
     if (channels.contains(channel)) {
       if (text.startsWith("<@" + id + ">")) {
-        msg = text.substring(id.length() + 3); // Replace mention to self
+        msg = client.name() + text.substring(id.length() + 3); // Replace mention to the robot
       } else {
         return;
       }
     } else {
-      msg = text;
+      msg = client.name() + " " + text;
     }
     client.process(msg, reply -> {
       if (reply.succeeded()) {

@@ -47,13 +47,17 @@ public class ChatHandler {
     return ret;
   }
 
-  public ChatHandler pattern(String regex) { 
-    this.delegate.pattern(regex);
+  public ChatHandler match(String pattern, Handler<ChatMessage> handler) { 
+    this.delegate.match(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
+      public void handle(io.nonobot.core.chat.ChatMessage event) {
+        handler.handle(new ChatMessage(event));
+      }
+    });
     return this;
   }
 
-  public ChatHandler messageHandler(Handler<ChatMessage> handler) { 
-    this.delegate.messageHandler(new Handler<io.nonobot.core.chat.ChatMessage>() {
+  public ChatHandler respond(String pattern, Handler<ChatMessage> handler) { 
+    this.delegate.respond(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
       public void handle(io.nonobot.core.chat.ChatMessage event) {
         handler.handle(new ChatMessage(event));
       }

@@ -35,13 +35,16 @@ var ChatHandler = function(j_val) {
   /**
 
    @public
-   @param regex {string} 
+   @param pattern {string} 
+   @param handler {function} 
    @return {ChatHandler}
    */
-  this.pattern = function(regex) {
+  this.match = function(pattern, handler) {
     var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'string') {
-      j_chatHandler["pattern(java.lang.String)"](regex);
+    if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
+      j_chatHandler["match(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
+      handler(utils.convReturnVertxGen(jVal, ChatMessage));
+    });
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };
@@ -49,13 +52,14 @@ var ChatHandler = function(j_val) {
   /**
 
    @public
+   @param pattern {string} 
    @param handler {function} 
    @return {ChatHandler}
    */
-  this.messageHandler = function(handler) {
+  this.respond = function(pattern, handler) {
     var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_chatHandler["messageHandler(io.vertx.core.Handler)"](function(jVal) {
+    if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
+      j_chatHandler["respond(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
       handler(utils.convReturnVertxGen(jVal, ChatMessage));
     });
       return that;

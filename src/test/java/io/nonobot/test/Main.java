@@ -19,8 +19,7 @@ public class Main {
 
     ChatHandler.
         create(vertx).
-        pattern("^echo\\s+(.+)").
-        messageHandler(msg -> {
+        respond("^echo\\s+(.+)", msg -> {
           msg.reply(msg.content().substring(4));
         }).bind(ar -> {
       System.out.println("echo handler bound");

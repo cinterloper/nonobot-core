@@ -23,23 +23,25 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling create(vertx)"
     end
-    # @param [String] regex 
-    # @return [self]
-    def pattern(regex=nil)
-      if regex.class == String && !block_given?
-        @j_del.java_method(:pattern, [Java::java.lang.String.java_class]).call(regex)
-        return self
-      end
-      raise ArgumentError, "Invalid arguments when calling pattern(regex)"
-    end
+    # @param [String] pattern 
     # @yield 
     # @return [self]
-    def message_handler
-      if block_given?
-        @j_del.java_method(:messageHandler, [Java::IoVertxCore::Handler.java_class]).call((Proc.new { |event| yield(::Vertx::Util::Utils.safe_create(event,::Nonobot::ChatMessage)) }))
+    def match(pattern=nil)
+      if pattern.class == String && block_given?
+        @j_del.java_method(:match, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(pattern,(Proc.new { |event| yield(::Vertx::Util::Utils.safe_create(event,::Nonobot::ChatMessage)) }))
         return self
       end
-      raise ArgumentError, "Invalid arguments when calling message_handler()"
+      raise ArgumentError, "Invalid arguments when calling match(pattern)"
+    end
+    # @param [String] pattern 
+    # @yield 
+    # @return [self]
+    def respond(pattern=nil)
+      if pattern.class == String && block_given?
+        @j_del.java_method(:respond, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(pattern,(Proc.new { |event| yield(::Vertx::Util::Utils.safe_create(event,::Nonobot::ChatMessage)) }))
+        return self
+      end
+      raise ArgumentError, "Invalid arguments when calling respond(pattern)"
     end
     # @yield 
     # @return [void]
