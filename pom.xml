@@ -240,6 +240,18 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -252,6 +264,22 @@
           <configuration>
             <mainClass>io.vertx.ext.shell.Main</mainClass>
             <classpathScope>test</classpathScope>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.5.3</version>
+          <configuration>
+            <descriptor>src/main/assembly/fatjar.xml</descriptor>
+            <archive>
+              <manifest>
+                <mainClass>io.vertx.core.Starter</mainClass>
+              </manifest>
+              <manifestEntries>
+                <Main-Verticle>io.nonobot.core.BotVerticle</Main-Verticle>
+              </manifestEntries>
+            </archive>
           </configuration>
         </plugin>
       </plugins>
