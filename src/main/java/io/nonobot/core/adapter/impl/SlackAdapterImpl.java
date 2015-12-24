@@ -38,7 +38,6 @@ public class SlackAdapterImpl implements SlackAdapter {
   private long serial;
   private Set<String> channels = new HashSet<>(); // All channels we belong to
   private String id; // Our own id
-  private Pattern respondMatcher;
 
   public SlackAdapterImpl(NonoBot bot, SlackOptions options) {
     this.bot = bot;
@@ -203,24 +202,38 @@ public class SlackAdapterImpl implements SlackAdapter {
 
   void wsHandle(WebSocketFrame frame, BotClient client) {
     JsonObject json = new JsonObject(frame.textData());
-    System.out.println(json);
     String type = json.getString("type", "");
     switch (type) {
-      case "channel_left":
-        leaveChannel(json.getString("channel"));
+      case "channel_left": {
+        String channel = json.getString("channel");
+        System.out.println("Left " + channel);
+        leaveChannel(channel);
         break;
-      case "channel_joined":
-        joinChannel(json.getJsonObject("channel").getString("id"));
+      }
+      case "channel_joined": {
+        String channel = json.getJsonObject("channel").getString("id");
+        System.out.println("Joined " + channel);
+        joinChannel(channel);
         break;
+      }
       case "message":
         String text = json.getString("text");
         String channel = json.getString("channel");
+        System.out.println("Message from " + channel + ": " + text);
         if (text != null) {
           handleMessage(client, text, channel);
         } else {
           // What case ?
         }
         break;
+      case "presence_change":
+      case "pong": {
+        break;
+      }
+      default: {
+        System.out.println("Unhandled message " + json);
+        break;
+      }
     }
   }
 
