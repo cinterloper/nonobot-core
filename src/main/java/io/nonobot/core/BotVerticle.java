@@ -11,15 +11,43 @@ import io.vertx.core.AbstractVerticle;
  */
 public class BotVerticle extends AbstractVerticle {
 
+  private String getConfigProperty(String configName, String envName) {
+    String value = config().getString(configName);
+    if (value == null) {
+      value = System.getenv(envName);
+    }
+    return value;
+  }
+
   @Override
   public void start() throws Exception {
 
-    String slackToken = config().getString("slack.token");
-    if (slackToken == null) {
-      throw new Exception("No Slack token found");
-    }
+    // Basic status
+    vertx.createHttpServer().requestHandler(req -> {
+      req.response().putHeader("Content-Type", "text/plain").end("Application started");
+    }).listen(Integer.getInteger("http.port", 8080), System.getProperty("http.address", "localhost"));
 
     NonoBot bot = NonoBot.create(vertx);
+
+    // Slack adapter
+    String slackToken = getConfigProperty("slack.token", "SLACK_TOKEN");
+    if (slackToken != null) {
+      System.out.println("Connecting to slack");
+      SlackAdapter slack = SlackAdapter.create(bot, new SlackOptions().setToken(slackToken));
+      slack.closeHandler(v -> {
+        System.out.println("Disconnected");
+      });
+
+      // Connect to slack
+      slack.connect(ar -> {
+        if (ar.succeeded()) {
+          System.out.println("Connected so Slack");
+        } else {
+          System.out.println("Coult not connect to slack");
+          ar.cause().printStackTrace();
+        }
+      });
+    }
 
     // Echo handler
     ChatHandler.
@@ -33,22 +61,6 @@ public class BotVerticle extends AbstractVerticle {
     // Giphy handler
     GiphyHandler.create().toChatHandler(vertx).bind(ar -> {
       System.out.println("Bound Giphy");
-    });
-
-    // Slack adapter
-    SlackAdapter slack = SlackAdapter.create(bot, new SlackOptions().setToken(slackToken));
-    slack.closeHandler(v -> {
-      System.out.println("Disconnected");
-    });
-
-    // Connec to slack
-    slack.connect(ar -> {
-      if (ar.succeeded()) {
-        System.out.println("Connected so Slack");
-      } else {
-        System.out.println("Coult not connect to slack");
-        ar.cause().printStackTrace();
-      }
     });
   }
 
