@@ -24,7 +24,7 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling connect()"
     end
-    #  Handler notified when the service close.
+    #  Handler notified when the adapter close.
     # @yield 
     # @return [void]
     def close_handler

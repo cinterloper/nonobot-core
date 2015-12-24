@@ -42,7 +42,7 @@ public class Adapter {
   }
 
   /**
-   * Connect to the slack service.
+   * Connect to the adapted service.
    */
   public void connect() { 
     this.delegate.connect();
@@ -67,7 +67,7 @@ public class Adapter {
   }
 
   /**
-   * Handler notified when the service close.
+   * Handler notified when the adapter close.
    * @param handler 
    */
   public void closeHandler(Handler<Void> handler) { 

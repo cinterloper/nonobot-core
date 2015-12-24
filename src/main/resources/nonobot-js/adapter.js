@@ -52,7 +52,7 @@ var Adapter = function(j_val) {
   };
 
   /**
-   Handler notified when the service close.
+   Handler notified when the adapter close.
 
    @public
    @param handler {function} 

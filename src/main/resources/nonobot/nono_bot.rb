@@ -1,3 +1,4 @@
+require 'nonobot/adapter'
 require 'vertx/vertx'
 require 'nonobot/bot_client'
 require 'vertx/util/utils.rb'
@@ -37,6 +38,26 @@ module Nonobot
         return @j_del.java_method(:client, [Java::IoVertxCore::Handler.java_class]).call((Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ::Vertx::Util::Utils.safe_create(ar.result,::Nonobot::BotClient) : nil) }))
       end
       raise ArgumentError, "Invalid arguments when calling client()"
+    end
+    # @param [::Nonobot::Adapter] adapter 
+    # @param [Fixnum] reconnectPeriod 
+    # @return [self]
+    def add_adapter(adapter=nil,reconnectPeriod=nil)
+      if adapter.class.method_defined?(:j_del) && !block_given? && reconnectPeriod == nil
+        @j_del.java_method(:addAdapter, [Java::IoNonobotCoreAdapter::Adapter.java_class]).call(adapter.j_del)
+        return self
+      elsif adapter.class.method_defined?(:j_del) && reconnectPeriod.class == Fixnum && !block_given?
+        @j_del.java_method(:addAdapter, [Java::IoNonobotCoreAdapter::Adapter.java_class,Java::long.java_class]).call(adapter.j_del,reconnectPeriod)
+        return self
+      end
+      raise ArgumentError, "Invalid arguments when calling add_adapter(adapter,reconnectPeriod)"
+    end
+    # @return [void]
+    def close
+      if !block_given?
+        return @j_del.java_method(:close, []).call()
+      end
+      raise ArgumentError, "Invalid arguments when calling close()"
     end
   end
 end

@@ -14,48 +14,30 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.adapter;
+package io.nonobot.groovy.core.handlers;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.vertx.core.AsyncResult
-import io.vertx.core.Handler
+import io.vertx.groovy.core.Vertx
+import io.nonobot.groovy.core.chat.ChatHandler
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class Adapter {
-  private final def io.nonobot.core.adapter.Adapter delegate;
-  public Adapter(Object delegate) {
-    this.delegate = (io.nonobot.core.adapter.Adapter) delegate;
+public class HelpHandler {
+  private final def io.nonobot.core.handlers.HelpHandler delegate;
+  public HelpHandler(Object delegate) {
+    this.delegate = (io.nonobot.core.handlers.HelpHandler) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  /**
-   * Connect to the adapted service.
-   */
-  public void connect() {
-    this.delegate.connect();
+  public static HelpHandler create() {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handlers.HelpHandler.create(), io.nonobot.groovy.core.handlers.HelpHandler.class);
+    return ret;
   }
-  /**
-   * Connect to the adapted service.
-   * @param completionHandler 
-   */
-  public void connect(Handler<AsyncResult<Void>> completionHandler) {
-    this.delegate.connect(completionHandler);
-  }
-  /**
-   * Handler notified when the adapter close.
-   * @param handler 
-   */
-  public void closeHandler(Handler<Void> handler) {
-    this.delegate.closeHandler(handler);
-  }
-  /**
-   * Close.
-   */
-  public void close() {
-    this.delegate.close();
+  public ChatHandler toChatHandler(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(this.delegate.toChatHandler((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.chat.ChatHandler.class);
+    return ret;
   }
 }

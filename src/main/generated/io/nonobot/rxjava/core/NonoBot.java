@@ -19,6 +19,7 @@ package io.nonobot.rxjava.core;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.rxjava.core.adapter.Adapter;
 import io.vertx.rxjava.core.Vertx;
 import io.nonobot.rxjava.core.client.BotClient;
 import io.vertx.core.AsyncResult;
@@ -71,6 +72,20 @@ public class NonoBot {
     io.vertx.rx.java.ObservableFuture<BotClient> handler = io.vertx.rx.java.RxHelper.observableFuture();
     client(handler.toHandler());
     return handler;
+  }
+
+  public NonoBot addAdapter(Adapter adapter) { 
+    this.delegate.addAdapter((io.nonobot.core.adapter.Adapter) adapter.getDelegate());
+    return this;
+  }
+
+  public NonoBot addAdapter(Adapter adapter, long reconnectPeriod) { 
+    this.delegate.addAdapter((io.nonobot.core.adapter.Adapter) adapter.getDelegate(), reconnectPeriod);
+    return this;
+  }
+
+  public void close() { 
+    this.delegate.close();
   }
 
 

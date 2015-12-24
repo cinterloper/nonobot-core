@@ -4,6 +4,7 @@ import io.nonobot.core.adapter.SlackAdapter;
 import io.nonobot.core.adapter.SlackOptions;
 import io.nonobot.core.chat.ChatHandler;
 import io.nonobot.core.handlers.GiphyHandler;
+import io.nonobot.core.handlers.HelpHandler;
 import io.vertx.core.AbstractVerticle;
 
 /**
@@ -48,6 +49,11 @@ public class BotVerticle extends AbstractVerticle {
     // Giphy handler
     GiphyHandler.create().toChatHandler(vertx).bind(ar -> {
       System.out.println("Bound Giphy");
+    });
+
+    // Help handler
+    HelpHandler.create().toChatHandler(vertx).bind(ar -> {
+      System.out.println("Bound help");
     });
   }
 

@@ -18,6 +18,7 @@ package io.nonobot.groovy.core;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.groovy.core.adapter.Adapter
 import io.vertx.groovy.core.Vertx
 import io.nonobot.groovy.core.client.BotClient
 import io.vertx.core.AsyncResult
@@ -54,5 +55,16 @@ public class NonoBot {
         handler.handle(f)
       }
     });
+  }
+  public NonoBot addAdapter(Adapter adapter) {
+    this.delegate.addAdapter((io.nonobot.core.adapter.Adapter)adapter.getDelegate());
+    return this;
+  }
+  public NonoBot addAdapter(Adapter adapter, long reconnectPeriod) {
+    this.delegate.addAdapter((io.nonobot.core.adapter.Adapter)adapter.getDelegate(), reconnectPeriod);
+    return this;
+  }
+  public void close() {
+    this.delegate.close();
   }
 }

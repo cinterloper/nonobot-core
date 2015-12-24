@@ -16,6 +16,7 @@
 
 /** @module nonobot-js/nono_bot */
 var utils = require('vertx-js/util/utils');
+var Adapter = require('nonobot-js/adapter');
 var Vertx = require('vertx-js/vertx');
 var BotClient = require('nonobot-js/bot_client');
 
@@ -60,6 +61,36 @@ var NonoBot = function(j_val) {
         handler(null, ar.cause());
       }
     });
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+   @param adapter {Adapter} 
+   @param reconnectPeriod {number} 
+   @return {NonoBot}
+   */
+  this.addAdapter = function() {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+      j_nonoBot["addAdapter(io.nonobot.core.adapter.Adapter)"](__args[0]._jdel);
+      return that;
+    }  else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] ==='number') {
+      j_nonoBot["addAdapter(io.nonobot.core.adapter.Adapter,long)"](__args[0]._jdel, __args[1]);
+      return that;
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+
+   */
+  this.close = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      j_nonoBot["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
