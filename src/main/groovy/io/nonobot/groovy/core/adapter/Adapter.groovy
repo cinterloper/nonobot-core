@@ -18,23 +18,44 @@ package io.nonobot.groovy.core.adapter;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.nonobot.core.adapter.SlackOptions
-import io.nonobot.groovy.core.NonoBot
+import io.vertx.core.AsyncResult
+import io.vertx.core.Handler
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class SlackAdapter extends Adapter {
-  private final def io.nonobot.core.adapter.SlackAdapter delegate;
-  public SlackAdapter(Object delegate) {
-    super((io.nonobot.core.adapter.SlackAdapter) delegate);
-    this.delegate = (io.nonobot.core.adapter.SlackAdapter) delegate;
+public class Adapter {
+  private final def io.nonobot.core.adapter.Adapter delegate;
+  public Adapter(Object delegate) {
+    this.delegate = (io.nonobot.core.adapter.Adapter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public static SlackAdapter create(NonoBot bot, Map<String, Object> options) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.adapter.SlackAdapter.create((io.nonobot.core.NonoBot)bot.getDelegate(), options != null ? new io.nonobot.core.adapter.SlackOptions(new io.vertx.core.json.JsonObject(options)) : null), io.nonobot.groovy.core.adapter.SlackAdapter.class);
-    return ret;
+  /**
+   * Connect to the slack service.
+   */
+  public void connect() {
+    this.delegate.connect();
+  }
+  /**
+   * Connect to the adapted service.
+   * @param completionHandler 
+   */
+  public void connect(Handler<AsyncResult<Void>> completionHandler) {
+    this.delegate.connect(completionHandler);
+  }
+  /**
+   * Handler notified when the service close.
+   * @param handler 
+   */
+  public void closeHandler(Handler<Void> handler) {
+    this.delegate.closeHandler(handler);
+  }
+  /**
+   * Close.
+   */
+  public void close() {
+    this.delegate.close();
   }
 }

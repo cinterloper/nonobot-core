@@ -21,8 +21,6 @@ import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
 import io.nonobot.core.adapter.SlackOptions;
 import io.nonobot.rxjava.core.NonoBot;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -31,11 +29,12 @@ import io.vertx.core.Handler;
  * NOTE: This class has been automatically generated from the {@link io.nonobot.core.adapter.SlackAdapter original} non RX-ified interface using Vert.x codegen.
  */
 
-public class SlackAdapter {
+public class SlackAdapter extends Adapter {
 
   final io.nonobot.core.adapter.SlackAdapter delegate;
 
   public SlackAdapter(io.nonobot.core.adapter.SlackAdapter delegate) {
+    super(delegate);
     this.delegate = delegate;
   }
 
@@ -46,39 +45,6 @@ public class SlackAdapter {
   public static SlackAdapter create(NonoBot bot, SlackOptions options) { 
     SlackAdapter ret= SlackAdapter.newInstance(io.nonobot.core.adapter.SlackAdapter.create((io.nonobot.core.NonoBot) bot.getDelegate(), options));
     return ret;
-  }
-
-  /**
-   * Connect to the slack service.
-   */
-  public void connect() { 
-    this.delegate.connect();
-  }
-
-  /**
-   * Connect to the slack service.
-   * @param completionHandler 
-   */
-  public void connect(Handler<AsyncResult<Void>> completionHandler) { 
-    this.delegate.connect(completionHandler);
-  }
-
-  /**
-   * Connect to the slack service.
-   * @return 
-   */
-  public Observable<Void> connectObservable() { 
-    io.vertx.rx.java.ObservableFuture<Void> completionHandler = io.vertx.rx.java.RxHelper.observableFuture();
-    connect(completionHandler.toHandler());
-    return completionHandler;
-  }
-
-  public void closeHandler(Handler<Void> handler) { 
-    this.delegate.closeHandler(handler);
-  }
-
-  public void close() { 
-    this.delegate.close();
   }
 
 

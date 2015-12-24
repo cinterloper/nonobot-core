@@ -1,7 +1,9 @@
 package io.nonobot.core;
 
+import io.nonobot.core.adapter.Adapter;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.impl.NonoBotImpl;
+import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -21,4 +23,11 @@ public interface NonoBot {
 
   void client(Handler<AsyncResult<BotClient>> handler);
 
+  @Fluent
+  NonoBot addAdapter(Adapter adapter);
+
+  @Fluent
+  NonoBot addAdapter(Adapter adapter, long reconnectPeriod);
+
+  void close();
 }

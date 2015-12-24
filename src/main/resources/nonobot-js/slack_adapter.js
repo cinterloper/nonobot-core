@@ -16,6 +16,7 @@
 
 /** @module nonobot-js/slack_adapter */
 var utils = require('vertx-js/util/utils');
+var Adapter = require('nonobot-js/adapter');
 var NonoBot = require('nonobot-js/nono_bot');
 
 var io = Packages.io;
@@ -31,51 +32,7 @@ var SlackAdapter = function(j_val) {
 
   var j_slackAdapter = j_val;
   var that = this;
-
-  /**
-   Connect to the slack service.
-
-   @public
-   @param completionHandler {function} 
-   */
-  this.connect = function() {
-    var __args = arguments;
-    if (__args.length === 0) {
-      j_slackAdapter["connect()"]();
-    }  else if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_slackAdapter["connect(io.vertx.core.Handler)"](function(ar) {
-      if (ar.succeeded()) {
-        __args[0](null, null);
-      } else {
-        __args[0](null, ar.cause());
-      }
-    });
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-
-   @public
-   @param handler {function} 
-   */
-  this.closeHandler = function(handler) {
-    var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_slackAdapter["closeHandler(io.vertx.core.Handler)"](handler);
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-
-   @public
-
-   */
-  this.close = function() {
-    var __args = arguments;
-    if (__args.length === 0) {
-      j_slackAdapter["close()"]();
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
+  Adapter.call(this, j_val);
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.

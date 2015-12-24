@@ -33,20 +33,7 @@ public class BotVerticle extends AbstractVerticle {
     String slackToken = getConfigProperty("slack.token", "SLACK_TOKEN");
     if (slackToken != null) {
       System.out.println("Connecting to slack");
-      SlackAdapter slack = SlackAdapter.create(bot, new SlackOptions().setToken(slackToken));
-      slack.closeHandler(v -> {
-        System.out.println("Disconnected");
-      });
-
-      // Connect to slack
-      slack.connect(ar -> {
-        if (ar.succeeded()) {
-          System.out.println("Connected so Slack");
-        } else {
-          System.out.println("Coult not connect to slack");
-          ar.cause().printStackTrace();
-        }
-      });
+      bot.addAdapter(SlackAdapter.create(bot, new SlackOptions().setToken(slackToken)));
     }
 
     // Echo handler
