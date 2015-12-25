@@ -14,35 +14,27 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.client;
+package io.nonobot.groovy.core.adapter;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.vertx.core.AsyncResult
-import io.vertx.core.Handler
+import io.nonobot.groovy.core.NonoBot
+import io.nonobot.core.adapter.IrcOptions
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class BotClient {
-  private final def io.nonobot.core.client.BotClient delegate;
-  public BotClient(Object delegate) {
-    this.delegate = (io.nonobot.core.client.BotClient) delegate;
+public class IrcAdapter extends Adapter {
+  private final def io.nonobot.core.adapter.IrcAdapter delegate;
+  public IrcAdapter(Object delegate) {
+    super((io.nonobot.core.adapter.IrcAdapter) delegate);
+    this.delegate = (io.nonobot.core.adapter.IrcAdapter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public String name() {
-    def ret = this.delegate.name();
+  public static IrcAdapter create(NonoBot bot, Map<String, Object> options) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.adapter.IrcAdapter.create((io.nonobot.core.NonoBot)bot.getDelegate(), options != null ? new io.nonobot.core.adapter.IrcOptions(new io.vertx.core.json.JsonObject(options)) : null), io.nonobot.groovy.core.adapter.IrcAdapter.class);
     return ret;
-  }
-  public void process(String message, Handler<AsyncResult<String>> handler) {
-    this.delegate.process(message, handler);
-  }
-  public void close() {
-    this.delegate.close();
-  }
-  public void closeHandler(Handler<Void> handler) {
-    this.delegate.closeHandler(handler);
   }
 }

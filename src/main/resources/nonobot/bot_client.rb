@@ -36,5 +36,13 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling close()"
     end
+    # @yield 
+    # @return [void]
+    def close_handler
+      if block_given?
+        return @j_del.java_method(:closeHandler, [Java::IoVertxCore::Handler.java_class]).call(Proc.new { yield })
+      end
+      raise ArgumentError, "Invalid arguments when calling close_handler()"
+    end
   end
 end

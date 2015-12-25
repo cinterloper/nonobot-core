@@ -50,22 +50,22 @@ public class BotTest extends BaseTest {
 
   @Test
   public void testRespondToMessage1(TestContext context) {
-    testRespondToMessage(context, "nono echo hello world");
+    testRespondToMessage(context, "nonobot echo hello world");
   }
 
   @Test
   public void testRespondToMessage2(TestContext context) {
-    testRespondToMessage(context, "nono:echo hello world");
+    testRespondToMessage(context, "nonobot:echo hello world");
   }
 
   @Test
   public void testRespondToMessage3(TestContext context) {
-    testRespondToMessage(context, "@nono echo hello world");
+    testRespondToMessage(context, "@nonobot echo hello world");
   }
 
   @Test
   public void testRespondToMessage4(TestContext context) {
-    testRespondToMessage(context, "@nono:echo hello world");
+    testRespondToMessage(context, "@nonobot:echo hello world");
   }
 
   private void testRespondToMessage(TestContext context, String message) {

@@ -16,4 +16,6 @@ public interface BotClient {
 
   void close();
 
+  default void closeHandler(Handler<Void> handler) { /* todo */ }
+
 }

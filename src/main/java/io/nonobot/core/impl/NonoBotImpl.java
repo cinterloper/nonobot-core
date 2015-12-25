@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class NonoBotImpl implements NonoBot {
 
-  final String name = "nono"; // Bot name : make this configurable via options
+  final String name = "nonobot"; // Bot name : make this configurable via options
   final Vertx vertx;
   private boolean closed;
   private Set<Adapter> adapters = new HashSet<>();
@@ -71,6 +71,8 @@ public class NonoBotImpl implements NonoBot {
         }
         adapter.close();
       } else {
+        System.out.println("Connection failure");
+        ar.cause().printStackTrace();
         reconnect(adapter, reconnectPeriod);
       }
     });

@@ -26,6 +26,7 @@
     <version>19</version>
   </parent>
 
+  <groupId>io.nonobot</groupId>
   <artifactId>nonobot-core</artifactId>
   <version>1.0.0</version>
 
@@ -67,11 +68,16 @@
       <artifactId>vertx-shell</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.pircbotx</groupId>
+      <artifactId>pircbotx</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
       <!-- declare this dependency to force shiro to use this one. It is the version used by vert.x -->
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.12</version>
-      <scope>provided</scope>
+      <!--<scope>provided</scope>-->
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>

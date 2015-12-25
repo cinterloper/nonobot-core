@@ -60,6 +60,10 @@ public class BotClient {
     this.delegate.close();
   }
 
+  public void closeHandler(Handler<Void> handler) { 
+    this.delegate.closeHandler(handler);
+  }
+
 
   public static BotClient newInstance(io.nonobot.core.client.BotClient arg) {
     return arg != null ? new BotClient(arg) : null;
