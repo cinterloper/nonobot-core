@@ -1,8 +1,6 @@
 package io.nonobot.core;
 
 import io.nonobot.core.adapter.Adapter;
-import io.nonobot.core.adapter.SlackAdapter;
-import io.nonobot.core.adapter.SlackOptions;
 import io.nonobot.core.chat.ChatHandler;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
@@ -56,13 +54,6 @@ public class BotVerticle extends AbstractVerticle {
           bot.addAdapter(adapter);
         }
       }
-    }
-
-    // Slack adapter
-    String slackToken = config.getProperty("slack.token");
-    if (slackToken != null) {
-      System.out.println("Connecting to slack");
-      bot.addAdapter(SlackAdapter.create(bot, new SlackOptions().setToken(slackToken)));
     }
 
     // Echo handler
