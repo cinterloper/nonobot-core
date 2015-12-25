@@ -14,27 +14,24 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.adapter;
+package io.nonobot.groovy.core;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.nonobot.groovy.core.NonoBot
-import io.nonobot.core.adapter.IrcOptions
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class IrcAdapter extends Adapter {
-  private final def io.nonobot.core.adapter.IrcAdapter delegate;
-  public IrcAdapter(Object delegate) {
-    super((io.nonobot.core.adapter.IrcAdapter) delegate);
-    this.delegate = (io.nonobot.core.adapter.IrcAdapter) delegate;
+public class Config {
+  private final def io.nonobot.core.Config delegate;
+  public Config(Object delegate) {
+    this.delegate = (io.nonobot.core.Config) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public static IrcAdapter create(NonoBot bot, Map<String, Object> options) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.adapter.IrcAdapter.create((io.nonobot.core.NonoBot)bot.getDelegate(), options != null ? new io.nonobot.core.adapter.IrcOptions(new io.vertx.core.json.JsonObject(options)) : null), io.nonobot.groovy.core.adapter.IrcAdapter.class);
+  public String getProperty(String name) {
+    def ret = this.delegate.getProperty(name);
     return ret;
   }
 }

@@ -1,28 +1,32 @@
 package io.nonobot.core;
 
-import io.nonobot.core.adapter.IrcAdapter;
-import io.nonobot.core.adapter.IrcOptions;
+import io.nonobot.core.adapter.Adapter;
 import io.nonobot.core.adapter.SlackAdapter;
 import io.nonobot.core.adapter.SlackOptions;
 import io.nonobot.core.chat.ChatHandler;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
+import io.nonobot.core.spi.AdapterFactory;
 import io.vertx.core.AbstractVerticle;
 
-import java.util.Arrays;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class BotVerticle extends AbstractVerticle {
 
-  private String getConfigProperty(String name) {
-    String value = config().getString(name);
-    if (value == null) {
-      value = System.getenv(name.replace('.', '_').replace('-', '_').toUpperCase());
+  private final Config config = new Config() {
+    @Override
+    public String getProperty(String name) {
+      String value = config().getString(name);
+      if (value == null) {
+        value = System.getenv(name.replace('.', '_').replace('-', '_').toUpperCase());
+      }
+      return value;
     }
-    return value;
-  }
+  };
 
   @Override
   public void start() throws Exception {
@@ -34,36 +38,31 @@ public class BotVerticle extends AbstractVerticle {
 
     NonoBot bot = NonoBot.create(vertx);
 
+    Iterator<AdapterFactory> adapterFactoryIt = ServiceLoader.load(AdapterFactory.class).iterator();
+    while (true) {
+      AdapterFactory factory = null;
+      try {
+        if (adapterFactoryIt.hasNext()) {
+          factory = adapterFactoryIt.next();
+        } else {
+          break;
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (factory != null) {
+        Adapter adapter = factory.create(bot, config);
+        if (adapter != null) {
+          bot.addAdapter(adapter);
+        }
+      }
+    }
+
     // Slack adapter
-    String slackToken = getConfigProperty("slack.token");
+    String slackToken = config.getProperty("slack.token");
     if (slackToken != null) {
       System.out.println("Connecting to slack");
       bot.addAdapter(SlackAdapter.create(bot, new SlackOptions().setToken(slackToken)));
-    }
-
-    // IRC adapter
-    String ircChannels = getConfigProperty("irc.channels");
-    if (ircChannels != null) {
-      IrcOptions options = new IrcOptions();
-      Arrays.asList(ircChannels.split("\\s*,\\s*")).forEach(options::addChannel);;
-      String ircHost = getConfigProperty("irc.host");
-      if (ircHost != null) {
-        options.setHost(ircHost);
-      }
-      String ircName = getConfigProperty("irc.name");
-      if (ircName != null) {
-        options.setName(ircName);
-      }
-      String nickservPassword = getConfigProperty("irc.nickserv-password");
-      if (nickservPassword != null) {
-        options.setNickServPassword(nickservPassword);
-      }
-      String ircPort = getConfigProperty("irc.port");
-      if (ircPort != null) {
-        options.setPort(Integer.parseInt(ircPort));
-      }
-      IrcAdapter adapter = IrcAdapter.create(bot, options);
-      bot.addAdapter(adapter);
     }
 
     // Echo handler
@@ -85,6 +84,4 @@ public class BotVerticle extends AbstractVerticle {
       System.out.println("Bound help");
     });
   }
-
-
 }

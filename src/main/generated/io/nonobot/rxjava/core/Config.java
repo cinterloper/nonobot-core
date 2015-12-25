@@ -14,27 +14,24 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.adapter;
+package io.nonobot.rxjava.core;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.rxjava.core.NonoBot;
-import io.nonobot.core.adapter.IrcOptions;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.adapter.IrcAdapter original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.Config original} non RX-ified interface using Vert.x codegen.
  */
 
-public class IrcAdapter extends Adapter {
+public class Config {
 
-  final io.nonobot.core.adapter.IrcAdapter delegate;
+  final io.nonobot.core.Config delegate;
 
-  public IrcAdapter(io.nonobot.core.adapter.IrcAdapter delegate) {
-    super(delegate);
+  public Config(io.nonobot.core.Config delegate) {
     this.delegate = delegate;
   }
 
@@ -42,13 +39,13 @@ public class IrcAdapter extends Adapter {
     return delegate;
   }
 
-  public static IrcAdapter create(NonoBot bot, IrcOptions options) { 
-    IrcAdapter ret= IrcAdapter.newInstance(io.nonobot.core.adapter.IrcAdapter.create((io.nonobot.core.NonoBot) bot.getDelegate(), options));
+  public String getProperty(String name) { 
+    String ret = this.delegate.getProperty(name);
     return ret;
   }
 
 
-  public static IrcAdapter newInstance(io.nonobot.core.adapter.IrcAdapter arg) {
-    return arg != null ? new IrcAdapter(arg) : null;
+  public static Config newInstance(io.nonobot.core.Config arg) {
+    return arg != null ? new Config(arg) : null;
   }
 }

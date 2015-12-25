@@ -14,45 +14,40 @@
  * under the License.
  */
 
-/** @module nonobot-js/irc_adapter */
+/** @module nonobot-js/config */
 var utils = require('vertx-js/util/utils');
-var Adapter = require('nonobot-js/adapter');
-var NonoBot = require('nonobot-js/nono_bot');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JIrcAdapter = io.nonobot.core.adapter.IrcAdapter;
-var IrcOptions = io.nonobot.core.adapter.IrcOptions;
+var JConfig = io.nonobot.core.Config;
 
 /**
 
  @class
 */
-var IrcAdapter = function(j_val) {
+var Config = function(j_val) {
 
-  var j_ircAdapter = j_val;
+  var j_config = j_val;
   var that = this;
-  Adapter.call(this, j_val);
+
+  /**
+
+   @public
+   @param name {string} 
+   @return {string}
+   */
+  this.getProperty = function(name) {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'string') {
+      return j_config["getProperty(java.lang.String)"](name);
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_ircAdapter;
-};
-
-/**
-
- @memberof module:nonobot-js/irc_adapter
- @param bot {NonoBot} 
- @param options {Object} 
- @return {IrcAdapter}
- */
-IrcAdapter.create = function(bot, options) {
-  var __args = arguments;
-  if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && (typeof __args[1] === 'object' && __args[1] != null)) {
-    return utils.convReturnVertxGen(JIrcAdapter["create(io.nonobot.core.NonoBot,io.nonobot.core.adapter.IrcOptions)"](bot._jdel, options != null ? new IrcOptions(new JsonObject(JSON.stringify(options))) : null), IrcAdapter);
-  } else throw new TypeError('function invoked with invalid arguments');
+  this._jdel = j_config;
 };
 
 // We export the Constructor function
-module.exports = IrcAdapter;
+module.exports = Config;
