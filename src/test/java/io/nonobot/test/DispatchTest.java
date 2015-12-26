@@ -3,6 +3,7 @@ package io.nonobot.test;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.chat.ChatRouter;
 import io.nonobot.core.client.ClientOptions;
+import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import org.junit.Test;
@@ -75,5 +76,46 @@ public class DispatchTest extends BaseTest {
         failureLatch.complete();
       });
     }), new ClientOptions().setTimeout(300));
+  }
+
+  @Test
+  public void testHandlerOrder(TestContext context) {
+    Async doneLatch = context.async();
+    NonoBot bot = NonoBot.create(vertx);
+    router.handler().match("foobar", msg -> {
+      msg.reply("1");
+      doneLatch.countDown();
+    }).create();
+    router.handler().match("foobar", msg -> {
+      context.fail();
+    }).create();
+    bot.client(context.asyncAssertSuccess(client -> {
+      client.process("foobar", ar -> {
+      });
+    }));
+  }
+
+  @Test
+  public void testDoubleReply(TestContext context) {
+    Async doneLatch = context.async(2);
+    NonoBot bot = NonoBot.create(vertx);
+    Future<Void> replied = Future.future();
+    router.handler().match("foobar", msg -> {
+      msg.reply("1");
+    }).create();
+    ChatRouter.create(vertx, ar -> {}).handler().match("foobar", msg -> {
+      replied.setHandler(v -> {
+        msg.reply("2");
+        doneLatch.countDown();
+      });
+    }).create();
+    bot.client(context.asyncAssertSuccess(client -> {
+      client.process("foobar", ar -> {
+        context.assertTrue(ar.succeeded());
+        context.assertEquals("1", ar.result());
+        replied.complete();
+        doneLatch.countDown();
+      });
+    }));
   }
 }
