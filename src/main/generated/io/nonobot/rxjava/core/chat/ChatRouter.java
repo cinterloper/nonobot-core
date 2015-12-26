@@ -42,6 +42,11 @@ public class ChatRouter {
     return delegate;
   }
 
+  public static ChatRouter create(Vertx vertx) { 
+    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx) vertx.getDelegate()));
+    return ret;
+  }
+
   public static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) { 
     ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx) vertx.getDelegate(), completionHandler));
     return ret;

@@ -70,14 +70,16 @@ var ChatRouter = function(j_val) {
  @param completionHandler {function} 
  @return {ChatRouter}
  */
-ChatRouter.create = function(vertx, completionHandler) {
+ChatRouter.create = function() {
   var __args = arguments;
-  if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
-    return utils.convReturnVertxGen(JChatRouter["create(io.vertx.core.Vertx,io.vertx.core.Handler)"](vertx._jdel, function(ar) {
+  if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+    return utils.convReturnVertxGen(JChatRouter["create(io.vertx.core.Vertx)"](__args[0]._jdel), ChatRouter);
+  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
+    return utils.convReturnVertxGen(JChatRouter["create(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
     if (ar.succeeded()) {
-      completionHandler(null, null);
+      __args[1](null, null);
     } else {
-      completionHandler(null, ar.cause());
+      __args[1](null, ar.cause());
     }
   }), ChatRouter);
   } else throw new TypeError('function invoked with invalid arguments');

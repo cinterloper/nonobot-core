@@ -29,7 +29,9 @@ public class ChatRouterImpl implements ChatRouter {
     this.consumer = vertx.eventBus().consumer("nonobot.broadcast", this::handle);
     this.vertx = vertx;
 
-    consumer.completionHandler(completionHandler);
+    if (completionHandler != null) {
+      consumer.completionHandler(completionHandler);
+    }
   }
 
   private void handle(Message<JsonObject> message) {

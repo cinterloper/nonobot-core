@@ -33,6 +33,10 @@ public class ChatRouter {
   public Object getDelegate() {
     return delegate;
   }
+  public static ChatRouter create(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.chat.ChatRouter.class);
+    return ret;
+  }
   public static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
     def ret= InternalHelper.safeCreate(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx)vertx.getDelegate(), completionHandler), io.nonobot.groovy.core.chat.ChatRouter.class);
     return ret;

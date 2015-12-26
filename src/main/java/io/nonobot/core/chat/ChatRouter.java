@@ -12,6 +12,10 @@ import io.vertx.core.Vertx;
 @VertxGen
 public interface ChatRouter {
 
+  static ChatRouter create(Vertx vertx) {
+    return create(vertx, null);
+  }
+
   static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
     return new ChatRouterImpl(vertx, completionHandler);
   }

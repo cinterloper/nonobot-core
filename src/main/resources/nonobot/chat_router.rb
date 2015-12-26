@@ -19,7 +19,9 @@ module Nonobot
     # @yield 
     # @return [::Nonobot::ChatRouter]
     def self.create(vertx=nil)
-      if vertx.class.method_defined?(:j_del) && block_given?
+      if vertx.class.method_defined?(:j_del) && !block_given?
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreChat::ChatRouter.java_method(:create, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::ChatRouter)
+      elsif vertx.class.method_defined?(:j_del) && block_given?
         return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreChat::ChatRouter.java_method(:create, [Java::IoVertxCore::Vertx.java_class,Java::IoVertxCore::Handler.java_class]).call(vertx.j_del,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) })),::Nonobot::ChatRouter)
       end
       raise ArgumentError, "Invalid arguments when calling create(vertx)"
