@@ -14,34 +14,35 @@
  * under the License.
  */
 
-/** @module nonobot-js/adapter */
+/** @module nonobot-js/bot_adapter */
 var utils = require('vertx-js/util/utils');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JAdapter = io.nonobot.core.adapter.Adapter;
+var JBotAdapter = io.nonobot.core.adapter.BotAdapter;
 
 /**
+ Expose the bot to an external (usually remote) service.
 
  @class
 */
-var Adapter = function(j_val) {
+var BotAdapter = function(j_val) {
 
-  var j_adapter = j_val;
+  var j_botAdapter = j_val;
   var that = this;
 
   /**
    Connect to the adapted service.
 
    @public
-   @param completionHandler {function} 
+   @param completionHandler {function} the handler when connection is either a success or a failure 
    */
   this.connect = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_adapter["connect()"]();
+      j_botAdapter["connect()"]();
     }  else if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_adapter["connect(io.vertx.core.Handler)"](function(ar) {
+      j_botAdapter["connect(io.vertx.core.Handler)"](function(ar) {
       if (ar.succeeded()) {
         __args[0](null, null);
       } else {
@@ -60,12 +61,12 @@ var Adapter = function(j_val) {
   this.closeHandler = function(handler) {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_adapter["closeHandler(io.vertx.core.Handler)"](handler);
+      j_botAdapter["closeHandler(io.vertx.core.Handler)"](handler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   /**
-   Close.
+   Close the adapter.
 
    @public
 
@@ -73,15 +74,15 @@ var Adapter = function(j_val) {
   this.close = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_adapter["close()"]();
+      j_botAdapter["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_adapter;
+  this._jdel = j_botAdapter;
 };
 
 // We export the Constructor function
-module.exports = Adapter;
+module.exports = BotAdapter;

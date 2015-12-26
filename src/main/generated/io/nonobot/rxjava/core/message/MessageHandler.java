@@ -19,7 +19,6 @@ package io.nonobot.rxjava.core.message;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.vertx.core.Handler;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -40,26 +39,11 @@ public class MessageHandler {
     return delegate;
   }
 
-  public MessageHandler when(String pattern, Handler<Message> handler) { 
-    this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
-        handler.handle(new Message(event));
-      }
-    });
-    return this;
-  }
-
-  public MessageHandler respond(String pattern, Handler<Message> handler) { 
-    this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
-        handler.handle(new Message(event));
-      }
-    });
-    return this;
-  }
-
-  public void create() { 
-    this.delegate.create();
+  /**
+   * Close the message handler.
+   */
+  public void close() { 
+    this.delegate.close();
   }
 
 

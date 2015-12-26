@@ -16,13 +16,13 @@
 
 package io.nonobot.core;
 
-import io.nonobot.core.adapter.Adapter;
-import io.nonobot.core.adapter.ConsoleAdapter;
-import io.nonobot.core.message.MessageRouter;
+import io.nonobot.core.adapter.BotAdapter;
+import io.nonobot.core.adapter.ConsoleBotAdapter;
+import io.nonobot.core.handlers.EchoHandler;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
 import io.nonobot.core.handlers.PingHandler;
-import io.nonobot.core.spi.AdapterFactory;
+import io.nonobot.core.spi.BotAdapterFactory;
 import io.vertx.core.AbstractVerticle;
 
 import java.util.Iterator;
@@ -54,9 +54,9 @@ public class BotVerticle extends AbstractVerticle {
 
     NonoBot bot = NonoBot.create(vertx);
 
-    Iterator<AdapterFactory> adapterFactoryIt = ServiceLoader.load(AdapterFactory.class).iterator();
+    Iterator<BotAdapterFactory> adapterFactoryIt = ServiceLoader.load(BotAdapterFactory.class).iterator();
     while (true) {
-      AdapterFactory factory = null;
+      BotAdapterFactory factory = null;
       try {
         if (adapterFactoryIt.hasNext()) {
           factory = adapterFactoryIt.next();
@@ -67,32 +67,20 @@ public class BotVerticle extends AbstractVerticle {
         e.printStackTrace();
       }
       if (factory != null) {
-        Adapter adapter = factory.create(bot, config);
+        BotAdapter adapter = factory.create(bot, config);
         if (adapter != null) {
-          bot.addAdapter(adapter);
+          bot.registerAdapter(adapter);
         }
       }
     }
 
     if ("true".equals(config.getProperty("console"))) {
-      bot.addAdapter(new ConsoleAdapter(bot));
+      bot.registerAdapter(new ConsoleBotAdapter(bot));
     }
 
-    MessageRouter router = MessageRouter.create(vertx, ar -> {}); // Handle AR
-
-    // Echo handler
-    router.handler().
-        respond("^echo\\s+(.+)", msg -> {
-          msg.reply(msg.body().substring(4));
-        }).create();
-
-    // Giphy handler
-    GiphyHandler.create().toChatHandler(vertx, router).create();
-
-    // Ping handler
-    PingHandler.create().toChatHandler(vertx, router).create();
-
-    // Help handler
-    HelpHandler.create().toChatHandler(vertx, router).create();
+    vertx.deployVerticle(new GiphyHandler());
+    vertx.deployVerticle(new HelpHandler());
+    vertx.deployVerticle(new PingHandler());
+    vertx.deployVerticle(new EchoHandler());
   }
 }

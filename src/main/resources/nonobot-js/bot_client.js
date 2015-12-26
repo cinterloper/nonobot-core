@@ -23,6 +23,7 @@ var JsonObject = io.vertx.core.json.JsonObject;
 var JBotClient = io.nonobot.core.client.BotClient;
 
 /**
+ The bot client provides a customized client interface for interacting with the bot.
 
  @class
 */
@@ -32,6 +33,7 @@ var BotClient = function(j_val) {
   var that = this;
 
   /**
+   @return the bot this client exposes.
 
    @public
 
@@ -45,9 +47,11 @@ var BotClient = function(j_val) {
   };
 
   /**
+   Rename the bot for this client, when the client process a message it will use the specified <code>name</code> to
+   detect if the message is addressed to the bot or not.
 
    @public
-   @param names {Array.<string>} 
+   @param names {Array.<string>} the bot names 
    */
   this.rename = function() {
     var __args = arguments;
@@ -59,25 +63,29 @@ var BotClient = function(j_val) {
   };
 
   /**
+   Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+   if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
+   should not wait until the reply is called, instead if should just forward the reply content when it arrives.
 
    @public
-   @param message {string} 
-   @param handler {function} 
+   @param message {string} the message content to process 
+   @param replyHandler {function} the handle to be notified with the message reply 
    */
-  this.process = function(message, handler) {
+  this.process = function(message, replyHandler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
       j_botClient["process(java.lang.String,io.vertx.core.Handler)"](message, function(ar) {
       if (ar.succeeded()) {
-        handler(ar.result(), null);
+        replyHandler(ar.result(), null);
       } else {
-        handler(null, ar.cause());
+        replyHandler(null, ar.cause());
       }
     });
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   /**
+   Close the client.
 
    @public
 
@@ -86,18 +94,6 @@ var BotClient = function(j_val) {
     var __args = arguments;
     if (__args.length === 0) {
       j_botClient["close()"]();
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-
-   @public
-   @param handler {function} 
-   */
-  this.closeHandler = function(handler) {
-    var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_botClient["closeHandler(io.vertx.core.Handler)"](handler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

@@ -19,9 +19,6 @@ package io.nonobot.core.client;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
@@ -30,10 +27,10 @@ public class ClientOptions {
 
   private static final long DEFAULT_TIMEOUT = 10000;
 
-  private long timeout;
+  private long processTimeout;
 
   public ClientOptions() {
-    timeout = DEFAULT_TIMEOUT;
+    processTimeout = DEFAULT_TIMEOUT;
   }
 
   public ClientOptions(JsonObject json) {
@@ -41,15 +38,21 @@ public class ClientOptions {
   }
 
   public ClientOptions(ClientOptions that) {
-    timeout = that.timeout;
+    processTimeout = that.processTimeout;
   }
 
-  public long getTimeout() {
-    return timeout;
+  public long getProcessTimeout() {
+    return processTimeout;
   }
 
-  public ClientOptions setTimeout(long timeout) {
-    this.timeout = timeout;
+  /**
+   * The timeout in millis to wait until a message is considered not processed by the bot.
+   *
+   * @param processTimeout the process timeout
+   * @return this object so it can be used fluently
+   */
+  public ClientOptions setProcessTimeout(long processTimeout) {
+    this.processTimeout = processTimeout;
     return this;
   }
 }

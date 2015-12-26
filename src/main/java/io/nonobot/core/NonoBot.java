@@ -16,10 +16,11 @@
 
 package io.nonobot.core;
 
-import io.nonobot.core.adapter.Adapter;
+import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.impl.NonoBotImpl;
+import io.vertx.codegen.annotations.CacheReturn;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
@@ -27,28 +28,73 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
 /**
+ * The bot.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
 public interface NonoBot {
 
+  /**
+   * Create a new bot for the Vert.x instance.
+   *
+   * @param vertx the Vert.x instance
+   * @return the created bot
+   */
   static NonoBot create(Vertx vertx) {
     return new NonoBotImpl(vertx);
   }
 
+  /**
+   * @return the Vert.x instance used by this bot
+   */
+  @CacheReturn
   Vertx vertx();
 
+  /**
+   * @return the bot name
+   */
+  @CacheReturn
   String name();
 
-  void client(Handler<AsyncResult<BotClient>> handler);
-
-  void client(Handler<AsyncResult<BotClient>> handler, ClientOptions options);
-
+  /**
+   * Create a new bot client.
+   *
+   * @param handler receives the {@link BotClient} after initialization
+   * @return this instance so it can be used fluently
+   */
   @Fluent
-  NonoBot addAdapter(Adapter adapter);
+  NonoBot createClient(Handler<AsyncResult<BotClient>> handler);
 
+  /**
+   * Create a new bot client with the specified {@link ClientOptions}.
+   *
+   * @param options the client options
+   * @param handler receives the {@link BotClient} after initialization
+   * @return this instance so it can be used fluently
+   */
   @Fluent
-  NonoBot addAdapter(Adapter adapter, long reconnectPeriod);
+  NonoBot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler);
 
+  /**
+   * Like {@link #registerAdapter(BotAdapter,long)} with a period of {@code 1} second.
+   */
+  @Fluent
+  NonoBot registerAdapter(BotAdapter adapter);
+
+  /**
+   * Add an {@link BotAdapter} with the bot, the bot will take care of the adapter life cycle and restart it when
+   * it gets disconnected;
+   *
+   * @param adapter the bot adapter
+   * @param reconnectPeriod how long wait before it attempts to reconnect in millis
+   * @return this instance so it can be used fluently
+   */
+  @Fluent
+  NonoBot registerAdapter(BotAdapter adapter, long reconnectPeriod);
+
+  /**
+   * Close the bot.
+   */
   void close();
 }

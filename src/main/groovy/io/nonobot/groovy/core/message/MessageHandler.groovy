@@ -18,7 +18,6 @@ package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.vertx.core.Handler
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
@@ -31,23 +30,10 @@ public class MessageHandler {
   public Object getDelegate() {
     return delegate;
   }
-  public MessageHandler when(String pattern, Handler<Message> handler) {
-    this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
-        handler.handle(new io.nonobot.groovy.core.message.Message(event));
-      }
-    });
-    return this;
-  }
-  public MessageHandler respond(String pattern, Handler<Message> handler) {
-    this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
-        handler.handle(new io.nonobot.groovy.core.message.Message(event));
-      }
-    });
-    return this;
-  }
-  public void create() {
-    this.delegate.create();
+  /**
+   * Close the message handler.
+   */
+  public void close() {
+    this.delegate.close();
   }
 }

@@ -19,6 +19,7 @@ package io.nonobot.test;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.message.MessageRouter;
 import io.nonobot.core.client.ClientOptions;
+import io.nonobot.core.message.impl.MessageRouterImpl;
 import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -36,7 +37,7 @@ public class DispatchTest extends BaseTest {
   @Override
   public void before() {
     super.before();
-    router = MessageRouter.create(vertx, ar -> {});
+    router = MessageRouter.getShared(vertx, ar -> {});
   }
 
   @Test
@@ -61,12 +62,12 @@ public class DispatchTest extends BaseTest {
 
   private void testRespondToMessage(TestContext context, String message) {
     Async handleLatch = context.async();
-    router.handler().respond("^echo\\s+(.+)", msg -> {
+    router.respond("^echo\\s+(.+)", msg -> {
           context.assertEquals("echo hello world", msg.body());
           handleLatch.complete();
-        }).create();
+        });
     NonoBot bot = NonoBot.create(vertx);
-    bot.client(context.asyncAssertSuccess(client -> {
+    bot.createClient(context.asyncAssertSuccess(client -> {
       client.process(message, ar -> {});
     }));
   }
@@ -74,12 +75,12 @@ public class DispatchTest extends BaseTest {
   @Test
   public void testMatchMessage(TestContext context) {
     Async handleLatch = context.async();
-    router.handler().when("^echo\\s+(.+)", msg -> {
+    router.when("^echo\\s+(.+)", msg -> {
           context.assertEquals("echo hello world", msg.body());
           handleLatch.complete();
-        }).create();
+        });
     NonoBot bot = NonoBot.create(vertx);
-    bot.client(context.asyncAssertSuccess(client -> {
+    bot.createClient(context.asyncAssertSuccess(client -> {
       client.process("echo hello world", ar -> {});
     }));
   }
@@ -88,46 +89,47 @@ public class DispatchTest extends BaseTest {
   public void testTimeout(TestContext context) {
     Async failureLatch = context.async();
     NonoBot bot = NonoBot.create(vertx);
-    bot.client(context.asyncAssertSuccess(client -> {
+    bot.createClient(new ClientOptions().setProcessTimeout(300), context.asyncAssertSuccess(client -> {
       client.process("echo hello world", ar -> {
         context.assertTrue(ar.failed());
         failureLatch.complete();
       });
-    }), new ClientOptions().setTimeout(300));
+    }));
   }
 
   @Test
   public void testHandlerOrder(TestContext context) {
     Async doneLatch = context.async();
     NonoBot bot = NonoBot.create(vertx);
-    router.handler().when("foobar", msg -> {
+    router.when("foobar", msg -> {
       msg.reply("1");
       doneLatch.countDown();
-    }).create();
-    router.handler().when("foobar", msg -> {
+    });
+    router.when("foobar", msg -> {
       context.fail();
-    }).create();
-    bot.client(context.asyncAssertSuccess(client -> {
+    });
+    bot.createClient(context.asyncAssertSuccess(client -> {
       client.process("foobar", ar -> {
       });
     }));
   }
 
   @Test
-  public void testDoubleReply(TestContext context) {
+  public void testConcurrentReplies(TestContext context) {
     Async doneLatch = context.async(2);
     NonoBot bot = NonoBot.create(vertx);
     Future<Void> replied = Future.future();
-    router.handler().when("foobar", msg -> {
-      msg.reply("1");
-    }).create();
-    MessageRouter.create(vertx, ar -> {}).handler().when("foobar", msg -> {
-      replied.setHandler(v -> {
-        msg.reply("2");
-        doneLatch.countDown();
+    router.when("foobar", msg -> {
+      msg.reply("1", context.asyncAssertSuccess());
+    });
+    new MessageRouterImpl(vertx).when("foobar", msg -> {
+      replied.setHandler(v1 -> {
+        msg.reply("2", 200, context.asyncAssertFailure(v2 -> {
+          doneLatch.countDown();
+        }));
       });
-    }).create();
-    bot.client(context.asyncAssertSuccess(client -> {
+    });
+    bot.createClient(context.asyncAssertSuccess(client -> {
       client.process("foobar", ar -> {
         context.assertTrue(ar.succeeded());
         context.assertEquals("1", ar.result());
@@ -140,12 +142,12 @@ public class DispatchTest extends BaseTest {
   @Test
   public void testOverrideBotName(TestContext context) {
     Async handleLatch = context.async(2);
-    router.handler().respond("^echo\\s+(.+)", msg -> {
+    router.respond("^echo\\s+(.+)", msg -> {
       context.assertEquals("echo hello world", msg.body());
       msg.reply("the_reply");
-    }).create();
+    });
     NonoBot bot = NonoBot.create(vertx);
-    bot.client(context.asyncAssertSuccess(client -> {
+    bot.createClient(context.asyncAssertSuccess(client -> {
       client.rename(Arrays.asList("bb8", "r2d2"));
       client.process("bb8 echo hello world", ar -> {
         handleLatch.countDown();

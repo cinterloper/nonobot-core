@@ -1,20 +1,20 @@
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.adapter.Adapter
+# Generated from io.nonobot.core.adapter.BotAdapter
 module Nonobot
-  #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-  class Adapter
+  #  Expose the bot to an external (usually remote) service.
+  class BotAdapter
     # @private
-    # @param j_del [::Nonobot::Adapter] the java delegate
+    # @param j_del [::Nonobot::BotAdapter] the java delegate
     def initialize(j_del)
       @j_del = j_del
     end
     # @private
-    # @return [::Nonobot::Adapter] the underlying java delegate
+    # @return [::Nonobot::BotAdapter] the underlying java delegate
     def j_del
       @j_del
     end
     #  Connect to the adapted service.
-    # @yield 
+    # @yield the handler when connection is either a success or a failure
     # @return [void]
     def connect
       if !block_given?
@@ -33,7 +33,7 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling close_handler()"
     end
-    #  Close.
+    #  Close the adapter.
     # @return [void]
     def close
       if !block_given?

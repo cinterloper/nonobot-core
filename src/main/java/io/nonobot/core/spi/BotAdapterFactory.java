@@ -14,36 +14,24 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.adapter;
+package io.nonobot.core.spi;
 
-import io.vertx.codegen.annotations.VertxGen;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.nonobot.core.Config;
+import io.nonobot.core.NonoBot;
+import io.nonobot.core.adapter.BotAdapter;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-@VertxGen
-public interface Adapter {
+public interface BotAdapterFactory {
 
   /**
-   * Connect to the adapted service.
+   * Create a new bot adapter or return null if no adapter could be created.
+   *
+   * @param bot the bot
+   * @param config the bot config
+   * @return the adapter
    */
-  void connect();
-
-  /**
-   * Connect to the adapted service.
-   */
-  void connect(Handler<AsyncResult<Void>> completionHandler);
-
-  /**
-   * Handler notified when the adapter close.
-   */
-  void closeHandler(Handler<Void> handler);
-
-  /**
-   * Close.
-   */
-  void close();
+  BotAdapter create(NonoBot bot, Config config);
 
 }

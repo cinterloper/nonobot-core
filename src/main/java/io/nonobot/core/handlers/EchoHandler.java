@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.handlers.impl;
+package io.nonobot.core.handlers;
 
-import io.nonobot.core.message.MessageHandler;
 import io.nonobot.core.message.MessageRouter;
-import io.nonobot.core.handlers.PingHandler;
-import io.vertx.core.Vertx;
-
-import java.util.regex.Pattern;
+import io.vertx.core.AbstractVerticle;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class PingHandlerImpl implements PingHandler {
-
-  static final Pattern p = Pattern.compile("^ping");
+public class EchoHandler extends AbstractVerticle {
 
   @Override
-  public MessageHandler toChatHandler(Vertx vertx, MessageRouter router) {
-    MessageHandler handler = router.handler();
-    handler.respond(p.pattern(), msg -> {
-      msg.reply("pong");
+  public void start() throws Exception {
+    MessageRouter router = MessageRouter.getShared(vertx);
+    router.respond("^echo\\s+(.+)", msg -> {
+      msg.reply(msg.body().substring(4));
     });
-    return handler;
   }
 }

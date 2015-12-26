@@ -18,8 +18,10 @@ package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.vertx.core.AsyncResult
+import io.vertx.core.Handler
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * A message sent to an handler.
 */
 @CompileStatic
 public class Message {
@@ -30,11 +32,36 @@ public class Message {
   public Object getDelegate() {
     return delegate;
   }
+  /**
+   * @return the message body
+   * @return 
+   */
   public String body() {
     def ret = this.delegate.body();
     return ret;
   }
+  /**
+   * Reply to the message.
+   * @param msg the reply
+   */
   public void reply(String msg) {
     this.delegate.reply(msg);
+  }
+  /**
+   * Reply to the message with an acknowledgement handler.
+   * @param msg the reply
+   * @param ackHandler handler to be notified if the reply is consumed effectively
+   */
+  public void reply(String msg, Handler<AsyncResult<Void>> ackHandler) {
+    this.delegate.reply(msg, ackHandler);
+  }
+  /**
+   * Reply to the message with an acknowledgement handler given a <code>timeout</code>.
+   * @param msg the reply
+   * @param ackTimeout the acknowledgement timeout
+   * @param ackHandler handler to be notified if the reply is consumed effectively
+   */
+  public void reply(String msg, long ackTimeout, Handler<AsyncResult<Void>> ackHandler) {
+    this.delegate.reply(msg, ackTimeout, ackHandler);
   }
 }

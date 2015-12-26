@@ -23,17 +23,17 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * Expose the bot to an external (usually remote) service.
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.adapter.Adapter original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.adapter.BotAdapter original} non RX-ified interface using Vert.x codegen.
  */
 
-public class Adapter {
+public class BotAdapter {
 
-  final io.nonobot.core.adapter.Adapter delegate;
+  final io.nonobot.core.adapter.BotAdapter delegate;
 
-  public Adapter(io.nonobot.core.adapter.Adapter delegate) {
+  public BotAdapter(io.nonobot.core.adapter.BotAdapter delegate) {
     this.delegate = delegate;
   }
 
@@ -42,7 +42,7 @@ public class Adapter {
   }
 
   /**
-   * Connect to the adapted service.
+   * Like {@link io.nonobot.rxjava.core.adapter.BotAdapter#connect}.
    */
   public void connect() { 
     this.delegate.connect();
@@ -50,7 +50,7 @@ public class Adapter {
 
   /**
    * Connect to the adapted service.
-   * @param completionHandler 
+   * @param completionHandler the handler when connection is either a success or a failure
    */
   public void connect(Handler<AsyncResult<Void>> completionHandler) { 
     this.delegate.connect(completionHandler);
@@ -75,14 +75,14 @@ public class Adapter {
   }
 
   /**
-   * Close.
+   * Close the adapter.
    */
   public void close() { 
     this.delegate.close();
   }
 
 
-  public static Adapter newInstance(io.nonobot.core.adapter.Adapter arg) {
-    return arg != null ? new Adapter(arg) : null;
+  public static BotAdapter newInstance(io.nonobot.core.adapter.BotAdapter arg) {
+    return arg != null ? new BotAdapter(arg) : null;
   }
 }

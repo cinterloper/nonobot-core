@@ -16,22 +16,30 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.message.MessageHandler;
 import io.nonobot.core.message.MessageRouter;
-import io.nonobot.core.handlers.impl.HelpHandlerImpl;
-import io.vertx.codegen.annotations.VertxGen;
-import io.vertx.core.Vertx;
+import io.vertx.core.AbstractVerticle;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-@VertxGen
-public interface HelpHandler {
+public class HelpHandler extends AbstractVerticle {
 
-  static HelpHandler create() {
-    return new HelpHandlerImpl();
+  @Override
+  public void start() throws Exception {
+    MessageRouter router = MessageRouter.getShared(vertx);
+    router.respond("^help(\\s.+)?", msg -> msg.reply(
+        "Nonobot version 0.01 - https://github.com/nonobot/nonobot-core\n" +
+            "\n" +
+            "In a room, start your sentence with the nonobot name:\n" +
+            "@nono: giphy something\n" +
+            "\n" +
+            "In private messages, don't mention the name\n" +
+            "\n" +
+            "Available handlers:\n" +
+            "\n" +
+            "- giphy something\n" +
+            "- echo something\n" +
+            "- help\n" +
+            ""));
   }
-
-  MessageHandler toChatHandler(Vertx vertx, MessageRouter router);
-
 }

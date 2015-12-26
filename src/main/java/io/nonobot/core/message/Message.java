@@ -17,15 +17,44 @@
 package io.nonobot.core.message;
 
 import io.vertx.codegen.annotations.VertxGen;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 
 /**
+ * A message sent to an handler.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
 public interface Message {
 
+  /**
+   * @return the message body
+   */
   String body();
 
+  /**
+   * Reply to the message.
+   *
+   * @param msg the reply
+   */
   void reply(String msg);
+
+  /**
+   * Reply to the message with an acknowledgement handler.
+   *
+   * @param msg the reply
+   * @param ackHandler handler to be notified if the reply is consumed effectively
+   */
+  void reply(String msg, Handler<AsyncResult<Void>> ackHandler);
+
+  /**
+   * Reply to the message with an acknowledgement handler given a {@code timeout}.
+   *
+   * @param msg the reply
+   * @param ackTimeout the acknowledgement timeout
+   * @param ackHandler handler to be notified if the reply is consumed effectively
+   */
+  void reply(String msg, long ackTimeout, Handler<AsyncResult<Void>> ackHandler);
 
 }

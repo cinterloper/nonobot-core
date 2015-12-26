@@ -16,22 +16,19 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.message.MessageHandler;
 import io.nonobot.core.message.MessageRouter;
-import io.nonobot.core.handlers.impl.PingHandlerImpl;
-import io.vertx.codegen.annotations.VertxGen;
-import io.vertx.core.Vertx;
+import io.vertx.core.AbstractVerticle;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-@VertxGen
-public interface PingHandler {
+public class PingHandler extends AbstractVerticle {
 
-  static PingHandler create() {
-    return new PingHandlerImpl();
+  @Override
+  public void start() throws Exception {
+    MessageRouter router = MessageRouter.getShared(vertx);
+    router.respond("^ping", msg -> {
+      msg.reply("pong");
+    });
   }
-
-  MessageHandler toChatHandler(Vertx vertx, MessageRouter router);
-
 }

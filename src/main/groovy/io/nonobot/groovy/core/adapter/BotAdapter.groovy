@@ -21,26 +21,26 @@ import io.vertx.core.json.JsonObject
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * Expose the bot to an external (usually remote) service.
 */
 @CompileStatic
-public class Adapter {
-  private final def io.nonobot.core.adapter.Adapter delegate;
-  public Adapter(Object delegate) {
-    this.delegate = (io.nonobot.core.adapter.Adapter) delegate;
+public class BotAdapter {
+  private final def io.nonobot.core.adapter.BotAdapter delegate;
+  public BotAdapter(Object delegate) {
+    this.delegate = (io.nonobot.core.adapter.BotAdapter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
   /**
-   * Connect to the adapted service.
+   * Like {@link io.nonobot.groovy.core.adapter.BotAdapter#connect}.
    */
   public void connect() {
     this.delegate.connect();
   }
   /**
    * Connect to the adapted service.
-   * @param completionHandler 
+   * @param completionHandler the handler when connection is either a success or a failure
    */
   public void connect(Handler<AsyncResult<Void>> completionHandler) {
     this.delegate.connect(completionHandler);
@@ -53,7 +53,7 @@ public class Adapter {
     this.delegate.closeHandler(handler);
   }
   /**
-   * Close.
+   * Close the adapter.
    */
   public void close() {
     this.delegate.close();

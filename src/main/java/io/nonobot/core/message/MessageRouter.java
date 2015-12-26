@@ -23,21 +23,51 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
 /**
+ * The message router.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
 public interface MessageRouter {
 
-  static MessageRouter create(Vertx vertx) {
-    return create(vertx, null);
+  static MessageRouter getShared(Vertx vertx) {
+    return getShared(vertx, null);
   }
 
-  static MessageRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
-    return new MessageRouterImpl(vertx, completionHandler);
+  /**
+   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
+   * Vert.x instance.
+   *
+   * @param vertx the Vert.x instance
+   * @param init the handler notified when the router is fully initialized
+   * @return the message router
+   */
+  static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> init) {
+    return MessageRouterImpl.getShared(vertx, init);
   }
 
+  /**
+   * Add a message handler triggered when the {@code pattern} is fully matched, the pattern is a {@code java.util.regex}.
+   *
+   * @param pattern the matching pattern
+   * @param handler the message handler
+   * @return the message handler object
+   */
+  MessageHandler when(String pattern, Handler<Message> handler);
+
+  /**
+   * Add a message handler triggered when the {@code pattern} prepended with the bot name is fully matched,
+   * the pattern is a {@code java.util.regex}.
+   *
+   * @param pattern the matching pattern
+   * @param handler the message handler
+   * @return the message handler object
+   */
+  MessageHandler respond(String pattern, Handler<Message> handler);
+
+  /**
+   * Close the message router.
+   */
   void close();
-
-  MessageHandler handler();
 
 }

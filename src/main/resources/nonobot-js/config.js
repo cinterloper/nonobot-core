@@ -22,6 +22,7 @@ var JsonObject = io.vertx.core.json.JsonObject;
 var JConfig = io.nonobot.core.Config;
 
 /**
+ Configuration object.
 
  @class
 */
@@ -31,10 +32,11 @@ var Config = function(j_val) {
   var that = this;
 
   /**
+   Returns a config property given a <code>name</code>.
 
    @public
-   @param name {string} 
-   @return {string}
+   @param name {string} the property name 
+   @return {string} the property value
    */
   this.getProperty = function(name) {
     var __args = arguments;

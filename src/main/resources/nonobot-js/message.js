@@ -22,6 +22,7 @@ var JsonObject = io.vertx.core.json.JsonObject;
 var JMessage = io.nonobot.core.message.Message;
 
 /**
+ A message sent to an handler.
 
  @class
 */
@@ -31,6 +32,7 @@ var Message = function(j_val) {
   var that = this;
 
   /**
+   @return the message body
 
    @public
 
@@ -44,14 +46,33 @@ var Message = function(j_val) {
   };
 
   /**
+   Reply to the message with an acknowledgement handler given a <code>timeout</code>.
 
    @public
-   @param msg {string} 
+   @param msg {string} the reply 
+   @param ackTimeout {number} the acknowledgement timeout 
+   @param ackHandler {function} handler to be notified if the reply is consumed effectively 
    */
-  this.reply = function(msg) {
+  this.reply = function() {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'string') {
-      j_message["reply(java.lang.String)"](msg);
+      j_message["reply(java.lang.String)"](__args[0]);
+    }  else if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
+      j_message["reply(java.lang.String,io.vertx.core.Handler)"](__args[0], function(ar) {
+      if (ar.succeeded()) {
+        __args[1](null, null);
+      } else {
+        __args[1](null, ar.cause());
+      }
+    });
+    }  else if (__args.length === 3 && typeof __args[0] === 'string' && typeof __args[1] ==='number' && typeof __args[2] === 'function') {
+      j_message["reply(java.lang.String,long,io.vertx.core.Handler)"](__args[0], __args[1], function(ar) {
+      if (ar.succeeded()) {
+        __args[2](null, null);
+      } else {
+        __args[2](null, ar.cause());
+      }
+    });
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

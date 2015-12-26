@@ -21,7 +21,7 @@ import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
 
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * Configuration object.
  *
  * <p/>
  * NOTE: This class has been automatically generated from the {@link io.nonobot.core.Config original} non RX-ified interface using Vert.x codegen.
@@ -39,6 +39,11 @@ public class Config {
     return delegate;
   }
 
+  /**
+   * Returns a config property given a <code>name</code>.
+   * @param name the property name
+   * @return the property value
+   */
   public String getProperty(String name) { 
     String ret = this.delegate.getProperty(name);
     return ret;

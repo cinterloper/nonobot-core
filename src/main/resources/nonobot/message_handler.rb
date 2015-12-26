@@ -1,4 +1,3 @@
-require 'nonobot/message'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.message.MessageHandler
 module Nonobot
@@ -14,32 +13,13 @@ module Nonobot
     def j_del
       @j_del
     end
-    # @param [String] pattern 
-    # @yield 
-    # @return [self]
-    def when(pattern=nil)
-      if pattern.class == String && block_given?
-        @j_del.java_method(:when, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(pattern,(Proc.new { |event| yield(::Vertx::Util::Utils.safe_create(event,::Nonobot::Message)) }))
-        return self
-      end
-      raise ArgumentError, "Invalid arguments when calling when(pattern)"
-    end
-    # @param [String] pattern 
-    # @yield 
-    # @return [self]
-    def respond(pattern=nil)
-      if pattern.class == String && block_given?
-        @j_del.java_method(:respond, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(pattern,(Proc.new { |event| yield(::Vertx::Util::Utils.safe_create(event,::Nonobot::Message)) }))
-        return self
-      end
-      raise ArgumentError, "Invalid arguments when calling respond(pattern)"
-    end
+    #  Close the message handler.
     # @return [void]
-    def create
+    def close
       if !block_given?
-        return @j_del.java_method(:create, []).call()
+        return @j_del.java_method(:close, []).call()
       end
-      raise ArgumentError, "Invalid arguments when calling create()"
+      raise ArgumentError, "Invalid arguments when calling close()"
     end
   end
 end

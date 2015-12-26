@@ -79,16 +79,23 @@ public class BotClientImpl implements BotClient {
   }
 
   @Override
-  public void process(String message, Handler<AsyncResult<String>> handler) {
+  public void process(String message, Handler<AsyncResult<String>> replyHandler) {
     String replyAddress = UUID.randomUUID().toString();
     Future<String> reply = Future.future();
-    reply.setHandler(handler);
+    reply.setHandler(replyHandler);
     MessageConsumer<String> consumer = bot.vertx().eventBus().consumer(replyAddress);
     consumer.handler(msg -> {
       String content = msg.body();
       if (content != null && !reply.isComplete()) {
+        if (msg.replyAddress() != null) {
+          msg.reply(null);
+        }
         reply.complete(content);
         consumer.unregister();
+      } else {
+        if (msg.replyAddress() != null) {
+          msg.fail(0, "Already replied");
+        }
       }
     });
     consumer.completionHandler(ar -> {
@@ -103,14 +110,14 @@ public class BotClientImpl implements BotClient {
           body.put("content", message);
         }
         bot.vertx().eventBus().publish("nonobot.broadcast", body);
-        bot.vertx().setTimer(options.getTimeout(), timerID -> {
+        bot.vertx().setTimer(options.getProcessTimeout(), timerID -> {
           if (!reply.isComplete()) {
             consumer.unregister();
             reply.fail(new Exception("timeout"));
           }
         });
       } else {
-        handler.handle(Future.failedFuture(ar.cause()));
+        replyHandler.handle(Future.failedFuture(ar.cause()));
       }
     });
   }

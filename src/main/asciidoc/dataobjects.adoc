@@ -12,6 +12,9 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[timeout]]`timeout`|`Number (long)`|-
+|[[processTimeout]]`processTimeout`|`Number (long)`|
++++
+The timeout in millis to wait until a message is considered not processed by the bot.
++++
 |===
 

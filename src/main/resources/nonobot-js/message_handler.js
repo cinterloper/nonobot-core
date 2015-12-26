@@ -16,7 +16,6 @@
 
 /** @module nonobot-js/message_handler */
 var utils = require('vertx-js/util/utils');
-var Message = require('nonobot-js/message');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
@@ -32,48 +31,15 @@ var MessageHandler = function(j_val) {
   var that = this;
 
   /**
-
-   @public
-   @param pattern {string} 
-   @param handler {function} 
-   @return {MessageHandler}
-   */
-  this.when = function(pattern, handler) {
-    var __args = arguments;
-    if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_messageHandler["when(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
-      handler(utils.convReturnVertxGen(jVal, Message));
-    });
-      return that;
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-
-   @public
-   @param pattern {string} 
-   @param handler {function} 
-   @return {MessageHandler}
-   */
-  this.respond = function(pattern, handler) {
-    var __args = arguments;
-    if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_messageHandler["respond(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
-      handler(utils.convReturnVertxGen(jVal, Message));
-    });
-      return that;
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
+   Close the message handler.
 
    @public
 
    */
-  this.create = function() {
+  this.close = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_messageHandler["create()"]();
+      j_messageHandler["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

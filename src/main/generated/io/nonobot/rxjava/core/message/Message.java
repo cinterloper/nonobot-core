@@ -19,9 +19,11 @@ package io.nonobot.rxjava.core.message;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * A message sent to an handler.
  *
  * <p/>
  * NOTE: This class has been automatically generated from the {@link io.nonobot.core.message.Message original} non RX-ified interface using Vert.x codegen.
@@ -39,13 +41,63 @@ public class Message {
     return delegate;
   }
 
+  /**
+   * @return the message body
+   * @return 
+   */
   public String body() { 
     String ret = this.delegate.body();
     return ret;
   }
 
+  /**
+   * Reply to the message.
+   * @param msg the reply
+   */
   public void reply(String msg) { 
     this.delegate.reply(msg);
+  }
+
+  /**
+   * Reply to the message with an acknowledgement handler.
+   * @param msg the reply
+   * @param ackHandler handler to be notified if the reply is consumed effectively
+   */
+  public void reply(String msg, Handler<AsyncResult<Void>> ackHandler) { 
+    this.delegate.reply(msg, ackHandler);
+  }
+
+  /**
+   * Reply to the message with an acknowledgement handler.
+   * @param msg the reply
+   * @return 
+   */
+  public Observable<Void> replyObservable(String msg) { 
+    io.vertx.rx.java.ObservableFuture<Void> ackHandler = io.vertx.rx.java.RxHelper.observableFuture();
+    reply(msg, ackHandler.toHandler());
+    return ackHandler;
+  }
+
+  /**
+   * Reply to the message with an acknowledgement handler given a <code>timeout</code>.
+   * @param msg the reply
+   * @param ackTimeout the acknowledgement timeout
+   * @param ackHandler handler to be notified if the reply is consumed effectively
+   */
+  public void reply(String msg, long ackTimeout, Handler<AsyncResult<Void>> ackHandler) { 
+    this.delegate.reply(msg, ackTimeout, ackHandler);
+  }
+
+  /**
+   * Reply to the message with an acknowledgement handler given a <code>timeout</code>.
+   * @param msg the reply
+   * @param ackTimeout the acknowledgement timeout
+   * @return 
+   */
+  public Observable<Void> replyObservable(String msg, long ackTimeout) { 
+    io.vertx.rx.java.ObservableFuture<Void> ackHandler = io.vertx.rx.java.RxHelper.observableFuture();
+    reply(msg, ackTimeout, ackHandler.toHandler());
+    return ackHandler;
   }
 
 

@@ -1,7 +1,7 @@
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.Config
 module Nonobot
-  #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+  #  Configuration object.
   class Config
     # @private
     # @param j_del [::Nonobot::Config] the java delegate
@@ -13,8 +13,9 @@ module Nonobot
     def j_del
       @j_del
     end
-    # @param [String] name 
-    # @return [String]
+    #  Returns a config property given a <code>name</code>.
+    # @param [String] name the property name
+    # @return [String] the property value
     def get_property(name=nil)
       if name.class == String && !block_given?
         return @j_del.java_method(:getProperty, [Java::java.lang.String.java_class]).call(name)

@@ -29,13 +29,13 @@ import java.io.PrintWriter;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ConsoleAdapter implements Adapter {
+public class ConsoleBotAdapter implements BotAdapter {
 
   private Thread consoleThread;
   private Handler<Void> closeHandler;
   private final NonoBot bot;
 
-  public ConsoleAdapter(NonoBot bot) {
+  public ConsoleBotAdapter(NonoBot bot) {
     this.bot = bot;
   }
 
@@ -46,9 +46,9 @@ public class ConsoleAdapter implements Adapter {
   @Override
   public void connect(Handler<AsyncResult<Void>> completionHandler) {
     Context context = bot.vertx().getOrCreateContext();
-    bot.client(ar -> {
+    bot.createClient(ar -> {
       if (ar.succeeded()) {
-        synchronized (ConsoleAdapter.this) {
+        synchronized (ConsoleBotAdapter.this) {
           consoleThread = new Thread(() -> {
             context.runOnContext(v -> {
               completionHandler.handle(Future.succeededFuture());
@@ -57,7 +57,7 @@ public class ConsoleAdapter implements Adapter {
               run(ar.result());
             } finally {
               Handler<Void> handler;
-              synchronized (ConsoleAdapter.this) {
+              synchronized (ConsoleBotAdapter.this) {
                 handler = closeHandler;
               }
               if (handler != null) {

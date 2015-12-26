@@ -22,7 +22,7 @@ import io.vertx.groovy.core.Vertx
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * The message router.
 */
 @CompileStatic
 public class MessageRouter {
@@ -33,19 +33,54 @@ public class MessageRouter {
   public Object getDelegate() {
     return delegate;
   }
-  public static MessageRouter create(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.message.MessageRouter.class);
+  public static MessageRouter getShared(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.message.MessageRouter.class);
     return ret;
   }
-  public static MessageRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.create((io.vertx.core.Vertx)vertx.getDelegate(), completionHandler), io.nonobot.groovy.core.message.MessageRouter.class);
+  /**
+   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
+   * Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @param init the handler notified when the router is fully initialized
+   * @return the message router
+   */
+  public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> init) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), init), io.nonobot.groovy.core.message.MessageRouter.class);
     return ret;
   }
+  /**
+   * Add a message handler triggered when the <code>pattern</code> is fully matched, the pattern is a <code>java.util.regex</code>.
+   * @param pattern the matching pattern
+   * @param handler the message handler
+   * @return the message handler object
+   */
+  public MessageHandler when(String pattern, Handler<Message> handler) {
+    def ret= InternalHelper.safeCreate(this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
+      public void handle(io.nonobot.core.message.Message event) {
+        handler.handle(new io.nonobot.groovy.core.message.Message(event));
+      }
+    }), io.nonobot.groovy.core.message.MessageHandler.class);
+    return ret;
+  }
+  /**
+   * Add a message handler triggered when the <code>pattern</code> prepended with the bot name is fully matched,
+   * the pattern is a <code>java.util.regex</code>.
+   * @param pattern the matching pattern
+   * @param handler the message handler
+   * @return the message handler object
+   */
+  public MessageHandler respond(String pattern, Handler<Message> handler) {
+    def ret= InternalHelper.safeCreate(this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
+      public void handle(io.nonobot.core.message.Message event) {
+        handler.handle(new io.nonobot.groovy.core.message.Message(event));
+      }
+    }), io.nonobot.groovy.core.message.MessageHandler.class);
+    return ret;
+  }
+  /**
+   * Close the message router.
+   */
   public void close() {
     this.delegate.close();
-  }
-  public MessageHandler handler() {
-    def ret= InternalHelper.safeCreate(this.delegate.handler(), io.nonobot.groovy.core.message.MessageHandler.class);
-    return ret;
   }
 }

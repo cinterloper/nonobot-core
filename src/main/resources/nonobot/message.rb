@@ -1,7 +1,7 @@
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.message.Message
 module Nonobot
-  #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+  #  A message sent to an handler.
   class Message
     # @private
     # @param j_del [::Nonobot::Message] the java delegate
@@ -13,6 +13,7 @@ module Nonobot
     def j_del
       @j_del
     end
+    #  @return the message body
     # @return [String]
     def body
       if !block_given?
@@ -20,13 +21,20 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling body()"
     end
-    # @param [String] msg 
+    #  Reply to the message with an acknowledgement handler given a <code>timeout</code>.
+    # @param [String] msg the reply
+    # @param [Fixnum] ackTimeout the acknowledgement timeout
+    # @yield handler to be notified if the reply is consumed effectively
     # @return [void]
-    def reply(msg=nil)
-      if msg.class == String && !block_given?
+    def reply(msg=nil,ackTimeout=nil)
+      if msg.class == String && !block_given? && ackTimeout == nil
         return @j_del.java_method(:reply, [Java::java.lang.String.java_class]).call(msg)
+      elsif msg.class == String && block_given? && ackTimeout == nil
+        return @j_del.java_method(:reply, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(msg,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) }))
+      elsif msg.class == String && ackTimeout.class == Fixnum && block_given?
+        return @j_del.java_method(:reply, [Java::java.lang.String.java_class,Java::long.java_class,Java::IoVertxCore::Handler.java_class]).call(msg,ackTimeout,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) }))
       end
-      raise ArgumentError, "Invalid arguments when calling reply(msg)"
+      raise ArgumentError, "Invalid arguments when calling reply(msg,ackTimeout)"
     end
   end
 end

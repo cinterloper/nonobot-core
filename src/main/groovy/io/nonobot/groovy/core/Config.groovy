@@ -19,7 +19,7 @@ import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * Configuration object.
 */
 @CompileStatic
 public class Config {
@@ -30,6 +30,11 @@ public class Config {
   public Object getDelegate() {
     return delegate;
   }
+  /**
+   * Returns a config property given a <code>name</code>.
+   * @param name the property name
+   * @return the property value
+   */
   public String getProperty(String name) {
     def ret = this.delegate.getProperty(name);
     return ret;

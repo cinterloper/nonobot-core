@@ -24,21 +24,47 @@ import io.vertx.core.Handler;
 import java.util.List;
 
 /**
+ * The bot client provides a customized client interface for interacting with the bot.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
 public interface BotClient {
 
+  /**
+   * @return the bot this client exposes.
+   */
   NonoBot bot();
 
+  /**
+   * Rename the bot for this client, when the client process a message it will use the specified {@code name} to
+   * detect if the message is addressed to the bot or not.
+   *
+   * @param name the bot name
+   */
   void rename(String name);
 
+  /**
+   * Rename the bot for this client, when the client process a message it will use the specified {@code name} to
+   * detect if the message is addressed to the bot or not.
+   *
+   * @param names the bot names
+   */
   void rename(List<String> names);
 
-  void process(String message, Handler<AsyncResult<String>> handler);
+  /**
+   * Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+   * if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
+   * should not wait until the reply is called, instead if should just forward the reply content when it arrives.
+   *
+   * @param message the message content to process
+   * @param replyHandler the handle to be notified with the message reply
+   */
+  void process(String message, Handler<AsyncResult<String>> replyHandler);
 
+  /**
+   * Close the client.
+   */
   void close();
-
-  default void closeHandler(Handler<Void> handler) { /* todo */ }
 
 }

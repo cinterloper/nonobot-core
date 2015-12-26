@@ -19,11 +19,19 @@ package io.nonobot.core;
 import io.vertx.codegen.annotations.VertxGen;
 
 /**
+ * Configuration object.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
 public interface Config {
 
+  /**
+   * Returns a config property given a {@code name}.
+   *
+   * @param name the property name
+   * @return the property value
+   */
   String getProperty(String name);
 
 }

@@ -17,7 +17,7 @@
 package io.nonobot.core.impl;
 
 import io.nonobot.core.NonoBot;
-import io.nonobot.core.adapter.Adapter;
+import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.client.impl.BotClientImpl;
@@ -39,7 +39,7 @@ public class NonoBotImpl implements NonoBot {
   final String name = "nonobot"; // Bot name : make this configurable via options
   final Vertx vertx;
   private boolean closed;
-  private Set<Adapter> adapters = new HashSet<>();
+  private Set<BotAdapter> adapters = new HashSet<>();
 
   public NonoBotImpl(Vertx vertx) {
     this.vertx = vertx;
@@ -55,22 +55,24 @@ public class NonoBotImpl implements NonoBot {
   }
 
   @Override
-  public void client(Handler<AsyncResult<BotClient>> handler) {
-    client(handler, new ClientOptions());
+  public NonoBot createClient(Handler<AsyncResult<BotClient>> handler) {
+    createClient(new ClientOptions(), handler);
+    return this;
   }
 
   @Override
-  public void client(Handler<AsyncResult<BotClient>> handler, ClientOptions options) {
+  public NonoBot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler) {
     handler.handle(Future.succeededFuture(new BotClientImpl(this, options)));
+    return this;
   }
 
   @Override
-  public NonoBot addAdapter(Adapter adapter) {
-    return addAdapter(adapter, 1000);
+  public NonoBot registerAdapter(BotAdapter adapter) {
+    return registerAdapter(adapter, 1000);
   }
 
   @Override
-  public NonoBot addAdapter(Adapter adapter, long reconnectPeriod) {
+  public NonoBot registerAdapter(BotAdapter adapter, long reconnectPeriod) {
     synchronized (this) {
       if (closed) {
         throw new IllegalStateException("Closed");
@@ -100,21 +102,21 @@ public class NonoBotImpl implements NonoBot {
     return this;
   }
 
-  private synchronized void reconnect(Adapter adapter, long reconnectPeriod) {
+  private synchronized void reconnect(BotAdapter adapter, long reconnectPeriod) {
     if (closed) {
       return;
     }
     if (reconnectPeriod > 0) {
       System.out.println("Connection failure, will reconnect after " + reconnectPeriod);
       vertx.setTimer(reconnectPeriod, id -> {
-        addAdapter(adapter, reconnectPeriod);
+        registerAdapter(adapter, reconnectPeriod);
       });
     }
   }
 
   @Override
   public void close() {
-    List<Adapter> toClose;
+    List<BotAdapter> toClose;
     synchronized (this) {
       if (!closed) {
         closed = true;
@@ -123,7 +125,7 @@ public class NonoBotImpl implements NonoBot {
         return;
       }
     }
-    for (Adapter adapter : toClose) {
+    for (BotAdapter adapter : toClose) {
       adapter.close();
     }
   }
