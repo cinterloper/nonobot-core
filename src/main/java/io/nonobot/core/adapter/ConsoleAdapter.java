@@ -9,8 +9,6 @@ import io.vertx.core.Handler;
 
 import java.io.Console;
 import java.io.PrintWriter;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
