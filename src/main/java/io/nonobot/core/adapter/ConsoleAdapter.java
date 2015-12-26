@@ -63,29 +63,18 @@ public class ConsoleAdapter implements Adapter {
     Console console = System.console();
     PrintWriter writer = console.writer();
     while (true) {
-      writer.write("\n> ");
+      writer.write("\n" + client.bot().name() + "> ");
       writer.flush();
       String line = console.readLine();
       if (line == null) {
         return;
       }
-      CompletableFuture<String> fut = new CompletableFuture<>();
       client.process(line, ar -> {
         if (ar.succeeded()) {
-          fut.complete(ar.result());
-        } else {
-          fut.complete(null);
+          System.out.println(ar.result());
+          System.out.print("\n" + client.bot().name() + "> ");
         }
       });
-      try {
-        String reply = fut.get();
-        if (reply != null) {
-          writer.write(reply);
-          writer.flush();
-        }
-      } catch (Exception e) {
-        //
-      }
     }
   }
 

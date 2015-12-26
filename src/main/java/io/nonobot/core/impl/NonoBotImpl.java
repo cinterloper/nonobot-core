@@ -71,7 +71,6 @@ public class NonoBotImpl implements NonoBot {
         synchronized (NonoBotImpl.this) {
           adapters.add(adapter);
           if (!closed) {
-            System.out.println("Adapter started");
             return;
           }
         }
