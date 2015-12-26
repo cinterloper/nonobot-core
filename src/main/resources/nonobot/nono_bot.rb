@@ -31,13 +31,16 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling vertx()"
     end
-    # @yield 
+    # @param [Proc] handler 
+    # @param [Hash] options 
     # @return [void]
-    def client
-      if block_given?
+    def client(handler=nil,options=nil)
+      if block_given? && handler == nil && options == nil
         return @j_del.java_method(:client, [Java::IoVertxCore::Handler.java_class]).call((Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ::Vertx::Util::Utils.safe_create(ar.result,::Nonobot::BotClient) : nil) }))
+      elsif handler.class == Proc && options.class == Hash && !block_given?
+        return @j_del.java_method(:client, [Java::IoVertxCore::Handler.java_class,Java::IoNonobotCoreClient::ClientOptions.java_class]).call((Proc.new { |ar| handler.call(ar.failed ? ar.cause : nil, ar.succeeded ? ::Vertx::Util::Utils.safe_create(ar.result,::Nonobot::BotClient) : nil) }),Java::IoNonobotCoreClient::ClientOptions.new(::Vertx::Util::Utils.to_json_object(options)))
       end
-      raise ArgumentError, "Invalid arguments when calling client()"
+      raise ArgumentError, "Invalid arguments when calling client(handler,options)"
     end
     # @param [::Nonobot::Adapter] adapter 
     # @param [Fixnum] reconnectPeriod 

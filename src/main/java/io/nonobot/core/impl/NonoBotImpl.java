@@ -3,6 +3,7 @@ package io.nonobot.core.impl;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.adapter.Adapter;
 import io.nonobot.core.client.BotClient;
+import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.client.impl.BotClientImpl;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -39,7 +40,12 @@ public class NonoBotImpl implements NonoBot {
 
   @Override
   public void client(Handler<AsyncResult<BotClient>> handler) {
-    handler.handle(Future.succeededFuture(new BotClientImpl(vertx, name)));
+    client(handler, new ClientOptions());
+  }
+
+  @Override
+  public void client(Handler<AsyncResult<BotClient>> handler, ClientOptions options) {
+    handler.handle(Future.succeededFuture(new BotClientImpl(vertx, name, options)));
   }
 
   @Override

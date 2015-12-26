@@ -18,36 +18,30 @@ package io.nonobot.groovy.core.chat;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.vertx.groovy.core.Vertx
+import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class ChatHandler {
-  private final def io.nonobot.core.chat.ChatHandler delegate;
-  public ChatHandler(Object delegate) {
-    this.delegate = (io.nonobot.core.chat.ChatHandler) delegate;
+public class ChatRouter {
+  private final def io.nonobot.core.chat.ChatRouter delegate;
+  public ChatRouter(Object delegate) {
+    this.delegate = (io.nonobot.core.chat.ChatRouter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public ChatHandler match(String pattern, Handler<ChatMessage> handler) {
-    this.delegate.match(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
-      public void handle(io.nonobot.core.chat.ChatMessage event) {
-        handler.handle(new io.nonobot.groovy.core.chat.ChatMessage(event));
-      }
-    });
-    return this;
+  public static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx)vertx.getDelegate(), completionHandler), io.nonobot.groovy.core.chat.ChatRouter.class);
+    return ret;
   }
-  public ChatHandler respond(String pattern, Handler<ChatMessage> handler) {
-    this.delegate.respond(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
-      public void handle(io.nonobot.core.chat.ChatMessage event) {
-        handler.handle(new io.nonobot.groovy.core.chat.ChatMessage(event));
-      }
-    });
-    return this;
+  public void close() {
+    this.delegate.close();
   }
-  public void create() {
-    this.delegate.create();
+  public ChatHandler handler() {
+    def ret= InternalHelper.safeCreate(this.delegate.handler(), io.nonobot.groovy.core.chat.ChatHandler.class);
+    return ret;
   }
 }

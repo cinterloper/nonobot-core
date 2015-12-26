@@ -16,6 +16,7 @@
 
 /** @module nonobot-js/help_handler */
 var utils = require('vertx-js/util/utils');
+var ChatRouter = require('nonobot-js/chat_router');
 var Vertx = require('vertx-js/vertx');
 var ChatHandler = require('nonobot-js/chat_handler');
 
@@ -36,12 +37,13 @@ var HelpHandler = function(j_val) {
 
    @public
    @param vertx {Vertx} 
+   @param router {ChatRouter} 
    @return {ChatHandler}
    */
-  this.toChatHandler = function(vertx) {
+  this.toChatHandler = function(vertx, router) {
     var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-      return utils.convReturnVertxGen(j_helpHandler["toChatHandler(io.vertx.core.Vertx)"](vertx._jdel), ChatHandler);
+    if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'object' && __args[1]._jdel) {
+      return utils.convReturnVertxGen(j_helpHandler["toChatHandler(io.vertx.core.Vertx,io.nonobot.core.chat.ChatRouter)"](vertx._jdel, router._jdel), ChatHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

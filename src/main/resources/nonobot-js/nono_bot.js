@@ -23,6 +23,7 @@ var BotClient = require('nonobot-js/bot_client');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JNonoBot = io.nonobot.core.NonoBot;
+var ClientOptions = io.nonobot.core.client.ClientOptions;
 
 /**
 
@@ -50,17 +51,26 @@ var NonoBot = function(j_val) {
 
    @public
    @param handler {function} 
+   @param options {Object} 
    */
-  this.client = function(handler) {
+  this.client = function() {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'function') {
       j_nonoBot["client(io.vertx.core.Handler)"](function(ar) {
       if (ar.succeeded()) {
-        handler(utils.convReturnVertxGen(ar.result(), BotClient), null);
+        __args[0](utils.convReturnVertxGen(ar.result(), BotClient), null);
       } else {
-        handler(null, ar.cause());
+        __args[0](null, ar.cause());
       }
     });
+    }  else if (__args.length === 2 && typeof __args[0] === 'function' && (typeof __args[1] === 'object' && __args[1] != null)) {
+      j_nonoBot["client(io.vertx.core.Handler,io.nonobot.core.client.ClientOptions)"](function(ar) {
+      if (ar.succeeded()) {
+        __args[0](utils.convReturnVertxGen(ar.result(), BotClient), null);
+      } else {
+        __args[0](null, ar.cause());
+      }
+    }, __args[1] != null ? new ClientOptions(new JsonObject(JSON.stringify(__args[1]))) : null);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

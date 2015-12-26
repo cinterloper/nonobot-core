@@ -1,6 +1,7 @@
 package io.nonobot.core.handlers.impl;
 
 import io.nonobot.core.chat.ChatHandler;
+import io.nonobot.core.chat.ChatRouter;
 import io.nonobot.core.handlers.HelpHandler;
 import io.vertx.core.Vertx;
 
@@ -14,8 +15,8 @@ public class HelpHandlerImpl implements HelpHandler {
   static final Pattern p = Pattern.compile("^help(\\s.+)?");
 
   @Override
-  public ChatHandler toChatHandler(Vertx vertx) {
-    return ChatHandler.create(vertx).respond(p.pattern(), msg -> {
+  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) {
+    return router.handler().respond(p.pattern(), msg -> {
       msg.reply(
           "Nonobot version 0.01 - https://github.com/nonobot/nonobot-core\n" +
           "\n" +

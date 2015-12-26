@@ -19,8 +19,6 @@ package io.nonobot.rxjava.core.chat;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 /**
@@ -42,11 +40,6 @@ public class ChatHandler {
     return delegate;
   }
 
-  public static ChatHandler create(Vertx vertx) { 
-    ChatHandler ret= ChatHandler.newInstance(io.nonobot.core.chat.ChatHandler.create((io.vertx.core.Vertx) vertx.getDelegate()));
-    return ret;
-  }
-
   public ChatHandler match(String pattern, Handler<ChatMessage> handler) { 
     this.delegate.match(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
       public void handle(io.nonobot.core.chat.ChatMessage event) {
@@ -65,24 +58,8 @@ public class ChatHandler {
     return this;
   }
 
-  public void bind(Handler<AsyncResult<Void>> completionHandler) { 
-    this.delegate.bind(completionHandler);
-  }
-
-  public Observable<Void> bindObservable() { 
-    io.vertx.rx.java.ObservableFuture<Void> completionHandler = io.vertx.rx.java.RxHelper.observableFuture();
-    bind(completionHandler.toHandler());
-    return completionHandler;
-  }
-
-  public void unbind(Handler<AsyncResult<Void>> completionHandler) { 
-    this.delegate.unbind(completionHandler);
-  }
-
-  public Observable<Void> unbindObservable() { 
-    io.vertx.rx.java.ObservableFuture<Void> completionHandler = io.vertx.rx.java.RxHelper.observableFuture();
-    unbind(completionHandler.toHandler());
-    return completionHandler;
+  public void create() { 
+    this.delegate.create();
   }
 
 

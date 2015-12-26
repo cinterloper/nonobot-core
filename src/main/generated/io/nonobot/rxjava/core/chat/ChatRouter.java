@@ -14,27 +14,27 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.handlers;
+package io.nonobot.rxjava.core.chat;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.rxjava.core.chat.ChatRouter;
 import io.vertx.rxjava.core.Vertx;
-import io.nonobot.rxjava.core.chat.ChatHandler;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handlers.HelpHandler original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.chat.ChatRouter original} non RX-ified interface using Vert.x codegen.
  */
 
-public class HelpHandler {
+public class ChatRouter {
 
-  final io.nonobot.core.handlers.HelpHandler delegate;
+  final io.nonobot.core.chat.ChatRouter delegate;
 
-  public HelpHandler(io.nonobot.core.handlers.HelpHandler delegate) {
+  public ChatRouter(io.nonobot.core.chat.ChatRouter delegate) {
     this.delegate = delegate;
   }
 
@@ -42,18 +42,22 @@ public class HelpHandler {
     return delegate;
   }
 
-  public static HelpHandler create() { 
-    HelpHandler ret= HelpHandler.newInstance(io.nonobot.core.handlers.HelpHandler.create());
+  public static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) { 
+    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx) vertx.getDelegate(), completionHandler));
     return ret;
   }
 
-  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) { 
-    ChatHandler ret= ChatHandler.newInstance(this.delegate.toChatHandler((io.vertx.core.Vertx) vertx.getDelegate(), (io.nonobot.core.chat.ChatRouter) router.getDelegate()));
+  public void close() { 
+    this.delegate.close();
+  }
+
+  public ChatHandler handler() { 
+    ChatHandler ret= ChatHandler.newInstance(this.delegate.handler());
     return ret;
   }
 
 
-  public static HelpHandler newInstance(io.nonobot.core.handlers.HelpHandler arg) {
-    return arg != null ? new HelpHandler(arg) : null;
+  public static ChatRouter newInstance(io.nonobot.core.chat.ChatRouter arg) {
+    return arg != null ? new ChatRouter(arg) : null;
   }
 }

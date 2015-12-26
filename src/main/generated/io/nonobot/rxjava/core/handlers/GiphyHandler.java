@@ -19,6 +19,7 @@ package io.nonobot.rxjava.core.handlers;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.rxjava.core.chat.ChatRouter;
 import io.vertx.rxjava.core.Vertx;
 import io.nonobot.rxjava.core.chat.ChatHandler;
 
@@ -46,8 +47,8 @@ public class GiphyHandler {
     return ret;
   }
 
-  public ChatHandler toChatHandler(Vertx vertx) { 
-    ChatHandler ret= ChatHandler.newInstance(this.delegate.toChatHandler((io.vertx.core.Vertx) vertx.getDelegate()));
+  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) { 
+    ChatHandler ret= ChatHandler.newInstance(this.delegate.toChatHandler((io.vertx.core.Vertx) vertx.getDelegate(), (io.nonobot.core.chat.ChatRouter) router.getDelegate()));
     return ret;
   }
 

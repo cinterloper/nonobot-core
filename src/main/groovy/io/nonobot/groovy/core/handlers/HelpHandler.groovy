@@ -18,6 +18,7 @@ package io.nonobot.groovy.core.handlers;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.groovy.core.chat.ChatRouter
 import io.vertx.groovy.core.Vertx
 import io.nonobot.groovy.core.chat.ChatHandler
 /**
@@ -36,8 +37,8 @@ public class HelpHandler {
     def ret= InternalHelper.safeCreate(io.nonobot.core.handlers.HelpHandler.create(), io.nonobot.groovy.core.handlers.HelpHandler.class);
     return ret;
   }
-  public ChatHandler toChatHandler(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(this.delegate.toChatHandler((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.chat.ChatHandler.class);
+  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) {
+    def ret= InternalHelper.safeCreate(this.delegate.toChatHandler((io.vertx.core.Vertx)vertx.getDelegate(), (io.nonobot.core.chat.ChatRouter)router.getDelegate()), io.nonobot.groovy.core.chat.ChatHandler.class);
     return ret;
   }
 }

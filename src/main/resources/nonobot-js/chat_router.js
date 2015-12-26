@@ -14,57 +14,74 @@
  * under the License.
  */
 
-/** @module nonobot-js/giphy_handler */
+/** @module nonobot-js/chat_router */
 var utils = require('vertx-js/util/utils');
-var ChatRouter = require('nonobot-js/chat_router');
 var Vertx = require('vertx-js/vertx');
 var ChatHandler = require('nonobot-js/chat_handler');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JGiphyHandler = io.nonobot.core.handlers.GiphyHandler;
+var JChatRouter = io.nonobot.core.chat.ChatRouter;
 
 /**
 
  @class
 */
-var GiphyHandler = function(j_val) {
+var ChatRouter = function(j_val) {
 
-  var j_giphyHandler = j_val;
+  var j_chatRouter = j_val;
   var that = this;
 
   /**
 
    @public
-   @param vertx {Vertx} 
-   @param router {ChatRouter} 
+
+   */
+  this.close = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      j_chatRouter["close()"]();
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+
    @return {ChatHandler}
    */
-  this.toChatHandler = function(vertx, router) {
+  this.handler = function() {
     var __args = arguments;
-    if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'object' && __args[1]._jdel) {
-      return utils.convReturnVertxGen(j_giphyHandler["toChatHandler(io.vertx.core.Vertx,io.nonobot.core.chat.ChatRouter)"](vertx._jdel, router._jdel), ChatHandler);
+    if (__args.length === 0) {
+      return utils.convReturnVertxGen(j_chatRouter["handler()"](), ChatHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_giphyHandler;
+  this._jdel = j_chatRouter;
 };
 
 /**
 
- @memberof module:nonobot-js/giphy_handler
-
- @return {GiphyHandler}
+ @memberof module:nonobot-js/chat_router
+ @param vertx {Vertx} 
+ @param completionHandler {function} 
+ @return {ChatRouter}
  */
-GiphyHandler.create = function() {
+ChatRouter.create = function(vertx, completionHandler) {
   var __args = arguments;
-  if (__args.length === 0) {
-    return utils.convReturnVertxGen(JGiphyHandler["create()"](), GiphyHandler);
+  if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
+    return utils.convReturnVertxGen(JChatRouter["create(io.vertx.core.Vertx,io.vertx.core.Handler)"](vertx._jdel, function(ar) {
+    if (ar.succeeded()) {
+      completionHandler(null, null);
+    } else {
+      completionHandler(null, ar.cause());
+    }
+  }), ChatRouter);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function
-module.exports = GiphyHandler;
+module.exports = ChatRouter;

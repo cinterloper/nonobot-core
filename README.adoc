@@ -1,23 +1,5 @@
 ## An all purpose bots written on top of Vert.x inspired from Hubot, Lita and others...
 
-Current status : playground :-)
+Current status : work in progress
 
-Usage:
-
-----
-> mvn package
-  ...
-> java -jar target/nonobot-core-1.0.0-fatjar.jar -conf '{"slack.token":"your-slack-token-here"}'
-----
-
-Config can also be done via ENV:
-
-----
-> export SLACK_TOKEN=your-slack-token-here
-> java -jar target/nonobot-core-1.0.0-fatjar.jar
-----
-
-Todo:
-
-- test reconnection
-- list handlers and provide automatic doc
+Usage: see https://github.com/nonobot/nonobot-example

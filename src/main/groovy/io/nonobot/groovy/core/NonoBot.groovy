@@ -19,6 +19,7 @@ import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
 import io.nonobot.groovy.core.adapter.Adapter
+import io.nonobot.core.client.ClientOptions
 import io.vertx.groovy.core.Vertx
 import io.nonobot.groovy.core.client.BotClient
 import io.vertx.core.AsyncResult
@@ -55,6 +56,19 @@ public class NonoBot {
         handler.handle(f)
       }
     });
+  }
+  public void client(Handler<AsyncResult<BotClient>> handler, Map<String, Object> options) {
+    this.delegate.client(new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
+      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
+        AsyncResult<BotClient> f
+        if (event.succeeded()) {
+          f = InternalHelper.<BotClient>result(new BotClient(event.result()))
+        } else {
+          f = InternalHelper.<BotClient>failure(event.cause())
+        }
+        handler.handle(f)
+      }
+    }, options != null ? new io.nonobot.core.client.ClientOptions(new io.vertx.core.json.JsonObject(options)) : null);
   }
   public NonoBot addAdapter(Adapter adapter) {
     this.delegate.addAdapter((io.nonobot.core.adapter.Adapter)adapter.getDelegate());

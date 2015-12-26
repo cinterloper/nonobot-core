@@ -2,6 +2,7 @@ package io.nonobot.core;
 
 import io.nonobot.core.adapter.Adapter;
 import io.nonobot.core.client.BotClient;
+import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.impl.NonoBotImpl;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
@@ -22,6 +23,8 @@ public interface NonoBot {
   Vertx vertx();
 
   void client(Handler<AsyncResult<BotClient>> handler);
+
+  void client(Handler<AsyncResult<BotClient>> handler, ClientOptions options);
 
   @Fluent
   NonoBot addAdapter(Adapter adapter);

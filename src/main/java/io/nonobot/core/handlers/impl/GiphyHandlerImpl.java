@@ -1,6 +1,7 @@
 package io.nonobot.core.handlers.impl;
 
 import io.nonobot.core.chat.ChatHandler;
+import io.nonobot.core.chat.ChatRouter;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -20,9 +21,9 @@ public class GiphyHandlerImpl implements GiphyHandler {
   static final Pattern p = Pattern.compile("^giphy\\s+(.+)");
 
   @Override
-  public ChatHandler toChatHandler(Vertx vertx) {
+  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) {
     HttpClient client = vertx.createHttpClient();
-    ChatHandler handler = ChatHandler.create(vertx);
+    ChatHandler handler = router.handler();
     handler.respond(p.pattern(), msg -> {
       Matcher matcher = p.matcher(msg.content());
       if (matcher.matches()) {
