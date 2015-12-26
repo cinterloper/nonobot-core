@@ -1,6 +1,7 @@
 package io.nonobot.core;
 
 import io.nonobot.core.adapter.Adapter;
+import io.nonobot.core.adapter.ConsoleAdapter;
 import io.nonobot.core.chat.ChatRouter;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
@@ -19,11 +20,11 @@ public class BotVerticle extends AbstractVerticle {
   private final Config config = new Config() {
     @Override
     public String getProperty(String name) {
-      String value = config().getString(name);
+      Object value = config().getValue(name);
       if (value == null) {
         value = System.getenv(name.replace('.', '_').replace('-', '_').toUpperCase());
       }
-      return value;
+      return value != null ? value.toString() : null;
     }
   };
 
@@ -55,6 +56,10 @@ public class BotVerticle extends AbstractVerticle {
           bot.addAdapter(adapter);
         }
       }
+    }
+
+    if ("true".equals(config.getProperty("console"))) {
+      bot.addAdapter(new ConsoleAdapter(bot));
     }
 
     ChatRouter router = ChatRouter.create(vertx, ar -> {}); // Handle AR
