@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.chat;
+package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
@@ -22,16 +22,16 @@ import io.vertx.core.json.JsonObject
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class ChatMessage {
-  private final def io.nonobot.core.chat.ChatMessage delegate;
-  public ChatMessage(Object delegate) {
-    this.delegate = (io.nonobot.core.chat.ChatMessage) delegate;
+public class Message {
+  private final def io.nonobot.core.message.Message delegate;
+  public Message(Object delegate) {
+    this.delegate = (io.nonobot.core.message.Message) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public String content() {
-    def ret = this.delegate.content();
+  public String body() {
+    def ret = this.delegate.body();
     return ret;
   }
   public void reply(String msg) {

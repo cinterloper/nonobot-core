@@ -2,7 +2,7 @@ package io.nonobot.core;
 
 import io.nonobot.core.adapter.Adapter;
 import io.nonobot.core.adapter.ConsoleAdapter;
-import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.message.MessageRouter;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
 import io.nonobot.core.handlers.PingHandler;
@@ -62,12 +62,12 @@ public class BotVerticle extends AbstractVerticle {
       bot.addAdapter(new ConsoleAdapter(bot));
     }
 
-    ChatRouter router = ChatRouter.create(vertx, ar -> {}); // Handle AR
+    MessageRouter router = MessageRouter.create(vertx, ar -> {}); // Handle AR
 
     // Echo handler
     router.handler().
         respond("^echo\\s+(.+)", msg -> {
-          msg.reply(msg.content().substring(4));
+          msg.reply(msg.body().substring(4));
         }).create();
 
     // Giphy handler

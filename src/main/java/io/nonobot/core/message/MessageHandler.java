@@ -1,4 +1,4 @@
-package io.nonobot.core.chat;
+package io.nonobot.core.message;
 
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
@@ -8,13 +8,13 @@ import io.vertx.core.Handler;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
-public interface ChatHandler {
+public interface MessageHandler {
 
   @Fluent
-  ChatHandler match(String pattern, Handler<ChatMessage> handler);
+  MessageHandler when(String pattern, Handler<Message> handler);
 
   @Fluent
-  ChatHandler respond(String pattern, Handler<ChatMessage> handler);
+  MessageHandler respond(String pattern, Handler<Message> handler);
 
   void create();
 

@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.chat;
+package io.nonobot.rxjava.core.message;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
@@ -24,14 +24,14 @@ import rx.Observable;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.chat.ChatMessage original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.message.Message original} non RX-ified interface using Vert.x codegen.
  */
 
-public class ChatMessage {
+public class Message {
 
-  final io.nonobot.core.chat.ChatMessage delegate;
+  final io.nonobot.core.message.Message delegate;
 
-  public ChatMessage(io.nonobot.core.chat.ChatMessage delegate) {
+  public Message(io.nonobot.core.message.Message delegate) {
     this.delegate = delegate;
   }
 
@@ -39,8 +39,8 @@ public class ChatMessage {
     return delegate;
   }
 
-  public String content() { 
-    String ret = this.delegate.content();
+  public String body() { 
+    String ret = this.delegate.body();
     return ret;
   }
 
@@ -49,7 +49,7 @@ public class ChatMessage {
   }
 
 
-  public static ChatMessage newInstance(io.nonobot.core.chat.ChatMessage arg) {
-    return arg != null ? new ChatMessage(arg) : null;
+  public static Message newInstance(io.nonobot.core.message.Message arg) {
+    return arg != null ? new Message(arg) : null;
   }
 }

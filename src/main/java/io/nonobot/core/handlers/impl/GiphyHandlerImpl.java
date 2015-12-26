@@ -1,7 +1,7 @@
 package io.nonobot.core.handlers.impl;
 
-import io.nonobot.core.chat.ChatHandler;
-import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.message.MessageHandler;
+import io.nonobot.core.message.MessageRouter;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -21,11 +21,11 @@ public class GiphyHandlerImpl implements GiphyHandler {
   static final Pattern p = Pattern.compile("^giphy\\s+(.+)");
 
   @Override
-  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) {
+  public MessageHandler toChatHandler(Vertx vertx, MessageRouter router) {
     HttpClient client = vertx.createHttpClient();
-    ChatHandler handler = router.handler();
+    MessageHandler handler = router.handler();
     handler.respond(p.pattern(), msg -> {
-      Matcher matcher = p.matcher(msg.content());
+      Matcher matcher = p.matcher(msg.body());
       if (matcher.matches()) {
         String query = matcher.group(1);
         HttpClientRequest req = client.get(80, "api.giphy.com", "/v1/gifs/search?q=" + query + "&api_key=" + "dc6zaTOxFJmzC", resp -> {

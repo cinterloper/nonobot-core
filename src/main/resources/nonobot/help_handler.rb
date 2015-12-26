@@ -1,6 +1,6 @@
-require 'nonobot/chat_router'
+require 'nonobot/message_handler'
 require 'vertx/vertx'
-require 'nonobot/chat_handler'
+require 'nonobot/message_router'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.handlers.HelpHandler
 module Nonobot
@@ -24,11 +24,11 @@ module Nonobot
       raise ArgumentError, "Invalid arguments when calling create()"
     end
     # @param [::Vertx::Vertx] vertx 
-    # @param [::Nonobot::ChatRouter] router 
-    # @return [::Nonobot::ChatHandler]
+    # @param [::Nonobot::MessageRouter] router 
+    # @return [::Nonobot::MessageHandler]
     def to_chat_handler(vertx=nil,router=nil)
       if vertx.class.method_defined?(:j_del) && router.class.method_defined?(:j_del) && !block_given?
-        return ::Vertx::Util::Utils.safe_create(@j_del.java_method(:toChatHandler, [Java::IoVertxCore::Vertx.java_class,Java::IoNonobotCoreChat::ChatRouter.java_class]).call(vertx.j_del,router.j_del),::Nonobot::ChatHandler)
+        return ::Vertx::Util::Utils.safe_create(@j_del.java_method(:toChatHandler, [Java::IoVertxCore::Vertx.java_class,Java::IoNonobotCoreMessage::MessageRouter.java_class]).call(vertx.j_del,router.j_del),::Nonobot::MessageHandler)
       end
       raise ArgumentError, "Invalid arguments when calling to_chat_handler(vertx,router)"
     end

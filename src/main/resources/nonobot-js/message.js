@@ -14,20 +14,20 @@
  * under the License.
  */
 
-/** @module nonobot-js/chat_message */
+/** @module nonobot-js/message */
 var utils = require('vertx-js/util/utils');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JChatMessage = io.nonobot.core.chat.ChatMessage;
+var JMessage = io.nonobot.core.message.Message;
 
 /**
 
  @class
 */
-var ChatMessage = function(j_val) {
+var Message = function(j_val) {
 
-  var j_chatMessage = j_val;
+  var j_message = j_val;
   var that = this;
 
   /**
@@ -36,10 +36,10 @@ var ChatMessage = function(j_val) {
 
    @return {string}
    */
-  this.content = function() {
+  this.body = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      return j_chatMessage["content()"]();
+      return j_message["body()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -51,15 +51,15 @@ var ChatMessage = function(j_val) {
   this.reply = function(msg) {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'string') {
-      j_chatMessage["reply(java.lang.String)"](msg);
+      j_message["reply(java.lang.String)"](msg);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_chatMessage;
+  this._jdel = j_message;
 };
 
 // We export the Constructor function
-module.exports = ChatMessage;
+module.exports = Message;

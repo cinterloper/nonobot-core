@@ -14,21 +14,21 @@
  * under the License.
  */
 
-/** @module nonobot-js/chat_handler */
+/** @module nonobot-js/message_handler */
 var utils = require('vertx-js/util/utils');
-var ChatMessage = require('nonobot-js/chat_message');
+var Message = require('nonobot-js/message');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JChatHandler = io.nonobot.core.chat.ChatHandler;
+var JMessageHandler = io.nonobot.core.message.MessageHandler;
 
 /**
 
  @class
 */
-var ChatHandler = function(j_val) {
+var MessageHandler = function(j_val) {
 
-  var j_chatHandler = j_val;
+  var j_messageHandler = j_val;
   var that = this;
 
   /**
@@ -36,13 +36,13 @@ var ChatHandler = function(j_val) {
    @public
    @param pattern {string} 
    @param handler {function} 
-   @return {ChatHandler}
+   @return {MessageHandler}
    */
-  this.match = function(pattern, handler) {
+  this.when = function(pattern, handler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_chatHandler["match(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
-      handler(utils.convReturnVertxGen(jVal, ChatMessage));
+      j_messageHandler["when(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
+      handler(utils.convReturnVertxGen(jVal, Message));
     });
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
@@ -53,13 +53,13 @@ var ChatHandler = function(j_val) {
    @public
    @param pattern {string} 
    @param handler {function} 
-   @return {ChatHandler}
+   @return {MessageHandler}
    */
   this.respond = function(pattern, handler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_chatHandler["respond(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
-      handler(utils.convReturnVertxGen(jVal, ChatMessage));
+      j_messageHandler["respond(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
+      handler(utils.convReturnVertxGen(jVal, Message));
     });
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
@@ -73,15 +73,15 @@ var ChatHandler = function(j_val) {
   this.create = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_chatHandler["create()"]();
+      j_messageHandler["create()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_chatHandler;
+  this._jdel = j_messageHandler;
 };
 
 // We export the Constructor function
-module.exports = ChatHandler;
+module.exports = MessageHandler;

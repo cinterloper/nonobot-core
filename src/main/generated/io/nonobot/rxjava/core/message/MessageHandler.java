@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.chat;
+package io.nonobot.rxjava.core.message;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
@@ -25,14 +25,14 @@ import io.vertx.core.Handler;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.chat.ChatHandler original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.message.MessageHandler original} non RX-ified interface using Vert.x codegen.
  */
 
-public class ChatHandler {
+public class MessageHandler {
 
-  final io.nonobot.core.chat.ChatHandler delegate;
+  final io.nonobot.core.message.MessageHandler delegate;
 
-  public ChatHandler(io.nonobot.core.chat.ChatHandler delegate) {
+  public MessageHandler(io.nonobot.core.message.MessageHandler delegate) {
     this.delegate = delegate;
   }
 
@@ -40,19 +40,19 @@ public class ChatHandler {
     return delegate;
   }
 
-  public ChatHandler match(String pattern, Handler<ChatMessage> handler) { 
-    this.delegate.match(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
-      public void handle(io.nonobot.core.chat.ChatMessage event) {
-        handler.handle(new ChatMessage(event));
+  public MessageHandler when(String pattern, Handler<Message> handler) { 
+    this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
+      public void handle(io.nonobot.core.message.Message event) {
+        handler.handle(new Message(event));
       }
     });
     return this;
   }
 
-  public ChatHandler respond(String pattern, Handler<ChatMessage> handler) { 
-    this.delegate.respond(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
-      public void handle(io.nonobot.core.chat.ChatMessage event) {
-        handler.handle(new ChatMessage(event));
+  public MessageHandler respond(String pattern, Handler<Message> handler) { 
+    this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
+      public void handle(io.nonobot.core.message.Message event) {
+        handler.handle(new Message(event));
       }
     });
     return this;
@@ -63,7 +63,7 @@ public class ChatHandler {
   }
 
 
-  public static ChatHandler newInstance(io.nonobot.core.chat.ChatHandler arg) {
-    return arg != null ? new ChatHandler(arg) : null;
+  public static MessageHandler newInstance(io.nonobot.core.message.MessageHandler arg) {
+    return arg != null ? new MessageHandler(arg) : null;
   }
 }

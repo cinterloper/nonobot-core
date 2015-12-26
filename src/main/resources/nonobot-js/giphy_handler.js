@@ -16,9 +16,9 @@
 
 /** @module nonobot-js/giphy_handler */
 var utils = require('vertx-js/util/utils');
-var ChatRouter = require('nonobot-js/chat_router');
+var MessageHandler = require('nonobot-js/message_handler');
 var Vertx = require('vertx-js/vertx');
-var ChatHandler = require('nonobot-js/chat_handler');
+var MessageRouter = require('nonobot-js/message_router');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
@@ -37,13 +37,13 @@ var GiphyHandler = function(j_val) {
 
    @public
    @param vertx {Vertx} 
-   @param router {ChatRouter} 
-   @return {ChatHandler}
+   @param router {MessageRouter} 
+   @return {MessageHandler}
    */
   this.toChatHandler = function(vertx, router) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'object' && __args[1]._jdel) {
-      return utils.convReturnVertxGen(j_giphyHandler["toChatHandler(io.vertx.core.Vertx,io.nonobot.core.chat.ChatRouter)"](vertx._jdel, router._jdel), ChatHandler);
+      return utils.convReturnVertxGen(j_giphyHandler["toChatHandler(io.vertx.core.Vertx,io.nonobot.core.message.MessageRouter)"](vertx._jdel, router._jdel), MessageHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

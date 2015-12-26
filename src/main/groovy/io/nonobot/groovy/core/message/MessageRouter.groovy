@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.chat;
+package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
@@ -25,27 +25,27 @@ import io.vertx.core.Handler
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class ChatRouter {
-  private final def io.nonobot.core.chat.ChatRouter delegate;
-  public ChatRouter(Object delegate) {
-    this.delegate = (io.nonobot.core.chat.ChatRouter) delegate;
+public class MessageRouter {
+  private final def io.nonobot.core.message.MessageRouter delegate;
+  public MessageRouter(Object delegate) {
+    this.delegate = (io.nonobot.core.message.MessageRouter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public static ChatRouter create(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.chat.ChatRouter.class);
+  public static MessageRouter create(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.message.MessageRouter.class);
     return ret;
   }
-  public static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx)vertx.getDelegate(), completionHandler), io.nonobot.groovy.core.chat.ChatRouter.class);
+  public static MessageRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.create((io.vertx.core.Vertx)vertx.getDelegate(), completionHandler), io.nonobot.groovy.core.message.MessageRouter.class);
     return ret;
   }
   public void close() {
     this.delegate.close();
   }
-  public ChatHandler handler() {
-    def ret= InternalHelper.safeCreate(this.delegate.handler(), io.nonobot.groovy.core.chat.ChatHandler.class);
+  public MessageHandler handler() {
+    def ret= InternalHelper.safeCreate(this.delegate.handler(), io.nonobot.groovy.core.message.MessageHandler.class);
     return ret;
   }
 }

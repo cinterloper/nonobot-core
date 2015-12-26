@@ -1,24 +1,24 @@
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.chat.ChatMessage
+# Generated from io.nonobot.core.message.Message
 module Nonobot
   #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-  class ChatMessage
+  class Message
     # @private
-    # @param j_del [::Nonobot::ChatMessage] the java delegate
+    # @param j_del [::Nonobot::Message] the java delegate
     def initialize(j_del)
       @j_del = j_del
     end
     # @private
-    # @return [::Nonobot::ChatMessage] the underlying java delegate
+    # @return [::Nonobot::Message] the underlying java delegate
     def j_del
       @j_del
     end
     # @return [String]
-    def content
+    def body
       if !block_given?
-        return @j_del.java_method(:content, []).call()
+        return @j_del.java_method(:body, []).call()
       end
-      raise ArgumentError, "Invalid arguments when calling content()"
+      raise ArgumentError, "Invalid arguments when calling body()"
     end
     # @param [String] msg 
     # @return [void]

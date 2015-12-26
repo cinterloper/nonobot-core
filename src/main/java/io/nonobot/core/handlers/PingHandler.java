@@ -1,7 +1,7 @@
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.chat.ChatHandler;
-import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.message.MessageHandler;
+import io.nonobot.core.message.MessageRouter;
 import io.nonobot.core.handlers.impl.PingHandlerImpl;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Vertx;
@@ -16,6 +16,6 @@ public interface PingHandler {
     return new PingHandlerImpl();
   }
 
-  ChatHandler toChatHandler(Vertx vertx, ChatRouter router);
+  MessageHandler toChatHandler(Vertx vertx, MessageRouter router);
 
 }

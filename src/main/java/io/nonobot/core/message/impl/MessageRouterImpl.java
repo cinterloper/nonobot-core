@@ -1,12 +1,10 @@
-package io.nonobot.core.chat.impl;
+package io.nonobot.core.message.impl;
 
-import io.nonobot.core.chat.ChatHandler;
-import io.nonobot.core.chat.ChatMessage;
-import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.message.Message;
+import io.nonobot.core.message.MessageRouter;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 
@@ -19,13 +17,13 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ChatRouterImpl implements ChatRouter {
+public class MessageRouterImpl implements MessageRouter {
 
   final Vertx vertx;
   final MessageConsumer<JsonObject> consumer;
   final List<MessageHandler> messageHandlers = new CopyOnWriteArrayList<>();
 
-  public ChatRouterImpl(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
+  public MessageRouterImpl(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) {
     this.consumer = vertx.eventBus().consumer("nonobot.broadcast", this::handle);
     this.vertx = vertx;
 
@@ -34,7 +32,7 @@ public class ChatRouterImpl implements ChatRouter {
     }
   }
 
-  private void handle(Message<JsonObject> message) {
+  private void handle(io.vertx.core.eventbus.Message<JsonObject> message) {
     JsonObject body = message.body();
     boolean respond = body.getBoolean("respond");
     String content = body.getString("content");
@@ -43,10 +41,10 @@ public class ChatRouterImpl implements ChatRouter {
       if (handler.respond == respond) {
         Matcher matcher = handler.pattern.matcher(content);
         if (matcher.matches()) {
-          handler.handler.handle(new ChatMessage() {
+          handler.handler.handle(new Message() {
             boolean replied;
             @Override
-            public String content() {
+            public String body() {
               return content;
             }
             @Override
@@ -65,16 +63,16 @@ public class ChatRouterImpl implements ChatRouter {
   }
 
   @Override
-  public ChatHandler handler() {
-    return new ChatHandler() {
+  public io.nonobot.core.message.MessageHandler handler() {
+    return new io.nonobot.core.message.MessageHandler() {
       List<MessageHandler> handlers = new ArrayList<>();
       @Override
-      public ChatHandler match(String pattern, Handler<ChatMessage> handler) {
+      public io.nonobot.core.message.MessageHandler when(String pattern, Handler<Message> handler) {
         handlers.add(new MessageHandler(false, Pattern.compile(pattern), handler));
         return this;
       }
       @Override
-      public ChatHandler respond(String pattern, Handler<ChatMessage> handler) {
+      public io.nonobot.core.message.MessageHandler respond(String pattern, Handler<Message> handler) {
         handlers.add(new MessageHandler(true, Pattern.compile(pattern), handler));
         return this;
       }
@@ -93,8 +91,8 @@ public class ChatRouterImpl implements ChatRouter {
   class MessageHandler {
     final boolean respond;
     final Pattern pattern;
-    final Handler<ChatMessage> handler;
-    public MessageHandler(boolean respond, Pattern pattern, Handler<ChatMessage> handler) {
+    final Handler<Message> handler;
+    public MessageHandler(boolean respond, Pattern pattern, Handler<Message> handler) {
       this.respond = respond;
       this.pattern = pattern;
       this.handler = handler;

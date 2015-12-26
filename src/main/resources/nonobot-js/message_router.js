@@ -14,22 +14,22 @@
  * under the License.
  */
 
-/** @module nonobot-js/chat_router */
+/** @module nonobot-js/message_router */
 var utils = require('vertx-js/util/utils');
+var MessageHandler = require('nonobot-js/message_handler');
 var Vertx = require('vertx-js/vertx');
-var ChatHandler = require('nonobot-js/chat_handler');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JChatRouter = io.nonobot.core.chat.ChatRouter;
+var JMessageRouter = io.nonobot.core.message.MessageRouter;
 
 /**
 
  @class
 */
-var ChatRouter = function(j_val) {
+var MessageRouter = function(j_val) {
 
-  var j_chatRouter = j_val;
+  var j_messageRouter = j_val;
   var that = this;
 
   /**
@@ -40,7 +40,7 @@ var ChatRouter = function(j_val) {
   this.close = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_chatRouter["close()"]();
+      j_messageRouter["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -48,42 +48,42 @@ var ChatRouter = function(j_val) {
 
    @public
 
-   @return {ChatHandler}
+   @return {MessageHandler}
    */
   this.handler = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      return utils.convReturnVertxGen(j_chatRouter["handler()"](), ChatHandler);
+      return utils.convReturnVertxGen(j_messageRouter["handler()"](), MessageHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_chatRouter;
+  this._jdel = j_messageRouter;
 };
 
 /**
 
- @memberof module:nonobot-js/chat_router
+ @memberof module:nonobot-js/message_router
  @param vertx {Vertx} 
  @param completionHandler {function} 
- @return {ChatRouter}
+ @return {MessageRouter}
  */
-ChatRouter.create = function() {
+MessageRouter.create = function() {
   var __args = arguments;
   if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-    return utils.convReturnVertxGen(JChatRouter["create(io.vertx.core.Vertx)"](__args[0]._jdel), ChatRouter);
+    return utils.convReturnVertxGen(JMessageRouter["create(io.vertx.core.Vertx)"](__args[0]._jdel), MessageRouter);
   }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
-    return utils.convReturnVertxGen(JChatRouter["create(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
+    return utils.convReturnVertxGen(JMessageRouter["create(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
     if (ar.succeeded()) {
       __args[1](null, null);
     } else {
       __args[1](null, ar.cause());
     }
-  }), ChatRouter);
+  }), MessageRouter);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function
-module.exports = ChatRouter;
+module.exports = MessageRouter;

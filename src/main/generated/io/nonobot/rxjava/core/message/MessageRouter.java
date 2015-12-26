@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.chat;
+package io.nonobot.rxjava.core.message;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
@@ -27,14 +27,14 @@ import io.vertx.core.Handler;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.chat.ChatRouter original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.message.MessageRouter original} non RX-ified interface using Vert.x codegen.
  */
 
-public class ChatRouter {
+public class MessageRouter {
 
-  final io.nonobot.core.chat.ChatRouter delegate;
+  final io.nonobot.core.message.MessageRouter delegate;
 
-  public ChatRouter(io.nonobot.core.chat.ChatRouter delegate) {
+  public MessageRouter(io.nonobot.core.message.MessageRouter delegate) {
     this.delegate = delegate;
   }
 
@@ -42,13 +42,13 @@ public class ChatRouter {
     return delegate;
   }
 
-  public static ChatRouter create(Vertx vertx) { 
-    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx) vertx.getDelegate()));
+  public static MessageRouter create(Vertx vertx) { 
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.message.MessageRouter.create((io.vertx.core.Vertx) vertx.getDelegate()));
     return ret;
   }
 
-  public static ChatRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) { 
-    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.chat.ChatRouter.create((io.vertx.core.Vertx) vertx.getDelegate(), completionHandler));
+  public static MessageRouter create(Vertx vertx, Handler<AsyncResult<Void>> completionHandler) { 
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.message.MessageRouter.create((io.vertx.core.Vertx) vertx.getDelegate(), completionHandler));
     return ret;
   }
 
@@ -56,13 +56,13 @@ public class ChatRouter {
     this.delegate.close();
   }
 
-  public ChatHandler handler() { 
-    ChatHandler ret= ChatHandler.newInstance(this.delegate.handler());
+  public MessageHandler handler() { 
+    MessageHandler ret= MessageHandler.newInstance(this.delegate.handler());
     return ret;
   }
 
 
-  public static ChatRouter newInstance(io.nonobot.core.chat.ChatRouter arg) {
-    return arg != null ? new ChatRouter(arg) : null;
+  public static MessageRouter newInstance(io.nonobot.core.message.MessageRouter arg) {
+    return arg != null ? new MessageRouter(arg) : null;
   }
 }

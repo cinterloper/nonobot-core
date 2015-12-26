@@ -19,9 +19,9 @@ package io.nonobot.rxjava.core.handlers;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.rxjava.core.chat.ChatRouter;
+import io.nonobot.rxjava.core.message.MessageHandler;
 import io.vertx.rxjava.core.Vertx;
-import io.nonobot.rxjava.core.chat.ChatHandler;
+import io.nonobot.rxjava.core.message.MessageRouter;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -47,8 +47,8 @@ public class HelpHandler {
     return ret;
   }
 
-  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) { 
-    ChatHandler ret= ChatHandler.newInstance(this.delegate.toChatHandler((io.vertx.core.Vertx) vertx.getDelegate(), (io.nonobot.core.chat.ChatRouter) router.getDelegate()));
+  public MessageHandler toChatHandler(Vertx vertx, MessageRouter router) { 
+    MessageHandler ret= MessageHandler.newInstance(this.delegate.toChatHandler((io.vertx.core.Vertx) vertx.getDelegate(), (io.nonobot.core.message.MessageRouter) router.getDelegate()));
     return ret;
   }
 

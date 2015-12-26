@@ -18,9 +18,9 @@ package io.nonobot.groovy.core.handlers;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.nonobot.groovy.core.chat.ChatRouter
+import io.nonobot.groovy.core.message.MessageHandler
 import io.vertx.groovy.core.Vertx
-import io.nonobot.groovy.core.chat.ChatHandler
+import io.nonobot.groovy.core.message.MessageRouter
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
@@ -37,8 +37,8 @@ public class GiphyHandler {
     def ret= InternalHelper.safeCreate(io.nonobot.core.handlers.GiphyHandler.create(), io.nonobot.groovy.core.handlers.GiphyHandler.class);
     return ret;
   }
-  public ChatHandler toChatHandler(Vertx vertx, ChatRouter router) {
-    def ret= InternalHelper.safeCreate(this.delegate.toChatHandler((io.vertx.core.Vertx)vertx.getDelegate(), (io.nonobot.core.chat.ChatRouter)router.getDelegate()), io.nonobot.groovy.core.chat.ChatHandler.class);
+  public MessageHandler toChatHandler(Vertx vertx, MessageRouter router) {
+    def ret= InternalHelper.safeCreate(this.delegate.toChatHandler((io.vertx.core.Vertx)vertx.getDelegate(), (io.nonobot.core.message.MessageRouter)router.getDelegate()), io.nonobot.groovy.core.message.MessageHandler.class);
     return ret;
   }
 }

@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.chat;
+package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
@@ -23,26 +23,26 @@ import io.vertx.core.Handler
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class ChatHandler {
-  private final def io.nonobot.core.chat.ChatHandler delegate;
-  public ChatHandler(Object delegate) {
-    this.delegate = (io.nonobot.core.chat.ChatHandler) delegate;
+public class MessageHandler {
+  private final def io.nonobot.core.message.MessageHandler delegate;
+  public MessageHandler(Object delegate) {
+    this.delegate = (io.nonobot.core.message.MessageHandler) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public ChatHandler match(String pattern, Handler<ChatMessage> handler) {
-    this.delegate.match(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
-      public void handle(io.nonobot.core.chat.ChatMessage event) {
-        handler.handle(new io.nonobot.groovy.core.chat.ChatMessage(event));
+  public MessageHandler when(String pattern, Handler<Message> handler) {
+    this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
+      public void handle(io.nonobot.core.message.Message event) {
+        handler.handle(new io.nonobot.groovy.core.message.Message(event));
       }
     });
     return this;
   }
-  public ChatHandler respond(String pattern, Handler<ChatMessage> handler) {
-    this.delegate.respond(pattern, new Handler<io.nonobot.core.chat.ChatMessage>() {
-      public void handle(io.nonobot.core.chat.ChatMessage event) {
-        handler.handle(new io.nonobot.groovy.core.chat.ChatMessage(event));
+  public MessageHandler respond(String pattern, Handler<Message> handler) {
+    this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
+      public void handle(io.nonobot.core.message.Message event) {
+        handler.handle(new io.nonobot.groovy.core.message.Message(event));
       }
     });
     return this;
