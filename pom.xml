@@ -110,36 +110,4 @@
     </dependency>
 
   </dependencies>
-
-  <build>
-
-    <plugins>
-      <!-- Copy resources after compilation phase as we generate JS in src/main/resources -->
-<!--
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-resources</id>
-            <phase>process-classes</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <failIfNoTests>false</failIfNoTests>
-          <systemPropertyVariables>
-            <vertx.test.dir>${project.build.directory}</vertx.test.dir>
-            <vertx.test.timeout>60</vertx.test.timeout>
-            <io.netty.leakDetectionLevel>PARANOID</io.netty.leakDetectionLevel>
-          </systemPropertyVariables>
-          <argLine>-server -Xms128m -Xmx1024m -XX:NewRatio=2</argLine>
-        </configuration>
-      </plugin>
--->
-
-    </plugins>
-  </build>
 </project>
