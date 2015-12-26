@@ -4,6 +4,7 @@ import io.nonobot.core.adapter.Adapter;
 import io.nonobot.core.chat.ChatRouter;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
+import io.nonobot.core.handlers.PingHandler;
 import io.nonobot.core.spi.AdapterFactory;
 import io.vertx.core.AbstractVerticle;
 
@@ -66,6 +67,9 @@ public class BotVerticle extends AbstractVerticle {
 
     // Giphy handler
     GiphyHandler.create().toChatHandler(vertx, router).create();
+
+    // Ping handler
+    PingHandler.create().toChatHandler(vertx, router).create();
 
     // Help handler
     HelpHandler.create().toChatHandler(vertx, router).create();
