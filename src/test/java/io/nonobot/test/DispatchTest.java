@@ -8,6 +8,8 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
@@ -115,6 +117,25 @@ public class DispatchTest extends BaseTest {
         context.assertEquals("1", ar.result());
         replied.complete();
         doneLatch.countDown();
+      });
+    }));
+  }
+
+  @Test
+  public void testOverrideBotName(TestContext context) {
+    Async handleLatch = context.async(2);
+    router.handler().respond("^echo\\s+(.+)", msg -> {
+      context.assertEquals("echo hello world", msg.content());
+      msg.reply("the_reply");
+    }).create();
+    NonoBot bot = NonoBot.create(vertx);
+    bot.client(context.asyncAssertSuccess(client -> {
+      client.rename(Arrays.asList("bb8", "r2d2"));
+      client.process("bb8 echo hello world", ar -> {
+        handleLatch.countDown();
+      });
+      client.process("r2d2 echo hello world", ar -> {
+        handleLatch.countDown();
       });
     }));
   }

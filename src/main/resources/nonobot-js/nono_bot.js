@@ -50,6 +50,19 @@ var NonoBot = function(j_val) {
   /**
 
    @public
+
+   @return {string}
+   */
+  this.name = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      return j_nonoBot["name()"]();
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
    @param handler {function} 
    @param options {Object} 
    */

@@ -16,6 +16,7 @@
 
 /** @module nonobot-js/bot_client */
 var utils = require('vertx-js/util/utils');
+var NonoBot = require('nonobot-js/nono_bot');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
@@ -34,12 +35,26 @@ var BotClient = function(j_val) {
 
    @public
 
-   @return {string}
+   @return {NonoBot}
    */
-  this.name = function() {
+  this.bot = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      return j_botClient["name()"]();
+      return utils.convReturnVertxGen(j_botClient["bot()"](), NonoBot);
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+   @param names {Array.<string>} 
+   */
+  this.rename = function() {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'string') {
+      j_botClient["rename(java.lang.String)"](__args[0]);
+    }  else if (__args.length === 1 && typeof __args[0] === 'object' && __args[0] instanceof Array) {
+      j_botClient["rename(java.util.List)"](__args[0]);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

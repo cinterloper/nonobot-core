@@ -22,6 +22,8 @@ public interface NonoBot {
 
   Vertx vertx();
 
+  String name();
+
   void client(Handler<AsyncResult<BotClient>> handler);
 
   void client(Handler<AsyncResult<BotClient>> handler, ClientOptions options);

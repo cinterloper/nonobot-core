@@ -1,3 +1,4 @@
+require 'nonobot/nono_bot'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.client.BotClient
 module Nonobot
@@ -13,12 +14,25 @@ module Nonobot
     def j_del
       @j_del
     end
-    # @return [String]
-    def name
+    # @return [::Nonobot::NonoBot]
+    def bot
       if !block_given?
-        return @j_del.java_method(:name, []).call()
+        return ::Vertx::Util::Utils.safe_create(@j_del.java_method(:bot, []).call(),::Nonobot::NonoBot)
       end
-      raise ArgumentError, "Invalid arguments when calling name()"
+      raise ArgumentError, "Invalid arguments when calling bot()"
+    end
+    # @overload rename(name)
+    #   @param [String] name 
+    # @overload rename(names)
+    #   @param [Array<String>] names 
+    # @return [void]
+    def rename(param_1=nil)
+      if param_1.class == String && !block_given?
+        return @j_del.java_method(:rename, [Java::java.lang.String.java_class]).call(param_1)
+      elsif param_1.class == Array && !block_given?
+        return @j_del.java_method(:rename, [Java::JavaUtil::List.java_class]).call(param_1.map { |element| element })
+      end
+      raise ArgumentError, "Invalid arguments when calling rename(param_1)"
     end
     # @param [String] message 
     # @yield 

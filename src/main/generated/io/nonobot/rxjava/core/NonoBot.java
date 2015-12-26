@@ -55,6 +55,11 @@ public class NonoBot {
     return ret;
   }
 
+  public String name() { 
+    String ret = this.delegate.name();
+    return ret;
+  }
+
   public void client(Handler<AsyncResult<BotClient>> handler) { 
     this.delegate.client(new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
       public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {

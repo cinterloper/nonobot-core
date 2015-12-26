@@ -3,6 +3,9 @@ package io.nonobot.core.client;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */

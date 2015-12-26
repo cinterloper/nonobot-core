@@ -45,7 +45,7 @@ public class NonoBotImpl implements NonoBot {
 
   @Override
   public void client(Handler<AsyncResult<BotClient>> handler, ClientOptions options) {
-    handler.handle(Future.succeededFuture(new BotClientImpl(vertx, name, options)));
+    handler.handle(Future.succeededFuture(new BotClientImpl(this, options)));
   }
 
   @Override

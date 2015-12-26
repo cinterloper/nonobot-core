@@ -31,6 +31,13 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling vertx()"
     end
+    # @return [String]
+    def name
+      if !block_given?
+        return @j_del.java_method(:name, []).call()
+      end
+      raise ArgumentError, "Invalid arguments when calling name()"
+    end
     # @param [Proc] handler 
     # @param [Hash] options 
     # @return [void]

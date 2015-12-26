@@ -19,6 +19,8 @@ package io.nonobot.rxjava.core.client;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import java.util.List;
+import io.nonobot.rxjava.core.NonoBot;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -41,9 +43,17 @@ public class BotClient {
     return delegate;
   }
 
-  public String name() { 
-    String ret = this.delegate.name();
+  public NonoBot bot() { 
+    NonoBot ret= NonoBot.newInstance(this.delegate.bot());
     return ret;
+  }
+
+  public void rename(String name) { 
+    this.delegate.rename(name);
+  }
+
+  public void rename(List<String> names) { 
+    this.delegate.rename(names);
   }
 
   public void process(String message, Handler<AsyncResult<String>> handler) { 

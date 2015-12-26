@@ -18,6 +18,8 @@ package io.nonobot.groovy.core.client;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import java.util.List
+import io.nonobot.groovy.core.NonoBot
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
@@ -32,9 +34,15 @@ public class BotClient {
   public Object getDelegate() {
     return delegate;
   }
-  public String name() {
-    def ret = this.delegate.name();
+  public NonoBot bot() {
+    def ret= InternalHelper.safeCreate(this.delegate.bot(), io.nonobot.groovy.core.NonoBot.class);
     return ret;
+  }
+  public void rename(String name) {
+    this.delegate.rename(name);
+  }
+  public void rename(List<String> names) {
+    this.delegate.rename(names);
   }
   public void process(String message, Handler<AsyncResult<String>> handler) {
     this.delegate.process(message, handler);
