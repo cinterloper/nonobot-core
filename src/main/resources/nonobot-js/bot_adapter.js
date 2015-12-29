@@ -16,6 +16,9 @@
 
 /** @module nonobot-js/bot_adapter */
 var utils = require('vertx-js/util/utils');
+var BotClient = require('nonobot-js/bot_client');
+var Future = require('vertx-js/future');
+var ConnectionListener = require('nonobot-js/connection_listener');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
@@ -35,33 +38,15 @@ var BotAdapter = function(j_val) {
    Connect to the adapted service.
 
    @public
-   @param completionHandler {function} the handler when connection is either a success or a failure 
+   @param client {BotClient} 
+   @param completionFuture {Future} the future to complete or fail when connection is either a success or a failure 
    */
   this.connect = function() {
     var __args = arguments;
-    if (__args.length === 0) {
-      j_botAdapter["connect()"]();
-    }  else if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_botAdapter["connect(io.vertx.core.Handler)"](function(ar) {
-      if (ar.succeeded()) {
-        __args[0](null, null);
-      } else {
-        __args[0](null, ar.cause());
-      }
-    });
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-   Handler notified when the adapter close.
-
-   @public
-   @param handler {function} 
-   */
-  this.closeHandler = function(handler) {
-    var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_botAdapter["closeHandler(io.vertx.core.Handler)"](handler);
+    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+      j_botAdapter["connect(io.nonobot.core.client.BotClient)"](__args[0]._jdel);
+    }  else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'object' && __args[1]._jdel) {
+      j_botAdapter["connect(io.nonobot.core.client.BotClient,io.vertx.core.Future)"](__args[0]._jdel, __args[1]._jdel);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -82,6 +67,21 @@ var BotAdapter = function(j_val) {
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
   this._jdel = j_botAdapter;
+};
+
+/**
+
+ @memberof module:nonobot-js/bot_adapter
+ @param handler {function} 
+ @return {BotAdapter}
+ */
+BotAdapter.create = function(handler) {
+  var __args = arguments;
+  if (__args.length === 1 && typeof __args[0] === 'function') {
+    return utils.convReturnVertxGen(JBotAdapter["create(io.vertx.core.Handler)"](function(jVal) {
+    handler(utils.convReturnVertxGen(jVal, ConnectionListener));
+  }), BotAdapter);
+  } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function

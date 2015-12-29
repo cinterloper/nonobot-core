@@ -19,6 +19,7 @@ package io.nonobot.core.client.impl;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
+import io.nonobot.core.client.ProcessOptions;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -41,7 +42,7 @@ public class BotClientImpl implements BotClient {
   private final NonoBot bot;
   private volatile Pattern botPattern;
   private final ClientOptions options;
-
+  Handler<Void> closeHandler;
 
   public BotClientImpl(NonoBot bot, ClientOptions options) {
 
@@ -80,6 +81,11 @@ public class BotClientImpl implements BotClient {
 
   @Override
   public void process(String message, Handler<AsyncResult<String>> replyHandler) {
+    process(new ProcessOptions(), message, replyHandler);
+  }
+
+  @Override
+  public void process(ProcessOptions options, String message, Handler<AsyncResult<String>> replyHandler) {
     String replyAddress = UUID.randomUUID().toString();
     Future<String> reply = Future.future();
     reply.setHandler(replyHandler);
@@ -110,7 +116,7 @@ public class BotClientImpl implements BotClient {
           body.put("content", message);
         }
         bot.vertx().eventBus().publish("nonobot.broadcast", body);
-        bot.vertx().setTimer(options.getProcessTimeout(), timerID -> {
+        bot.vertx().setTimer(options.getTimeout(), timerID -> {
           if (!reply.isComplete()) {
             consumer.unregister();
             reply.fail(new Exception("timeout"));
@@ -120,6 +126,11 @@ public class BotClientImpl implements BotClient {
         replyHandler.handle(Future.failedFuture(ar.cause()));
       }
     });
+  }
+
+  @Override
+  public synchronized void closeHandler(Handler<Void> handler) {
+    closeHandler = handler;
   }
 
   @Override

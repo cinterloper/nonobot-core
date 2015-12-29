@@ -21,6 +21,7 @@ var NonoBot = require('nonobot-js/nono_bot');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JBotClient = io.nonobot.core.client.BotClient;
+var ProcessOptions = io.nonobot.core.client.ProcessOptions;
 
 /**
  The bot client provides a customized client interface for interacting with the bot.
@@ -68,19 +69,41 @@ var BotClient = function(j_val) {
    should not wait until the reply is called, instead if should just forward the reply content when it arrives.
 
    @public
+   @param options {Object} the process options 
    @param message {string} the message content to process 
    @param replyHandler {function} the handle to be notified with the message reply 
    */
-  this.process = function(message, replyHandler) {
+  this.process = function() {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_botClient["process(java.lang.String,io.vertx.core.Handler)"](message, function(ar) {
+      j_botClient["process(java.lang.String,io.vertx.core.Handler)"](__args[0], function(ar) {
       if (ar.succeeded()) {
-        replyHandler(ar.result(), null);
+        __args[1](ar.result(), null);
       } else {
-        replyHandler(null, ar.cause());
+        __args[1](null, ar.cause());
       }
     });
+    }  else if (__args.length === 3 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'string' && typeof __args[2] === 'function') {
+      j_botClient["process(io.nonobot.core.client.ProcessOptions,java.lang.String,io.vertx.core.Handler)"](__args[0] != null ? new ProcessOptions(new JsonObject(JSON.stringify(__args[0]))) : null, __args[1], function(ar) {
+      if (ar.succeeded()) {
+        __args[2](ar.result(), null);
+      } else {
+        __args[2](null, ar.cause());
+      }
+    });
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+   Set an handler closed when the client is closed, note that calling {@link BotClient#close} will not call this handler.
+
+   @public
+   @param handler {function} the handler 
+   */
+  this.closeHandler = function(handler) {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'function') {
+      j_botClient["closeHandler(io.vertx.core.Handler)"](handler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

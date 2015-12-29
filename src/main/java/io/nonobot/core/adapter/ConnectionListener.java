@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.spi;
+package io.nonobot.core.adapter;
 
-import io.nonobot.core.Config;
-import io.nonobot.core.adapter.BotAdapter;
+import io.nonobot.core.client.BotClient;
+import io.vertx.codegen.annotations.CacheReturn;
+import io.vertx.codegen.annotations.VertxGen;
+import io.vertx.core.Future;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public interface BotAdapterFactory {
+@VertxGen
+public interface ConnectionListener extends Future<Void> {
 
-  /**
-   * Create a new bot adapter or return null if no adapter could be created.
-   *
-   * @param config the bot config
-   * @return the adapter
-   */
-  BotAdapter create(Config config);
+  @CacheReturn
+  BotClient client();
 
 }

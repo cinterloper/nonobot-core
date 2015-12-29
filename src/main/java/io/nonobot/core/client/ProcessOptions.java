@@ -23,15 +23,36 @@ import io.vertx.core.json.JsonObject;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @DataObject
-public class ClientOptions {
+public class ProcessOptions {
 
-  public ClientOptions() {
+  private static final long DEFAULT_TIMEOUT = 10000;
+
+  private long timeout;
+
+  public ProcessOptions() {
+    timeout = DEFAULT_TIMEOUT;
   }
 
-  public ClientOptions(JsonObject json) {
+  public ProcessOptions(JsonObject json) {
     throw new UnsupportedOperationException("todo");
   }
 
-  public ClientOptions(ClientOptions that) {
+  public ProcessOptions(ProcessOptions that) {
+    timeout = that.timeout;
+  }
+
+  public long getTimeout() {
+    return timeout;
+  }
+
+  /**
+   * The timeout in millis to wait until a message is considered not processed by the bot.
+   *
+   * @param timeout the process timeout
+   * @return this object so it can be used fluently
+   */
+  public ProcessOptions setTimeout(long timeout) {
+    this.timeout = timeout;
+    return this;
   }
 }

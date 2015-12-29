@@ -51,11 +51,11 @@ public class MessageRouter {
    * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
    * Vert.x instance.
    * @param vertx the Vert.x instance
-   * @param init the handler notified when the router is fully initialized
+   * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> init) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), init));
+  public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) { 
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
     return ret;
   }
 

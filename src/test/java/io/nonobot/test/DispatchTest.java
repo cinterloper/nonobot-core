@@ -17,6 +17,7 @@
 package io.nonobot.test;
 
 import io.nonobot.core.NonoBot;
+import io.nonobot.core.client.ProcessOptions;
 import io.nonobot.core.message.MessageRouter;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.message.impl.MessageRouterImpl;
@@ -89,8 +90,8 @@ public class DispatchTest extends BaseTest {
   public void testTimeout(TestContext context) {
     Async failureLatch = context.async();
     NonoBot bot = NonoBot.create(vertx);
-    bot.createClient(new ClientOptions().setProcessTimeout(300), context.asyncAssertSuccess(client -> {
-      client.process("echo hello world", ar -> {
+    bot.createClient(context.asyncAssertSuccess(client -> {
+      client.process(new ProcessOptions().setTimeout(300), "echo hello world", ar -> {
         context.assertTrue(ar.failed());
         failureLatch.complete();
       });

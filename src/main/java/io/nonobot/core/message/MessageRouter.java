@@ -39,11 +39,11 @@ public interface MessageRouter {
    * Vert.x instance.
    *
    * @param vertx the Vert.x instance
-   * @param init the handler notified when the router is fully initialized
+   * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> init) {
-    return MessageRouterImpl.getShared(vertx, init);
+  static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
+    return MessageRouterImpl.getShared(vertx, initHandler);
   }
 
   /**

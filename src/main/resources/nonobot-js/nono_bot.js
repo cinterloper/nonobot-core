@@ -140,6 +140,20 @@ var NonoBot = function(j_val) {
 };
 
 /**
+ @param vertx the vertx instance
+
+ @memberof module:nonobot-js/nono_bot
+ @param vertx {Vertx} 
+ @return {NonoBot} the shared bot instance
+ */
+NonoBot.getShared = function(vertx) {
+  var __args = arguments;
+  if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+    return utils.convReturnVertxGen(JNonoBot["getShared(io.vertx.core.Vertx)"](vertx._jdel), NonoBot);
+  } else throw new TypeError('function invoked with invalid arguments');
+};
+
+/**
  Create a new bot for the Vert.x instance.
 
  @memberof module:nonobot-js/nono_bot

@@ -94,7 +94,7 @@ var MessageRouter = function(j_val) {
 
  @memberof module:nonobot-js/message_router
  @param vertx {Vertx} the Vert.x instance 
- @param init {function} the handler notified when the router is fully initialized 
+ @param initHandler {function} the handler notified when the router is fully initialized 
  @return {MessageRouter} the message router
  */
 MessageRouter.getShared = function() {

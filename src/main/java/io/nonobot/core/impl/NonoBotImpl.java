@@ -30,11 +30,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class NonoBotImpl implements NonoBot {
+
+  static final ConcurrentMap<Vertx, NonoBotImpl> sharedBots = new ConcurrentHashMap<>();
+
+  public static NonoBot getShared(Vertx vertx) {
+    return sharedBots.computeIfAbsent(vertx, NonoBotImpl::new);
+  }
 
   final String name = "nonobot"; // Bot name : make this configurable via options
   final Vertx vertx;
@@ -78,13 +86,18 @@ public class NonoBotImpl implements NonoBot {
         throw new IllegalStateException("Closed");
       }
     }
-    adapter.closeHandler(v -> {
-      synchronized (NonoBotImpl.this) {
-        adapters.remove(adapter);
+    BotClientImpl client = new BotClientImpl(this, new ClientOptions()) {
+      @Override
+      public void close() {
+        synchronized (NonoBotImpl.this) {
+          adapters.remove(adapter);
+        }
+        super.close();
         reconnect(adapter, reconnectPeriod);
       }
-    });
-    adapter.connect(ar -> {
+    };
+    Future<Void> completionFuture = Future.future();
+    completionFuture.setHandler(ar -> {
       if (ar.succeeded()) {
         synchronized (NonoBotImpl.this) {
           adapters.add(adapter);
@@ -99,6 +112,7 @@ public class NonoBotImpl implements NonoBot {
         reconnect(adapter, reconnectPeriod);
       }
     });
+    adapter.connect(client, completionFuture);
     return this;
   }
 

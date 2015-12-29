@@ -18,8 +18,9 @@ package io.nonobot.groovy.core.adapter;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.vertx.core.AsyncResult
+import io.nonobot.groovy.core.client.BotClient
 import io.vertx.core.Handler
+import io.vertx.groovy.core.Future
 /**
  * Expose the bot to an external (usually remote) service.
 */
@@ -32,25 +33,28 @@ public class BotAdapter {
   public Object getDelegate() {
     return delegate;
   }
+  public static BotAdapter create(Handler<ConnectionListener> handler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.adapter.BotAdapter.create(new Handler<io.nonobot.core.adapter.ConnectionListener>() {
+      public void handle(io.nonobot.core.adapter.ConnectionListener event) {
+        handler.handle(new io.nonobot.groovy.core.adapter.ConnectionListener(event));
+      }
+    }), io.nonobot.groovy.core.adapter.BotAdapter.class);
+    return ret;
+  }
   /**
    * Like {@link io.nonobot.groovy.core.adapter.BotAdapter#connect}.
+   * @param client 
    */
-  public void connect() {
-    this.delegate.connect();
+  public void connect(BotClient client) {
+    this.delegate.connect((io.nonobot.core.client.BotClient)client.getDelegate());
   }
   /**
    * Connect to the adapted service.
-   * @param completionHandler the handler when connection is either a success or a failure
+   * @param client 
+   * @param completionFuture the future to complete or fail when connection is either a success or a failure
    */
-  public void connect(Handler<AsyncResult<Void>> completionHandler) {
-    this.delegate.connect(completionHandler);
-  }
-  /**
-   * Handler notified when the adapter close.
-   * @param handler 
-   */
-  public void closeHandler(Handler<Void> handler) {
-    this.delegate.closeHandler(handler);
+  public void connect(BotClient client, Future<Void> completionFuture) {
+    this.delegate.connect((io.nonobot.core.client.BotClient)client.getDelegate(), (io.vertx.core.Future<java.lang.Void>)completionFuture.getDelegate());
   }
   /**
    * Close the adapter.

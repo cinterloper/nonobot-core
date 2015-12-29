@@ -18,10 +18,8 @@ package io.nonobot.core.adapter;
 
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.client.BotClient;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 
 import java.io.Console;
 import java.io.PrintWriter;
@@ -32,7 +30,6 @@ import java.io.PrintWriter;
 public class ConsoleBotAdapter implements BotAdapter {
 
   private Thread consoleThread;
-  private Handler<Void> closeHandler;
   private final NonoBot bot;
 
   public ConsoleBotAdapter(NonoBot bot) {
@@ -40,37 +37,21 @@ public class ConsoleBotAdapter implements BotAdapter {
   }
 
   @Override
-  public void connect() {
-  }
-
-  @Override
-  public void connect(Handler<AsyncResult<Void>> completionHandler) {
+  public void connect(BotClient client, Future<Void> completionFuture) {
     Context context = bot.vertx().getOrCreateContext();
-    bot.createClient(ar -> {
-      if (ar.succeeded()) {
-        synchronized (ConsoleBotAdapter.this) {
-          consoleThread = new Thread(() -> {
-            context.runOnContext(v -> {
-              completionHandler.handle(Future.succeededFuture());
-            });
-            try {
-              run(ar.result());
-            } finally {
-              Handler<Void> handler;
-              synchronized (ConsoleBotAdapter.this) {
-                handler = closeHandler;
-              }
-              if (handler != null) {
-                context.runOnContext(handler);
-              }
-            }
-          });
-          consoleThread.start();
+    synchronized (ConsoleBotAdapter.this) {
+      consoleThread = new Thread(() -> {
+        context.runOnContext(v -> {
+          completionFuture.complete();
+        });
+        try {
+          run(client);
+        } finally {
+          client.close();
         }
-      } else {
-        completionHandler.handle(Future.failedFuture(ar.cause()));
-      }
-    });
+      });
+      consoleThread.start();
+    }
   }
 
   void run(BotClient client) {
@@ -90,11 +71,6 @@ public class ConsoleBotAdapter implements BotAdapter {
         }
       });
     }
-  }
-
-  @Override
-  public synchronized void closeHandler(Handler<Void> handler) {
-    closeHandler = handler;
   }
 
   @Override

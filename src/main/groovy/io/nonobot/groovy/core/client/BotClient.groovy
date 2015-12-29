@@ -22,6 +22,7 @@ import java.util.List
 import io.nonobot.groovy.core.NonoBot
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
+import io.nonobot.core.client.ProcessOptions
 /**
  * The bot client provides a customized client interface for interacting with the bot.
 */
@@ -59,14 +60,30 @@ public class BotClient {
     this.delegate.rename(names);
   }
   /**
-   * Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
-   * if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
-   * should not wait until the reply is called, instead if should just forward the reply content when it arrives.
-   * @param message the message content to process
-   * @param replyHandler the handle to be notified with the message reply
+   * Like {@link io.nonobot.groovy.core.client.BotClient#process}
+   * @param message 
+   * @param replyHandler 
    */
   public void process(String message, Handler<AsyncResult<String>> replyHandler) {
     this.delegate.process(message, replyHandler);
+  }
+  /**
+   * Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+   * if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
+   * should not wait until the reply is called, instead if should just forward the reply content when it arrives.
+   * @param options the process options (see <a href="../../../../../../../cheatsheet/ProcessOptions.html">ProcessOptions</a>)
+   * @param message the message content to process
+   * @param replyHandler the handle to be notified with the message reply
+   */
+  public void process(Map<String, Object> options, String message, Handler<AsyncResult<String>> replyHandler) {
+    this.delegate.process(options != null ? new io.nonobot.core.client.ProcessOptions(new io.vertx.core.json.JsonObject(options)) : null, message, replyHandler);
+  }
+  /**
+   * Set an handler closed when the client is closed, note that calling {@link io.nonobot.groovy.core.client.BotClient#close} will not call this handler.
+   * @param handler the handler
+   */
+  public void closeHandler(Handler<Void> handler) {
+    this.delegate.closeHandler(handler);
   }
   /**
    * Close the client.
