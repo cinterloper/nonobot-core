@@ -50,6 +50,17 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling respond(pattern)"
     end
+    #  Send a message to a target.
+    # @param [Hash] options the options
+    # @param [String] body the message body
+    # @return [self]
+    def send_message(options=nil,body=nil)
+      if options.class == Hash && body.class == String && !block_given?
+        @j_del.java_method(:sendMessage, [Java::IoNonobotCoreMessage::SendOptions.java_class,Java::java.lang.String.java_class]).call(Java::IoNonobotCoreMessage::SendOptions.new(::Vertx::Util::Utils.to_json_object(options)),body)
+        return self
+      end
+      raise ArgumentError, "Invalid arguments when calling send_message(options,body)"
+    end
     #  Close the message router.
     # @return [void]
     def close

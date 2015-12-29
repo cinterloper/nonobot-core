@@ -19,6 +19,7 @@ package io.nonobot.rxjava.core.message;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.core.identity.Identity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -39,6 +40,16 @@ public class Message {
 
   public Object getDelegate() {
     return delegate;
+  }
+
+  public Identity room() { 
+    Identity ret = this.delegate.room();
+    return ret;
+  }
+
+  public Identity user() { 
+    Identity ret = this.delegate.user();
+    return ret;
   }
 
   /**

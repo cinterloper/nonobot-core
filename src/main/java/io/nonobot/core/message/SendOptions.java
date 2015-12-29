@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.client;
+package io.nonobot.core.message;
 
+import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
@@ -23,36 +24,27 @@ import io.vertx.core.json.JsonObject;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @DataObject
-public class ProcessOptions {
+public class SendOptions {
 
-  private static final long DEFAULT_TIMEOUT = 10000;
+  private Identity target;
 
-  private long timeout;
-
-  public ProcessOptions() {
-    timeout = DEFAULT_TIMEOUT;
+  public SendOptions() {
   }
 
-  public ProcessOptions(JsonObject json) {
+  public SendOptions(JsonObject json) {
     throw new UnsupportedOperationException("todo");
   }
 
-  public ProcessOptions(ProcessOptions that) {
-    timeout = that.timeout;
+  public SendOptions(SendOptions that) {
+    target = that.target != null ? new Identity(that.target) : null;
   }
 
-  public long getTimeout() {
-    return timeout;
+  public Identity getTarget() {
+    return target;
   }
 
-  /**
-   * The timeout in millis to wait until a message is considered not processed by the bot.
-   *
-   * @param timeout the process timeout
-   * @return this object so it can be used fluently
-   */
-  public ProcessOptions setTimeout(long timeout) {
-    this.timeout = timeout;
+  public SendOptions setTarget(Identity target) {
+    this.target = target;
     return this;
   }
 }

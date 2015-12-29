@@ -16,6 +16,7 @@
 
 package io.nonobot.core.message;
 
+import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -27,6 +28,10 @@ import io.vertx.core.Handler;
  */
 @VertxGen
 public interface Message {
+
+  Identity room();
+
+  Identity user();
 
   /**
    * @return the message body

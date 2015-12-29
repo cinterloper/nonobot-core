@@ -22,6 +22,7 @@ import io.nonobot.core.handlers.EchoHandler;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
 import io.nonobot.core.handlers.PingHandler;
+import io.nonobot.core.handlers.TimerHandler;
 import io.nonobot.core.spi.BotAdapterFactory;
 import io.vertx.core.AbstractVerticle;
 
@@ -88,6 +89,7 @@ public class BotVerticle extends AbstractVerticle {
       vertx.deployVerticle(new HelpHandler());
       vertx.deployVerticle(new PingHandler());
       vertx.deployVerticle(new EchoHandler());
+      vertx.deployVerticle(new TimerHandler());
     }
   }
 

@@ -19,10 +19,10 @@ import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
 import java.util.List
+import io.nonobot.core.client.ReceiveOptions
 import io.nonobot.groovy.core.NonoBot
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
-import io.nonobot.core.client.ProcessOptions
 /**
  * The bot client provides a customized client interface for interacting with the bot.
 */
@@ -60,30 +60,37 @@ public class BotClient {
     this.delegate.rename(names);
   }
   /**
-   * Like {@link io.nonobot.groovy.core.client.BotClient#process}
-   * @param message 
-   * @param replyHandler 
-   */
-  public void process(String message, Handler<AsyncResult<String>> replyHandler) {
-    this.delegate.process(message, replyHandler);
-  }
-  /**
-   * Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+   * Receive a message, the message might trigger a reply from an handler, if that happens it should be fast. However
    * if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
    * should not wait until the reply is called, instead if should just forward the reply content when it arrives.
-   * @param options the process options (see <a href="../../../../../../../cheatsheet/ProcessOptions.html">ProcessOptions</a>)
+   * @param options the receive options (see <a href="../../../../../../../cheatsheet/ReceiveOptions.html">ReceiveOptions</a>)
    * @param message the message content to process
    * @param replyHandler the handle to be notified with the message reply
    */
-  public void process(Map<String, Object> options, String message, Handler<AsyncResult<String>> replyHandler) {
-    this.delegate.process(options != null ? new io.nonobot.core.client.ProcessOptions(new io.vertx.core.json.JsonObject(options)) : null, message, replyHandler);
+  public void receiveMessage(Map<String, Object> options = [:], String message, Handler<AsyncResult<String>> replyHandler) {
+    this.delegate.receiveMessage(options != null ? new io.nonobot.core.client.ReceiveOptions(new io.vertx.core.json.JsonObject(options)) : null, message, replyHandler);
   }
   /**
-   * Set an handler closed when the client is closed, note that calling {@link io.nonobot.groovy.core.client.BotClient#close} will not call this handler.
-   * @param handler the handler
+   * Set a message handler on this client.
+   * @param handler the message handler
+   * @return this object so it can be used fluently
    */
-  public void closeHandler(Handler<Void> handler) {
+  public BotClient messageHandler(Handler<Message> handler) {
+    this.delegate.messageHandler(new Handler<io.nonobot.core.client.Message>() {
+      public void handle(io.nonobot.core.client.Message event) {
+        handler.handle(new io.nonobot.groovy.core.client.Message(event));
+      }
+    });
+    return this;
+  }
+  /**
+   * Set an handler called when the client is closed, note that calling {@link io.nonobot.groovy.core.client.BotClient#close} will not call this handler.
+   * @param handler the handler
+   * @return this object so it can be used fluently
+   */
+  public BotClient closeHandler(Handler<Void> handler) {
     this.delegate.closeHandler(handler);
+    return this;
   }
   /**
    * Close the client.

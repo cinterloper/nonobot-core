@@ -20,6 +20,7 @@ var utils = require('vertx-js/util/utils');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JMessage = io.nonobot.core.message.Message;
+var Identity = io.nonobot.core.identity.Identity;
 
 /**
  A message sent to an handler.
@@ -30,6 +31,32 @@ var Message = function(j_val) {
 
   var j_message = j_val;
   var that = this;
+
+  /**
+
+   @public
+
+   @return {Object}
+   */
+  this.room = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      return utils.convReturnDataObject(j_message["room()"]());
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+
+   @return {Object}
+   */
+  this.user = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      return utils.convReturnDataObject(j_message["user()"]());
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
 
   /**
    @return the message body

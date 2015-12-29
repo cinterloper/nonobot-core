@@ -16,9 +16,11 @@
 
 package io.nonobot.core.message.impl;
 
+import io.nonobot.core.identity.Identity;
 import io.nonobot.core.message.Message;
 import io.nonobot.core.message.MessageHandler;
 import io.nonobot.core.message.MessageRouter;
+import io.nonobot.core.message.SendOptions;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -59,7 +61,7 @@ public class MessageRouterImpl implements MessageRouter {
   final Future<Void> initFuture = Future.future();
 
   public MessageRouterImpl(Vertx vertx) {
-    this.consumer = vertx.eventBus().consumer("nonobot.broadcast", this::handle);
+    this.consumer = vertx.eventBus().consumer("nonobot.inbound", this::handle);
     this.vertx = vertx;
 
     consumer.completionHandler(ar -> {
@@ -93,12 +95,22 @@ public class MessageRouterImpl implements MessageRouter {
     boolean respond = body.getBoolean("respond");
     String content = body.getString("content");
     String replyAddress = body.getString("replyAddress");
+    Identity room = body.getJsonObject("room") != null ? new Identity(body.getJsonObject("room")) : null;
+    Identity user = body.getJsonObject("user") != null ? new Identity(body.getJsonObject("user")) : null;
     for (MessageHandlerImpl handler : messageHandlers) {
       if (handler.respond == respond) {
         Matcher matcher = handler.pattern.matcher(content);
         if (matcher.matches()) {
           handler.handler.handle(new Message() {
             boolean replied;
+            @Override
+            public Identity room() {
+              return room;
+            }
+            @Override
+            public Identity user() {
+              return user;
+            }
             @Override
             public String body() {
               return content;
@@ -150,6 +162,14 @@ public class MessageRouterImpl implements MessageRouter {
     MessageHandlerImpl messageHandler = new MessageHandlerImpl(true, Pattern.compile(pattern), handler);
     messageHandlers.add(messageHandler);
     return messageHandler;
+  }
+
+  @Override
+  public MessageRouter sendMessage(SendOptions options, String body) {
+
+    vertx.eventBus().publish("nonobot.outbound", new JsonObject().put("target", options.getTarget().toJson()).put("body", body));
+
+    return this;
   }
 
   @Override

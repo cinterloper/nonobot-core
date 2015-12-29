@@ -18,6 +18,7 @@ package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.core.message.SendOptions
 import io.vertx.groovy.core.Vertx
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
@@ -76,6 +77,16 @@ public class MessageRouter {
       }
     }), io.nonobot.groovy.core.message.MessageHandler.class);
     return ret;
+  }
+  /**
+   * Send a message to a target.
+   * @param options the options (see <a href="../../../../../../../cheatsheet/SendOptions.html">SendOptions</a>)
+   * @param body the message body
+   * @return this object so it can be used fluently
+   */
+  public MessageRouter sendMessage(Map<String, Object> options = [:], String body) {
+    this.delegate.sendMessage(options != null ? new io.nonobot.core.message.SendOptions(new io.vertx.core.json.JsonObject(options)) : null, body);
+    return this;
   }
   /**
    * Close the message router.

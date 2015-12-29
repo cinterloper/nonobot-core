@@ -1,3 +1,4 @@
+require 'nonobot/message'
 require 'nonobot/nono_bot'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.client.BotClient
@@ -37,31 +38,36 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling rename(param_1)"
     end
-    #  Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+    #  Receive a message, the message might trigger a reply from an handler, if that happens it should be fast. However
     #  if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
     #  should not wait until the reply is called, instead if should just forward the reply content when it arrives.
-    # @overload process(message,replyHandler)
-    #   @param [String] message 
-    #   @yield 
-    # @overload process(options,message,replyHandler)
-    #   @param [Hash] options the process options
-    #   @param [String] message the message content to process
-    #   @yield the handle to be notified with the message reply
+    # @param [Hash] options the receive options
+    # @param [String] message the message content to process
+    # @yield the handle to be notified with the message reply
     # @return [void]
-    def process(param_1=nil,param_2=nil)
-      if param_1.class == String && block_given? && param_2 == nil
-        return @j_del.java_method(:process, [Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(param_1,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ar.result : nil) }))
-      elsif param_1.class == Hash && param_2.class == String && block_given?
-        return @j_del.java_method(:process, [Java::IoNonobotCoreClient::ProcessOptions.java_class,Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(Java::IoNonobotCoreClient::ProcessOptions.new(::Vertx::Util::Utils.to_json_object(param_1)),param_2,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ar.result : nil) }))
+    def receive_message(options=nil,message=nil)
+      if options.class == Hash && message.class == String && block_given?
+        return @j_del.java_method(:receiveMessage, [Java::IoNonobotCoreClient::ReceiveOptions.java_class,Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(Java::IoNonobotCoreClient::ReceiveOptions.new(::Vertx::Util::Utils.to_json_object(options)),message,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ar.result : nil) }))
       end
-      raise ArgumentError, "Invalid arguments when calling process(param_1,param_2)"
+      raise ArgumentError, "Invalid arguments when calling receive_message(options,message)"
     end
-    #  Set an handler closed when the client is closed, note that calling {::Nonobot::BotClient#close} will not call this handler.
+    #  Set a message handler on this client.
+    # @yield the message handler
+    # @return [self]
+    def message_handler
+      if block_given?
+        @j_del.java_method(:messageHandler, [Java::IoVertxCore::Handler.java_class]).call((Proc.new { |event| yield(::Vertx::Util::Utils.safe_create(event,::Nonobot::Message)) }))
+        return self
+      end
+      raise ArgumentError, "Invalid arguments when calling message_handler()"
+    end
+    #  Set an handler called when the client is closed, note that calling {::Nonobot::BotClient#close} will not call this handler.
     # @yield the handler
-    # @return [void]
+    # @return [self]
     def close_handler
       if block_given?
-        return @j_del.java_method(:closeHandler, [Java::IoVertxCore::Handler.java_class]).call(Proc.new { yield })
+        @j_del.java_method(:closeHandler, [Java::IoVertxCore::Handler.java_class]).call(Proc.new { yield })
+        return self
       end
       raise ArgumentError, "Invalid arguments when calling close_handler()"
     end

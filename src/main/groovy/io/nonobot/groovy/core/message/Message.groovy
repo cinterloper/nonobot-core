@@ -18,6 +18,7 @@ package io.nonobot.groovy.core.message;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.core.identity.Identity
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
@@ -31,6 +32,14 @@ public class Message {
   }
   public Object getDelegate() {
     return delegate;
+  }
+  public Map<String, Object> room() {
+    def ret = (Map<String, Object>)InternalHelper.wrapObject(this.delegate.room()?.toJson());
+    return ret;
+  }
+  public Map<String, Object> user() {
+    def ret = (Map<String, Object>)InternalHelper.wrapObject(this.delegate.user()?.toJson());
+    return ret;
   }
   /**
    * @return the message body

@@ -16,12 +16,13 @@
 
 /** @module nonobot-js/bot_client */
 var utils = require('vertx-js/util/utils');
+var Message = require('nonobot-js/message');
 var NonoBot = require('nonobot-js/nono_bot');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JBotClient = io.nonobot.core.client.BotClient;
-var ProcessOptions = io.nonobot.core.client.ProcessOptions;
+var ReceiveOptions = io.nonobot.core.client.ReceiveOptions;
 
 /**
  The bot client provides a customized client interface for interacting with the bot.
@@ -64,46 +65,57 @@ var BotClient = function(j_val) {
   };
 
   /**
-   Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+   Receive a message, the message might trigger a reply from an handler, if that happens it should be fast. However
    if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
    should not wait until the reply is called, instead if should just forward the reply content when it arrives.
 
    @public
-   @param options {Object} the process options 
+   @param options {Object} the receive options 
    @param message {string} the message content to process 
    @param replyHandler {function} the handle to be notified with the message reply 
    */
-  this.process = function() {
+  this.receiveMessage = function(options, message, replyHandler) {
     var __args = arguments;
-    if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      j_botClient["process(java.lang.String,io.vertx.core.Handler)"](__args[0], function(ar) {
+    if (__args.length === 3 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'string' && typeof __args[2] === 'function') {
+      j_botClient["receiveMessage(io.nonobot.core.client.ReceiveOptions,java.lang.String,io.vertx.core.Handler)"](options != null ? new ReceiveOptions(new JsonObject(JSON.stringify(options))) : null, message, function(ar) {
       if (ar.succeeded()) {
-        __args[1](ar.result(), null);
+        replyHandler(ar.result(), null);
       } else {
-        __args[1](null, ar.cause());
-      }
-    });
-    }  else if (__args.length === 3 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'string' && typeof __args[2] === 'function') {
-      j_botClient["process(io.nonobot.core.client.ProcessOptions,java.lang.String,io.vertx.core.Handler)"](__args[0] != null ? new ProcessOptions(new JsonObject(JSON.stringify(__args[0]))) : null, __args[1], function(ar) {
-      if (ar.succeeded()) {
-        __args[2](ar.result(), null);
-      } else {
-        __args[2](null, ar.cause());
+        replyHandler(null, ar.cause());
       }
     });
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   /**
-   Set an handler closed when the client is closed, note that calling {@link BotClient#close} will not call this handler.
+   Set a message handler on this client.
+
+   @public
+   @param handler {function} the message handler 
+   @return {BotClient} this object so it can be used fluently
+   */
+  this.messageHandler = function(handler) {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'function') {
+      j_botClient["messageHandler(io.vertx.core.Handler)"](function(jVal) {
+      handler(utils.convReturnVertxGen(jVal, Message));
+    });
+      return that;
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+   Set an handler called when the client is closed, note that calling {@link BotClient#close} will not call this handler.
 
    @public
    @param handler {function} the handler 
+   @return {BotClient} this object so it can be used fluently
    */
   this.closeHandler = function(handler) {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'function') {
       j_botClient["closeHandler(io.vertx.core.Handler)"](handler);
+      return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };
 

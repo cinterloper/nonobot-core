@@ -13,6 +13,20 @@ module Nonobot
     def j_del
       @j_del
     end
+    # @return [Hash]
+    def room
+      if !block_given?
+        return @j_del.java_method(:room, []).call() != nil ? JSON.parse(@j_del.java_method(:room, []).call().toJson.encode) : nil
+      end
+      raise ArgumentError, "Invalid arguments when calling room()"
+    end
+    # @return [Hash]
+    def user
+      if !block_given?
+        return @j_del.java_method(:user, []).call() != nil ? JSON.parse(@j_del.java_method(:user, []).call().toJson.encode) : nil
+      end
+      raise ArgumentError, "Invalid arguments when calling user()"
+    end
     #  @return the message body
     # @return [String]
     def body

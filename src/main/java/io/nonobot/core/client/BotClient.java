@@ -17,6 +17,7 @@
 package io.nonobot.core.client;
 
 import io.nonobot.core.NonoBot;
+import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -53,27 +54,33 @@ public interface BotClient {
   void rename(List<String> names);
 
   /**
-   * Like {@link #process(ProcessOptions, String, Handler)}
-   */
-  void process(String message, Handler<AsyncResult<String>> replyHandler);
-
-  /**
-   * Process a message, the message might trigger a reply from an handler, if that happens it should be fast. However
+   * Receive a message, the message might trigger a reply from an handler, if that happens it should be fast. However
    * if there is no handler for processing the message, the reply will be called and likely timeout. Therefore the client
    * should not wait until the reply is called, instead if should just forward the reply content when it arrives.
    *
-   * @param options the process options
+   * @param options the receive options
    * @param message the message content to process
    * @param replyHandler the handle to be notified with the message reply
    */
-  void process(ProcessOptions options, String message, Handler<AsyncResult<String>> replyHandler);
+  void receiveMessage(ReceiveOptions options, String message, Handler<AsyncResult<String>> replyHandler);
 
   /**
-   * Set an handler closed when the client is closed, note that calling {@link #close()} will not call this handler.
+   * Set a message handler on this client.
+   *
+   * @param handler the message handler
+   * @return this object so it can be used fluently
+   */
+  @Fluent
+  BotClient messageHandler(Handler<Message> handler);
+
+  /**
+   * Set an handler called when the client is closed, note that calling {@link #close()} will not call this handler.
    *
    * @param handler the handler
+   * @return this object so it can be used fluently
    */
-  void closeHandler(Handler<Void> handler);
+  @Fluent
+  BotClient closeHandler(Handler<Void> handler);
 
   /**
    * Close the client.

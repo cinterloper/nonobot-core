@@ -17,9 +17,10 @@
 package io.nonobot.test;
 
 import io.nonobot.core.NonoBot;
-import io.nonobot.core.client.ProcessOptions;
+import io.nonobot.core.client.ReceiveOptions;
+import io.nonobot.core.identity.Identity;
 import io.nonobot.core.message.MessageRouter;
-import io.nonobot.core.client.ClientOptions;
+import io.nonobot.core.message.SendOptions;
 import io.nonobot.core.message.impl.MessageRouterImpl;
 import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
@@ -31,7 +32,7 @@ import java.util.Arrays;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class DispatchTest extends BaseTest {
+public class MessageRouterTest extends BaseTest {
 
   MessageRouter router;
 
@@ -69,7 +70,7 @@ public class DispatchTest extends BaseTest {
         });
     NonoBot bot = NonoBot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
-      client.process(message, ar -> {});
+      client.receiveMessage(new ReceiveOptions(), message, ar -> {});
     }));
   }
 
@@ -82,7 +83,7 @@ public class DispatchTest extends BaseTest {
         });
     NonoBot bot = NonoBot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
-      client.process("echo hello world", ar -> {});
+      client.receiveMessage(new ReceiveOptions(), "echo hello world", ar -> {});
     }));
   }
 
@@ -91,7 +92,7 @@ public class DispatchTest extends BaseTest {
     Async failureLatch = context.async();
     NonoBot bot = NonoBot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
-      client.process(new ProcessOptions().setTimeout(300), "echo hello world", ar -> {
+      client.receiveMessage(new ReceiveOptions().setTimeout(300), "echo hello world", ar -> {
         context.assertTrue(ar.failed());
         failureLatch.complete();
       });
@@ -110,7 +111,7 @@ public class DispatchTest extends BaseTest {
       context.fail();
     });
     bot.createClient(context.asyncAssertSuccess(client -> {
-      client.process("foobar", ar -> {
+      client.receiveMessage(new ReceiveOptions(), "foobar", ar -> {
       });
     }));
   }
@@ -131,7 +132,7 @@ public class DispatchTest extends BaseTest {
       });
     });
     bot.createClient(context.asyncAssertSuccess(client -> {
-      client.process("foobar", ar -> {
+      client.receiveMessage(new ReceiveOptions(), "foobar", ar -> {
         context.assertTrue(ar.succeeded());
         context.assertEquals("1", ar.result());
         replied.complete();
@@ -150,12 +151,48 @@ public class DispatchTest extends BaseTest {
     NonoBot bot = NonoBot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.rename(Arrays.asList("bb8", "r2d2"));
-      client.process("bb8 echo hello world", ar -> {
+      client.receiveMessage(new ReceiveOptions(), "bb8 echo hello world", ar -> {
         handleLatch.countDown();
       });
-      client.process("r2d2 echo hello world", ar -> {
+      client.receiveMessage(new ReceiveOptions(), "r2d2 echo hello world", ar -> {
         handleLatch.countDown();
       });
     }));
+  }
+
+  @Test
+  public void testIdentity(TestContext context) {
+    Async doneLatch = context.async();
+    NonoBot bot = NonoBot.create(vertx);
+    router.when("foobar", msg -> {
+      Identity room = msg.room();
+      context.assertEquals("the_room_id", room.getId());
+      context.assertEquals("the_room_name", room.getName());
+      Identity user = msg.user();
+      context.assertEquals("the_user_id", user.getId());
+      context.assertEquals("the_user_name", user.getName());
+      doneLatch.countDown();
+    });
+    bot.createClient(context.asyncAssertSuccess(client -> {
+      client.receiveMessage(new ReceiveOptions().
+          setRoom(new Identity().setId("the_room_id").setName("the_room_name")).
+          setUser(new Identity().setId("the_user_id").setName("the_user_name")), "foobar", ar -> {
+      });
+    }));
+  }
+
+  @Test
+  public void testSendMessage(TestContext context) {
+    Async doneLatch = context.async();
+    NonoBot bot = NonoBot.create(vertx);
+    bot.createClient(context.asyncAssertSuccess(client -> {
+      client.messageHandler(msg -> {
+        context.assertEquals("the_id", msg.target().getId());
+        context.assertEquals("the_name", msg.target().getName());
+        context.assertEquals("the_message", msg.body());
+        doneLatch.complete();
+      });
+    }));
+    router.sendMessage(new SendOptions().setTarget(new Identity().setId("the_id").setName("the_name")), "the_message");
   }
 }

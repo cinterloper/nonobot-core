@@ -19,6 +19,7 @@ package io.nonobot.rxjava.core.message;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.core.message.SendOptions;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -88,6 +89,17 @@ public class MessageRouter {
       }
     }));
     return ret;
+  }
+
+  /**
+   * Send a message to a target.
+   * @param options the options
+   * @param body the message body
+   * @return this object so it can be used fluently
+   */
+  public MessageRouter sendMessage(SendOptions options, String body) { 
+    this.delegate.sendMessage(options, body);
+    return this;
   }
 
   /**

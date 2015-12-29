@@ -20,11 +20,14 @@ import io.nonobot.core.NonoBot;
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
+import io.nonobot.core.client.Message;
 import io.nonobot.core.client.impl.BotClientImpl;
+import io.nonobot.core.identity.Identity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,9 +51,29 @@ public class NonoBotImpl implements NonoBot {
   final Vertx vertx;
   private boolean closed;
   private Set<BotAdapter> adapters = new HashSet<>();
+  final List<BotClientImpl> clients = new ArrayList<>();
 
   public NonoBotImpl(Vertx vertx) {
     this.vertx = vertx;
+
+    vertx.eventBus().<JsonObject>consumer("nonobot.outbound", msg -> {
+      Identity target = new Identity(msg.body().getJsonObject("target"));
+      String body = msg.body().getString("body");
+      synchronized (NonoBotImpl.this) {
+        for (BotClientImpl client : clients) {
+          client.handle(new Message() {
+            @Override
+            public Identity target() {
+              return target;
+            }
+            @Override
+            public String body() {
+              return body;
+            }
+          });
+        }
+      }
+    });
   }
 
   @Override
@@ -70,7 +93,18 @@ public class NonoBotImpl implements NonoBot {
 
   @Override
   public NonoBot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler) {
-    handler.handle(Future.succeededFuture(new BotClientImpl(this, options)));
+    BotClientImpl client = new BotClientImpl(this, vertx.getOrCreateContext(), options) {
+      @Override
+      public void close() {
+        synchronized (NonoBotImpl.this) {
+          clients.remove(this);
+        }
+      }
+    };
+    synchronized (this) {
+      clients.add(client);
+    }
+    handler.handle(Future.succeededFuture(client));
     return this;
   }
 
@@ -86,16 +120,19 @@ public class NonoBotImpl implements NonoBot {
         throw new IllegalStateException("Closed");
       }
     }
-    BotClientImpl client = new BotClientImpl(this, new ClientOptions()) {
+    BotClientImpl client = new BotClientImpl(this, vertx.getOrCreateContext(), new ClientOptions()) {
       @Override
       public void close() {
         synchronized (NonoBotImpl.this) {
+          clients.remove(this);
           adapters.remove(adapter);
         }
-        super.close();
         reconnect(adapter, reconnectPeriod);
       }
     };
+    synchronized (this) {
+      clients.add(client);
+    }
     Future<Void> completionFuture = Future.future();
     completionFuture.setHandler(ar -> {
       if (ar.succeeded()) {
@@ -105,7 +142,6 @@ public class NonoBotImpl implements NonoBot {
             return;
           }
         }
-        adapter.close();
       } else {
         System.out.println("Connection failure");
         ar.cause().printStackTrace();

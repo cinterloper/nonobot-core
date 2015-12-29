@@ -19,8 +19,10 @@ package io.nonobot.core.client.impl;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
-import io.nonobot.core.client.ProcessOptions;
+import io.nonobot.core.client.ReceiveOptions;
+import io.nonobot.core.client.Message;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.MessageConsumer;
@@ -37,20 +39,37 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class BotClientImpl implements BotClient {
+public abstract class BotClientImpl implements BotClient {
 
+  final Context context;
   private final NonoBot bot;
   private volatile Pattern botPattern;
   private final ClientOptions options;
+  Handler<Message> messageHandler;
   Handler<Void> closeHandler;
 
-  public BotClientImpl(NonoBot bot, ClientOptions options) {
+  public BotClientImpl(NonoBot bot, Context context, ClientOptions options) {
 
     // Default names
     rename(Arrays.asList(bot.name(), "@" + bot.name()));
 
+
+
+    this.context = context;
     this.bot = bot;
     this.options = new ClientOptions(options);
+  }
+
+  public void handle(Message msg) {
+    Handler<Message> handler;
+    synchronized (this) {
+      handler = messageHandler;
+    }
+    if (handler != null) {
+      context.runOnContext(v -> {
+        handler.handle(msg);
+      });
+    }
   }
 
   @Override
@@ -80,12 +99,7 @@ public class BotClientImpl implements BotClient {
   }
 
   @Override
-  public void process(String message, Handler<AsyncResult<String>> replyHandler) {
-    process(new ProcessOptions(), message, replyHandler);
-  }
-
-  @Override
-  public void process(ProcessOptions options, String message, Handler<AsyncResult<String>> replyHandler) {
+  public void receiveMessage(ReceiveOptions options, String message, Handler<AsyncResult<String>> replyHandler) {
     String replyAddress = UUID.randomUUID().toString();
     Future<String> reply = Future.future();
     reply.setHandler(replyHandler);
@@ -107,15 +121,21 @@ public class BotClientImpl implements BotClient {
     consumer.completionHandler(ar -> {
       if (ar.succeeded()) {
         Matcher botMatcher = botPattern.matcher(message);
-        JsonObject body = new JsonObject().put("replyAddress", replyAddress);
+        JsonObject msg = new JsonObject().put("replyAddress", replyAddress);
         if (botMatcher.find()) {
-          body.put("respond", true);
-          body.put("content", botMatcher.group(1));
+          msg.put("respond", true);
+          msg.put("content", botMatcher.group(1));
         } else {
-          body.put("respond", false);
-          body.put("content", message);
+          msg.put("respond", false);
+          msg.put("content", message);
         }
-        bot.vertx().eventBus().publish("nonobot.broadcast", body);
+        if (options.getUser() != null) {
+          msg.put("user", options.getUser().toJson());
+        }
+        if (options.getRoom() != null) {
+          msg.put("room", options.getRoom().toJson());
+        }
+        bot.vertx().eventBus().publish("nonobot.inbound", msg);
         bot.vertx().setTimer(options.getTimeout(), timerID -> {
           if (!reply.isComplete()) {
             consumer.unregister();
@@ -129,11 +149,14 @@ public class BotClientImpl implements BotClient {
   }
 
   @Override
-  public synchronized void closeHandler(Handler<Void> handler) {
-    closeHandler = handler;
+  public synchronized BotClient messageHandler(Handler<Message> handler) {
+    messageHandler = handler;
+    return this;
   }
 
   @Override
-  public void close() {
+  public synchronized BotClient closeHandler(Handler<Void> handler) {
+    closeHandler = handler;
+    return this;
   }
 }

@@ -19,7 +19,9 @@ package io.nonobot.test;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import org.junit.Test;
@@ -31,7 +33,7 @@ import java.util.function.Function;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class AdapterTest extends BaseTest {
+public class BotAdapterTest extends BaseTest {
 
   static Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> factory1 = new Function<BiConsumer<BotClient, Future<Void>>, BotAdapter>() {
     @Override
@@ -128,6 +130,35 @@ public class AdapterTest extends BaseTest {
           break;
         }
       }
+    });
+    bot.registerAdapter(adapter, 100);
+  }
+
+  @Test
+  public void testSendMessage1(TestContext context) throws Exception {
+    testSendMessage(context, factory1);
+  }
+
+  @Test
+  public void testSendMessage2(TestContext context) throws Exception {
+    testSendMessage(context, factory2);
+  }
+
+  private void testSendMessage(TestContext context, Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> adapterFactory) throws Exception {
+    Async async = context.async();
+    NonoBot bot = NonoBot.create(vertx);
+    Context ctx = vertx.getOrCreateContext();
+    BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
+      client.messageHandler(msg -> {
+        context.assertEquals("the_body", msg.body());
+        context.assertEquals("the_id", msg.target().getId());
+        context.assertEquals("the_name", msg.target().getName());
+        async.complete();
+      });
+      completionFuture.complete();
+      ctx.runOnContext(v -> {
+        vertx.eventBus().send("nonobot.outbound", new JsonObject().put("target", new JsonObject().put("id", "the_id").put("name", "the_name")).put("body", "the_body"));
+      });
     });
     bot.registerAdapter(adapter, 100);
   }

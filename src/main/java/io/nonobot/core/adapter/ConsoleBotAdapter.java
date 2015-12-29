@@ -18,6 +18,8 @@ package io.nonobot.core.adapter;
 
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.client.BotClient;
+import io.nonobot.core.client.ReceiveOptions;
+import io.nonobot.core.identity.Identity;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 
@@ -31,6 +33,8 @@ public class ConsoleBotAdapter implements BotAdapter {
 
   private Thread consoleThread;
   private final NonoBot bot;
+  private final Console console = System.console();
+  private final PrintWriter writer = console.writer();
 
   public ConsoleBotAdapter(NonoBot bot) {
     this.bot = bot;
@@ -57,6 +61,12 @@ public class ConsoleBotAdapter implements BotAdapter {
   void run(BotClient client) {
     Console console = System.console();
     PrintWriter writer = console.writer();
+    client.messageHandler(msg -> {
+      if (msg.target().getId().equals("console")) {
+        System.out.println(msg.body());
+        System.out.print("\n" + client.bot().name() + "> ");
+      }
+    });
     while (true) {
       writer.write("\n" + client.bot().name() + "> ");
       writer.flush();
@@ -64,7 +74,7 @@ public class ConsoleBotAdapter implements BotAdapter {
       if (line == null) {
         return;
       }
-      client.process(line, ar -> {
+      client.receiveMessage(new ReceiveOptions().setUser(new Identity().setId("console").setName("console")), line, ar -> {
         if (ar.succeeded()) {
           System.out.println(ar.result());
           System.out.print("\n" + client.bot().name() + "> ");

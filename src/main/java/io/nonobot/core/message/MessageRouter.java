@@ -16,7 +16,9 @@
 
 package io.nonobot.core.message;
 
+import io.nonobot.core.identity.Identity;
 import io.nonobot.core.message.impl.MessageRouterImpl;
+import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -64,6 +66,16 @@ public interface MessageRouter {
    * @return the message handler object
    */
   MessageHandler respond(String pattern, Handler<Message> handler);
+
+  /**
+   * Send a message to a target.
+   *
+   * @param options the options
+   * @param body the message body
+   * @return this object so it can be used fluently
+   */
+  @Fluent
+  MessageRouter sendMessage(SendOptions options, String body);
 
   /**
    * Close the message router.
