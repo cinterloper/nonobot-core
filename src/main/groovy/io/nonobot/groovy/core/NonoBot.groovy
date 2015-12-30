@@ -18,6 +18,7 @@ package io.nonobot.groovy.core;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.core.BotOptions
 import io.nonobot.groovy.core.adapter.BotAdapter
 import io.nonobot.core.client.ClientOptions
 import io.vertx.groovy.core.Vertx
@@ -37,12 +38,22 @@ public class NonoBot {
     return delegate;
   }
   /**
-   * Create a new bot for the Vert.x instance.
+   * Create a new bot for the Vert.x instance
    * @param vertx the Vert.x instance
    * @return the created bot
    */
   public static NonoBot create(Vertx vertx) {
     def ret= InternalHelper.safeCreate(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.NonoBot.class);
+    return ret;
+  }
+  /**
+   * Create a new bot for the Vert.x instance and specified options.
+   * @param vertx the Vert.x instance
+   * @param options the options (see <a href="../../../../../../cheatsheet/BotOptions.html">BotOptions</a>)
+   * @return the created bot
+   */
+  public static NonoBot create(Vertx vertx, Map<String, Object> options) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx)vertx.getDelegate(), options != null ? new io.nonobot.core.BotOptions(new io.vertx.core.json.JsonObject(options)) : null), io.nonobot.groovy.core.NonoBot.class);
     return ret;
   }
   /**

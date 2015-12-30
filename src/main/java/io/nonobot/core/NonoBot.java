@@ -36,13 +36,24 @@ import io.vertx.core.Vertx;
 public interface NonoBot {
 
   /**
-   * Create a new bot for the Vert.x instance.
+   * Create a new bot for the Vert.x instance
    *
    * @param vertx the Vert.x instance
    * @return the created bot
    */
   static NonoBot create(Vertx vertx) {
-    return new NonoBotImpl(vertx);
+    return new NonoBotImpl(vertx, new BotOptions());
+  }
+
+  /**
+   * Create a new bot for the Vert.x instance and specified options.
+   *
+   * @param vertx the Vert.x instance
+   * @param options the options
+   * @return the created bot
+   */
+  static NonoBot create(Vertx vertx, BotOptions options) {
+    return new NonoBotImpl(vertx, options);
   }
 
   /**

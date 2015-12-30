@@ -19,6 +19,7 @@ package io.nonobot.rxjava.core;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.core.BotOptions;
 import io.nonobot.rxjava.core.adapter.BotAdapter;
 import io.nonobot.core.client.ClientOptions;
 import io.vertx.rxjava.core.Vertx;
@@ -46,12 +47,23 @@ public class NonoBot {
   }
 
   /**
-   * Create a new bot for the Vert.x instance.
+   * Create a new bot for the Vert.x instance
    * @param vertx the Vert.x instance
    * @return the created bot
    */
   public static NonoBot create(Vertx vertx) { 
     NonoBot ret= NonoBot.newInstance(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx) vertx.getDelegate()));
+    return ret;
+  }
+
+  /**
+   * Create a new bot for the Vert.x instance and specified options.
+   * @param vertx the Vert.x instance
+   * @param options the options
+   * @return the created bot
+   */
+  public static NonoBot create(Vertx vertx, BotOptions options) { 
+    NonoBot ret= NonoBot.newInstance(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx) vertx.getDelegate(), options));
     return ret;
   }
 

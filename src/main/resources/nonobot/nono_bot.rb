@@ -16,14 +16,17 @@ module Nonobot
     def j_del
       @j_del
     end
-    #  Create a new bot for the Vert.x instance.
+    #  Create a new bot for the Vert.x instance and specified options.
     # @param [::Vertx::Vertx] vertx the Vert.x instance
+    # @param [Hash] options the options
     # @return [::Nonobot::NonoBot] the created bot
-    def self.create(vertx=nil)
-      if vertx.class.method_defined?(:j_del) && !block_given?
+    def self.create(vertx=nil,options=nil)
+      if vertx.class.method_defined?(:j_del) && !block_given? && options == nil
         return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::NonoBot.java_method(:create, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::NonoBot)
+      elsif vertx.class.method_defined?(:j_del) && options.class == Hash && !block_given?
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::NonoBot.java_method(:create, [Java::IoVertxCore::Vertx.java_class,Java::IoNonobotCore::BotOptions.java_class]).call(vertx.j_del,Java::IoNonobotCore::BotOptions.new(::Vertx::Util::Utils.to_json_object(options))),::Nonobot::NonoBot)
       end
-      raise ArgumentError, "Invalid arguments when calling create(vertx)"
+      raise ArgumentError, "Invalid arguments when calling create(vertx,options)"
     end
     #  @return the Vert.x instance used by this bot
     # @return [::Vertx::Vertx]

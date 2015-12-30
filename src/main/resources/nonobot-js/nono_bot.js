@@ -23,6 +23,7 @@ var BotClient = require('nonobot-js/bot_client');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JNonoBot = io.nonobot.core.NonoBot;
+var BotOptions = io.nonobot.core.BotOptions;
 var ClientOptions = io.nonobot.core.client.ClientOptions;
 
 /**
@@ -140,16 +141,19 @@ var NonoBot = function(j_val) {
 };
 
 /**
- Create a new bot for the Vert.x instance.
+ Create a new bot for the Vert.x instance and specified options.
 
  @memberof module:nonobot-js/nono_bot
  @param vertx {Vertx} the Vert.x instance 
+ @param options {Object} the options 
  @return {NonoBot} the created bot
  */
-NonoBot.create = function(vertx) {
+NonoBot.create = function() {
   var __args = arguments;
   if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-    return utils.convReturnVertxGen(JNonoBot["create(io.vertx.core.Vertx)"](vertx._jdel), NonoBot);
+    return utils.convReturnVertxGen(JNonoBot["create(io.vertx.core.Vertx)"](__args[0]._jdel), NonoBot);
+  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && (typeof __args[1] === 'object' && __args[1] != null)) {
+    return utils.convReturnVertxGen(JNonoBot["create(io.vertx.core.Vertx,io.nonobot.core.BotOptions)"](__args[0]._jdel, __args[1] != null ? new BotOptions(new JsonObject(JSON.stringify(__args[1]))) : null), NonoBot);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 

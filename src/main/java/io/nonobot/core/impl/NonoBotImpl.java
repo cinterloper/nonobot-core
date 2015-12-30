@@ -16,6 +16,7 @@
 
 package io.nonobot.core.impl;
 
+import io.nonobot.core.BotOptions;
 import io.nonobot.core.NonoBot;
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
@@ -39,6 +40,7 @@ import java.util.Set;
  */
 public class NonoBotImpl implements NonoBot {
 
+  final BotOptions options;
   final String name = "nono"; // Bot name : make this configurable via options
   final Vertx vertx;
   private boolean closed;
@@ -46,7 +48,8 @@ public class NonoBotImpl implements NonoBot {
   final List<BotClientImpl> clients = new ArrayList<>();
   final String outboundAddress = "bots." + name + ".outbound";
 
-  public NonoBotImpl(Vertx vertx) {
+  public NonoBotImpl(Vertx vertx, BotOptions options) {
+    this.options = new BotOptions(options);
     this.vertx = vertx;
 
     vertx.eventBus().<JsonObject>consumer(outboundAddress, msg -> {
