@@ -68,6 +68,17 @@ public class Bot {
   }
 
   /**
+   * Run the bot with the , the bot will take care of the adapter life cycle and restart it when
+   * it gets disconnected.
+   * @param adapter the bot adapter
+   * @return this instance so it can be used fluently
+   */
+  public Bot run(BotAdapter adapter) { 
+    this.delegate.run((io.nonobot.core.adapter.BotAdapter) adapter.getDelegate());
+    return this;
+  }
+
+  /**
    * @return the Vert.x instance used by this bot
    * @return 
    */
@@ -153,28 +164,6 @@ public class Bot {
     io.vertx.rx.java.ObservableFuture<BotClient> handler = io.vertx.rx.java.RxHelper.observableFuture();
     createClient(options, handler.toHandler());
     return handler;
-  }
-
-  /**
-   * Like {@link io.nonobot.core.Bot} with a period of <code>1</code> second.
-   * @param adapter 
-   * @return 
-   */
-  public Bot registerAdapter(BotAdapter adapter) { 
-    this.delegate.registerAdapter((io.nonobot.core.adapter.BotAdapter) adapter.getDelegate());
-    return this;
-  }
-
-  /**
-   * Add an  with the bot, the bot will take care of the adapter life cycle and restart it when
-   * it gets disconnected;
-   * @param adapter the bot adapter
-   * @param reconnectPeriod how long wait before it attempts to reconnect in millis
-   * @return this instance so it can be used fluently
-   */
-  public Bot registerAdapter(BotAdapter adapter, long reconnectPeriod) { 
-    this.delegate.registerAdapter((io.nonobot.core.adapter.BotAdapter) adapter.getDelegate(), reconnectPeriod);
-    return this;
   }
 
   /**

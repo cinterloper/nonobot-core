@@ -17,6 +17,7 @@
 package io.nonobot.test;
 
 import io.nonobot.core.Bot;
+import io.nonobot.core.BotOptions;
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
 import io.vertx.core.Context;
@@ -72,7 +73,7 @@ public class BotAdapterTest extends BaseTest {
   private void testReconnectOnClientClose(TestContext context, Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> adapterFactory) throws Exception {
 
     Async async = context.async();
-    Bot bot = Bot.create(vertx);
+    Bot bot = Bot.create(vertx, new BotOptions().setReconnectPeriod(100));
     AtomicInteger count = new AtomicInteger();
 
     BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
@@ -94,7 +95,7 @@ public class BotAdapterTest extends BaseTest {
         }
       }
     });
-    bot.registerAdapter(adapter, 100);
+    bot.run(adapter);
   }
 
   @Test
@@ -110,7 +111,7 @@ public class BotAdapterTest extends BaseTest {
   private void testReconnectOnFail(TestContext context, Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> adapterFactory) throws Exception {
 
     Async async = context.async();
-    Bot bot = Bot.create(vertx);
+    Bot bot = Bot.create(vertx, new BotOptions().setReconnectPeriod(100));
     AtomicInteger count = new AtomicInteger();
 
     BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
@@ -131,7 +132,7 @@ public class BotAdapterTest extends BaseTest {
         }
       }
     });
-    bot.registerAdapter(adapter, 100);
+    bot.run(adapter);
   }
 
   @Test
@@ -160,6 +161,6 @@ public class BotAdapterTest extends BaseTest {
         vertx.eventBus().send("bots.nono.outbound", new JsonObject().put("target", new JsonObject().put("id", "the_id").put("name", "the_name")).put("body", "the_body"));
       });
     });
-    bot.registerAdapter(adapter, 100);
+    bot.run(adapter);
   }
 }

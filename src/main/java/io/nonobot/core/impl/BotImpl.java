@@ -31,25 +31,23 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class BotImpl implements Bot {
 
-  final BotOptions options;
+  final long reconnectPeriod;
   final String name = "nono"; // Bot name : make this configurable via options
   final Vertx vertx;
+  private BotAdapter adapter;
   private boolean closed;
-  private Set<BotAdapter> adapters = new HashSet<>();
   final List<BotClientImpl> clients = new ArrayList<>();
   final String outboundAddress = "bots." + name + ".outbound";
 
   public BotImpl(Vertx vertx, BotOptions options) {
-    this.options = new BotOptions(options);
+    this.reconnectPeriod = options.getReconnectPeriod();
     this.vertx = vertx;
 
     vertx.eventBus().<JsonObject>consumer(outboundAddress, msg -> {
@@ -105,25 +103,25 @@ public class BotImpl implements Bot {
   }
 
   @Override
-  public Bot registerAdapter(BotAdapter adapter) {
-    return registerAdapter(adapter, 1000);
+  public Bot run(BotAdapter adapter) {
+    synchronized (this) {
+      if (this.adapter != null) {
+        throw new IllegalStateException("Already running");
+      }
+      this.adapter = adapter;
+    }
+    connect(adapter);
+    return this;
   }
 
-  @Override
-  public Bot registerAdapter(BotAdapter adapter, long reconnectPeriod) {
-    synchronized (this) {
-      if (closed) {
-        throw new IllegalStateException("Closed");
-      }
-    }
+  private void connect(BotAdapter adapter) {
     BotClientImpl client = new BotClientImpl(this, vertx.getOrCreateContext(), new ClientOptions()) {
       @Override
       public void close() {
         synchronized (BotImpl.this) {
           clients.remove(this);
-          adapters.remove(adapter);
         }
-        reconnect(adapter, reconnectPeriod);
+        reconnect(adapter);
       }
     };
     synchronized (this) {
@@ -131,48 +129,38 @@ public class BotImpl implements Bot {
     }
     Future<Void> completionFuture = Future.future();
     completionFuture.setHandler(ar -> {
-      if (ar.succeeded()) {
-        synchronized (BotImpl.this) {
-          adapters.add(adapter);
-          if (!closed) {
-            return;
-          }
-        }
-      } else {
+      if (ar.failed()) {
         System.out.println("Connection failure");
         ar.cause().printStackTrace();
-        reconnect(adapter, reconnectPeriod);
+        reconnect(adapter);
       }
     });
     adapter.connect(client, completionFuture);
-    return this;
   }
 
-  private synchronized void reconnect(BotAdapter adapter, long reconnectPeriod) {
+  private synchronized void reconnect(BotAdapter adapter) {
     if (closed) {
       return;
     }
     if (reconnectPeriod > 0) {
       System.out.println("Connection failure, will reconnect after " + reconnectPeriod);
       vertx.setTimer(reconnectPeriod, id -> {
-        registerAdapter(adapter, reconnectPeriod);
+        connect(adapter);
       });
     }
   }
 
   @Override
   public void close() {
-    List<BotAdapter> toClose;
+    BotAdapter adapter;
     synchronized (this) {
       if (!closed) {
         closed = true;
-        toClose = new ArrayList<>(adapters);
+        adapter = this.adapter;
       } else {
         return;
       }
     }
-    for (BotAdapter adapter : toClose) {
-      adapter.close();
-    }
+    adapter.close();
   }
 }

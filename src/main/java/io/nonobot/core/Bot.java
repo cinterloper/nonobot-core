@@ -57,6 +57,16 @@ public interface Bot {
   }
 
   /**
+   * Run the bot with the {@literal adapter}, the bot will take care of the adapter life cycle and restart it when
+   * it gets disconnected, until {@link #close()} is called.
+   *
+   * @param adapter the bot adapter
+   * @return this instance so it can be used fluently
+   */
+  @Fluent
+  Bot run(BotAdapter adapter);
+
+  /**
    * @return the Vert.x instance used by this bot
    */
   @CacheReturn
@@ -86,23 +96,6 @@ public interface Bot {
    */
   @Fluent
   Bot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler);
-
-  /**
-   * Like {@link #registerAdapter(BotAdapter,long)} with a period of {@code 1} second.
-   */
-  @Fluent
-  Bot registerAdapter(BotAdapter adapter);
-
-  /**
-   * Add an {@link BotAdapter} with the bot, the bot will take care of the adapter life cycle and restart it when
-   * it gets disconnected;
-   *
-   * @param adapter the bot adapter
-   * @param reconnectPeriod how long wait before it attempts to reconnect in millis
-   * @return this instance so it can be used fluently
-   */
-  @Fluent
-  Bot registerAdapter(BotAdapter adapter, long reconnectPeriod);
 
   /**
    * Close the bot.

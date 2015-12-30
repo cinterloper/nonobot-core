@@ -24,6 +24,7 @@ import io.nonobot.core.adapter.BotAdapter;
  */
 public interface BotAdapterFactory {
 
+
   /**
    * Create a new bot adapter or return null if no adapter could be created.
    *

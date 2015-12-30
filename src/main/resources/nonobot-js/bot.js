@@ -37,6 +37,22 @@ var Bot = function(j_val) {
   var that = this;
 
   /**
+   Run the bot with the , the bot will take care of the adapter life cycle and restart it when
+   it gets disconnected.
+
+   @public
+   @param adapter {BotAdapter} the bot adapter 
+   @return {Bot} this instance so it can be used fluently
+   */
+  this.run = function(adapter) {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+      j_bot["run(io.nonobot.core.adapter.BotAdapter)"](adapter._jdel);
+      return that;
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
    @return the Vert.x instance used by this bot
 
    @public
@@ -97,26 +113,6 @@ var Bot = function(j_val) {
         __args[1](null, ar.cause());
       }
     });
-      return that;
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-   Add an  with the bot, the bot will take care of the adapter life cycle and restart it when
-   it gets disconnected;
-
-   @public
-   @param adapter {BotAdapter} the bot adapter 
-   @param reconnectPeriod {number} how long wait before it attempts to reconnect in millis 
-   @return {Bot} this instance so it can be used fluently
-   */
-  this.registerAdapter = function() {
-    var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-      j_bot["registerAdapter(io.nonobot.core.adapter.BotAdapter)"](__args[0]._jdel);
-      return that;
-    }  else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] ==='number') {
-      j_bot["registerAdapter(io.nonobot.core.adapter.BotAdapter,long)"](__args[0]._jdel, __args[1]);
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };

@@ -32,17 +32,15 @@ import java.io.PrintWriter;
 public class ConsoleBotAdapter implements BotAdapter {
 
   private Thread consoleThread;
-  private final Bot bot;
   private final Console console = System.console();
   private final PrintWriter writer = console.writer();
 
-  public ConsoleBotAdapter(Bot bot) {
-    this.bot = bot;
+  public ConsoleBotAdapter() {
   }
 
   @Override
   public void connect(BotClient client, Future<Void> completionFuture) {
-    Context context = bot.vertx().getOrCreateContext();
+    Context context = client.bot().vertx().getOrCreateContext();
     synchronized (ConsoleBotAdapter.this) {
       consoleThread = new Thread(() -> {
         context.runOnContext(v -> {

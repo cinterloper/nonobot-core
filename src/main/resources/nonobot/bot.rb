@@ -28,6 +28,17 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling create(vertx,options)"
     end
+    #  Run the bot with the , the bot will take care of the adapter life cycle and restart it when
+    #  it gets disconnected.
+    # @param [::Nonobot::BotAdapter] adapter the bot adapter
+    # @return [self]
+    def run(adapter=nil)
+      if adapter.class.method_defined?(:j_del) && !block_given?
+        @j_del.java_method(:run, [Java::IoNonobotCoreAdapter::BotAdapter.java_class]).call(adapter.j_del)
+        return self
+      end
+      raise ArgumentError, "Invalid arguments when calling run(adapter)"
+    end
     #  @return the Vert.x instance used by this bot
     # @return [::Vertx::Vertx]
     def vertx
@@ -63,21 +74,6 @@ module Nonobot
         return self
       end
       raise ArgumentError, "Invalid arguments when calling create_client(options)"
-    end
-    #  Add an  with the bot, the bot will take care of the adapter life cycle and restart it when
-    #  it gets disconnected;
-    # @param [::Nonobot::BotAdapter] adapter the bot adapter
-    # @param [Fixnum] reconnectPeriod how long wait before it attempts to reconnect in millis
-    # @return [self]
-    def register_adapter(adapter=nil,reconnectPeriod=nil)
-      if adapter.class.method_defined?(:j_del) && !block_given? && reconnectPeriod == nil
-        @j_del.java_method(:registerAdapter, [Java::IoNonobotCoreAdapter::BotAdapter.java_class]).call(adapter.j_del)
-        return self
-      elsif adapter.class.method_defined?(:j_del) && reconnectPeriod.class == Fixnum && !block_given?
-        @j_del.java_method(:registerAdapter, [Java::IoNonobotCoreAdapter::BotAdapter.java_class,Java::long.java_class]).call(adapter.j_del,reconnectPeriod)
-        return self
-      end
-      raise ArgumentError, "Invalid arguments when calling register_adapter(adapter,reconnectPeriod)"
     end
     #  Close the bot.
     # @return [void]
