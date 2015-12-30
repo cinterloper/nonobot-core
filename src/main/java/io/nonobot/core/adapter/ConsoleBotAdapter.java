@@ -16,7 +16,7 @@
 
 package io.nonobot.core.adapter;
 
-import io.nonobot.core.NonoBot;
+import io.nonobot.core.Bot;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ReceiveOptions;
 import io.nonobot.core.identity.Identity;
@@ -32,11 +32,11 @@ import java.io.PrintWriter;
 public class ConsoleBotAdapter implements BotAdapter {
 
   private Thread consoleThread;
-  private final NonoBot bot;
+  private final Bot bot;
   private final Console console = System.console();
   private final PrintWriter writer = console.writer();
 
-  public ConsoleBotAdapter(NonoBot bot) {
+  public ConsoleBotAdapter(Bot bot) {
     this.bot = bot;
   }
 

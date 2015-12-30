@@ -19,7 +19,7 @@ package io.nonobot.core;
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
-import io.nonobot.core.impl.NonoBotImpl;
+import io.nonobot.core.impl.BotImpl;
 import io.vertx.codegen.annotations.CacheReturn;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
@@ -33,7 +33,7 @@ import io.vertx.core.Vertx;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
-public interface NonoBot {
+public interface Bot {
 
   /**
    * Create a new bot for the Vert.x instance
@@ -41,8 +41,8 @@ public interface NonoBot {
    * @param vertx the Vert.x instance
    * @return the created bot
    */
-  static NonoBot create(Vertx vertx) {
-    return new NonoBotImpl(vertx, new BotOptions());
+  static Bot create(Vertx vertx) {
+    return new BotImpl(vertx, new BotOptions());
   }
 
   /**
@@ -52,8 +52,8 @@ public interface NonoBot {
    * @param options the options
    * @return the created bot
    */
-  static NonoBot create(Vertx vertx, BotOptions options) {
-    return new NonoBotImpl(vertx, options);
+  static Bot create(Vertx vertx, BotOptions options) {
+    return new BotImpl(vertx, options);
   }
 
   /**
@@ -75,7 +75,7 @@ public interface NonoBot {
    * @return this instance so it can be used fluently
    */
   @Fluent
-  NonoBot createClient(Handler<AsyncResult<BotClient>> handler);
+  Bot createClient(Handler<AsyncResult<BotClient>> handler);
 
   /**
    * Create a new bot client with the specified {@link ClientOptions}.
@@ -85,13 +85,13 @@ public interface NonoBot {
    * @return this instance so it can be used fluently
    */
   @Fluent
-  NonoBot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler);
+  Bot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler);
 
   /**
    * Like {@link #registerAdapter(BotAdapter,long)} with a period of {@code 1} second.
    */
   @Fluent
-  NonoBot registerAdapter(BotAdapter adapter);
+  Bot registerAdapter(BotAdapter adapter);
 
   /**
    * Add an {@link BotAdapter} with the bot, the bot will take care of the adapter life cycle and restart it when
@@ -102,7 +102,7 @@ public interface NonoBot {
    * @return this instance so it can be used fluently
    */
   @Fluent
-  NonoBot registerAdapter(BotAdapter adapter, long reconnectPeriod);
+  Bot registerAdapter(BotAdapter adapter, long reconnectPeriod);
 
   /**
    * Close the bot.

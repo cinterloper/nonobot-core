@@ -31,14 +31,14 @@ import io.vertx.core.Handler;
  * The bot.
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.NonoBot original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.Bot original} non RX-ified interface using Vert.x codegen.
  */
 
-public class NonoBot {
+public class Bot {
 
-  final io.nonobot.core.NonoBot delegate;
+  final io.nonobot.core.Bot delegate;
 
-  public NonoBot(io.nonobot.core.NonoBot delegate) {
+  public Bot(io.nonobot.core.Bot delegate) {
     this.delegate = delegate;
   }
 
@@ -51,8 +51,8 @@ public class NonoBot {
    * @param vertx the Vert.x instance
    * @return the created bot
    */
-  public static NonoBot create(Vertx vertx) { 
-    NonoBot ret= NonoBot.newInstance(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx) vertx.getDelegate()));
+  public static Bot create(Vertx vertx) { 
+    Bot ret= Bot.newInstance(io.nonobot.core.Bot.create((io.vertx.core.Vertx) vertx.getDelegate()));
     return ret;
   }
 
@@ -62,8 +62,8 @@ public class NonoBot {
    * @param options the options
    * @return the created bot
    */
-  public static NonoBot create(Vertx vertx, BotOptions options) { 
-    NonoBot ret= NonoBot.newInstance(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx) vertx.getDelegate(), options));
+  public static Bot create(Vertx vertx, BotOptions options) { 
+    Bot ret= Bot.newInstance(io.nonobot.core.Bot.create((io.vertx.core.Vertx) vertx.getDelegate(), options));
     return ret;
   }
 
@@ -98,7 +98,7 @@ public class NonoBot {
    * @param handler receives the  after initialization
    * @return this instance so it can be used fluently
    */
-  public NonoBot createClient(Handler<AsyncResult<BotClient>> handler) { 
+  public Bot createClient(Handler<AsyncResult<BotClient>> handler) { 
     this.delegate.createClient(new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
       public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
         AsyncResult<BotClient> f;
@@ -129,7 +129,7 @@ public class NonoBot {
    * @param handler receives the  after initialization
    * @return this instance so it can be used fluently
    */
-  public NonoBot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler) { 
+  public Bot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler) { 
     this.delegate.createClient(options, new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
       public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
         AsyncResult<BotClient> f;
@@ -156,11 +156,11 @@ public class NonoBot {
   }
 
   /**
-   * Like {@link io.nonobot.core.NonoBot} with a period of <code>1</code> second.
+   * Like {@link io.nonobot.core.Bot} with a period of <code>1</code> second.
    * @param adapter 
    * @return 
    */
-  public NonoBot registerAdapter(BotAdapter adapter) { 
+  public Bot registerAdapter(BotAdapter adapter) { 
     this.delegate.registerAdapter((io.nonobot.core.adapter.BotAdapter) adapter.getDelegate());
     return this;
   }
@@ -172,7 +172,7 @@ public class NonoBot {
    * @param reconnectPeriod how long wait before it attempts to reconnect in millis
    * @return this instance so it can be used fluently
    */
-  public NonoBot registerAdapter(BotAdapter adapter, long reconnectPeriod) { 
+  public Bot registerAdapter(BotAdapter adapter, long reconnectPeriod) { 
     this.delegate.registerAdapter((io.nonobot.core.adapter.BotAdapter) adapter.getDelegate(), reconnectPeriod);
     return this;
   }
@@ -187,7 +187,7 @@ public class NonoBot {
   private Vertx cached_0;
   private java.lang.String cached_1;
 
-  public static NonoBot newInstance(io.nonobot.core.NonoBot arg) {
-    return arg != null ? new NonoBot(arg) : null;
+  public static Bot newInstance(io.nonobot.core.Bot arg) {
+    return arg != null ? new Bot(arg) : null;
   }
 }

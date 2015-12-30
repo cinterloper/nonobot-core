@@ -16,7 +16,7 @@
 
 package io.nonobot.test;
 
-import io.nonobot.core.NonoBot;
+import io.nonobot.core.Bot;
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.client.BotClient;
 import io.vertx.core.Context;
@@ -72,7 +72,7 @@ public class BotAdapterTest extends BaseTest {
   private void testReconnectOnClientClose(TestContext context, Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> adapterFactory) throws Exception {
 
     Async async = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     AtomicInteger count = new AtomicInteger();
 
     BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
@@ -110,7 +110,7 @@ public class BotAdapterTest extends BaseTest {
   private void testReconnectOnFail(TestContext context, Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> adapterFactory) throws Exception {
 
     Async async = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     AtomicInteger count = new AtomicInteger();
 
     BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
@@ -146,7 +146,7 @@ public class BotAdapterTest extends BaseTest {
 
   private void testSendMessage(TestContext context, Function<BiConsumer<BotClient, Future<Void>>, BotAdapter> adapterFactory) throws Exception {
     Async async = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     Context ctx = vertx.getOrCreateContext();
     BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
       client.messageHandler(msg -> {

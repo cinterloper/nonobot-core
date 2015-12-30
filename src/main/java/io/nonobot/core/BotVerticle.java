@@ -36,9 +36,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class BotVerticle extends AbstractVerticle {
 
-  private static final ConcurrentMap<NonoBot, Object> initializedInstances = new ConcurrentHashMap<>();
+  private static final ConcurrentMap<Bot, Object> initializedInstances = new ConcurrentHashMap<>();
 
-  private NonoBot bot;
+  private Bot bot;
   private final Config config = new Config() {
     @Override
     public String getProperty(String name) {
@@ -58,7 +58,7 @@ public class BotVerticle extends AbstractVerticle {
       req.response().putHeader("Content-Type", "text/plain").end("Application started");
     }).listen(Integer.getInteger("http.port", 8080), System.getProperty("http.address", "localhost"));
 
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
 
     if (initializedInstances.putIfAbsent(bot, "whatever") == null) {
       Iterator<BotAdapterFactory> adapterFactoryIt = ServiceLoader.load(BotAdapterFactory.class).iterator();

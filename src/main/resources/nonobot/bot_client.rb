@@ -1,5 +1,5 @@
+require 'nonobot/bot'
 require 'nonobot/message'
-require 'nonobot/nono_bot'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.client.BotClient
 module Nonobot
@@ -16,10 +16,10 @@ module Nonobot
       @j_del
     end
     #  @return the bot this client exposes.
-    # @return [::Nonobot::NonoBot]
+    # @return [::Nonobot::Bot]
     def bot
       if !block_given?
-        return ::Vertx::Util::Utils.safe_create(@j_del.java_method(:bot, []).call(),::Nonobot::NonoBot)
+        return ::Vertx::Util::Utils.safe_create(@j_del.java_method(:bot, []).call(),::Nonobot::Bot)
       end
       raise ArgumentError, "Invalid arguments when calling bot()"
     end

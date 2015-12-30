@@ -16,7 +16,7 @@
 
 package io.nonobot.core.client;
 
-import io.nonobot.core.NonoBot;
+import io.nonobot.core.Bot;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
@@ -35,7 +35,7 @@ public interface BotClient {
   /**
    * @return the bot this client exposes.
    */
-  NonoBot bot();
+  Bot bot();
 
   /**
    * Rename the bot for this client, when the client process a message it will use the specified {@code name} to

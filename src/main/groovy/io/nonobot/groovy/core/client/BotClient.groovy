@@ -18,9 +18,9 @@ package io.nonobot.groovy.core.client;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.groovy.core.Bot
 import java.util.List
 import io.nonobot.core.client.ReceiveOptions
-import io.nonobot.groovy.core.NonoBot
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
@@ -39,8 +39,8 @@ public class BotClient {
    * @return the bot this client exposes.
    * @return 
    */
-  public NonoBot bot() {
-    def ret= InternalHelper.safeCreate(this.delegate.bot(), io.nonobot.groovy.core.NonoBot.class);
+  public Bot bot() {
+    def ret= InternalHelper.safeCreate(this.delegate.bot(), io.nonobot.groovy.core.Bot.class);
     return ret;
   }
   /**

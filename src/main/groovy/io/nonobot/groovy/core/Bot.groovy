@@ -29,10 +29,10 @@ import io.vertx.core.Handler
  * The bot.
 */
 @CompileStatic
-public class NonoBot {
-  private final def io.nonobot.core.NonoBot delegate;
-  public NonoBot(Object delegate) {
-    this.delegate = (io.nonobot.core.NonoBot) delegate;
+public class Bot {
+  private final def io.nonobot.core.Bot delegate;
+  public Bot(Object delegate) {
+    this.delegate = (io.nonobot.core.Bot) delegate;
   }
   public Object getDelegate() {
     return delegate;
@@ -42,8 +42,8 @@ public class NonoBot {
    * @param vertx the Vert.x instance
    * @return the created bot
    */
-  public static NonoBot create(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.NonoBot.class);
+  public static Bot create(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.Bot.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.Bot.class);
     return ret;
   }
   /**
@@ -52,8 +52,8 @@ public class NonoBot {
    * @param options the options (see <a href="../../../../../../cheatsheet/BotOptions.html">BotOptions</a>)
    * @return the created bot
    */
-  public static NonoBot create(Vertx vertx, Map<String, Object> options) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.NonoBot.create((io.vertx.core.Vertx)vertx.getDelegate(), options != null ? new io.nonobot.core.BotOptions(new io.vertx.core.json.JsonObject(options)) : null), io.nonobot.groovy.core.NonoBot.class);
+  public static Bot create(Vertx vertx, Map<String, Object> options) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.Bot.create((io.vertx.core.Vertx)vertx.getDelegate(), options != null ? new io.nonobot.core.BotOptions(new io.vertx.core.json.JsonObject(options)) : null), io.nonobot.groovy.core.Bot.class);
     return ret;
   }
   /**
@@ -85,7 +85,7 @@ public class NonoBot {
    * @param handler receives the  after initialization
    * @return this instance so it can be used fluently
    */
-  public NonoBot createClient(Handler<AsyncResult<BotClient>> handler) {
+  public Bot createClient(Handler<AsyncResult<BotClient>> handler) {
     this.delegate.createClient(new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
       public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
         AsyncResult<BotClient> f
@@ -105,7 +105,7 @@ public class NonoBot {
    * @param handler receives the  after initialization
    * @return this instance so it can be used fluently
    */
-  public NonoBot createClient(Map<String, Object> options, Handler<AsyncResult<BotClient>> handler) {
+  public Bot createClient(Map<String, Object> options, Handler<AsyncResult<BotClient>> handler) {
     this.delegate.createClient(options != null ? new io.nonobot.core.client.ClientOptions(new io.vertx.core.json.JsonObject(options)) : null, new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
       public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
         AsyncResult<BotClient> f
@@ -120,11 +120,11 @@ public class NonoBot {
     return this;
   }
   /**
-   * Like {@link io.nonobot.groovy.core.NonoBot#registerAdapter} with a period of <code>1</code> second.
+   * Like {@link io.nonobot.groovy.core.Bot#registerAdapter} with a period of <code>1</code> second.
    * @param adapter 
    * @return 
    */
-  public NonoBot registerAdapter(BotAdapter adapter) {
+  public Bot registerAdapter(BotAdapter adapter) {
     this.delegate.registerAdapter((io.nonobot.core.adapter.BotAdapter)adapter.getDelegate());
     return this;
   }
@@ -135,7 +135,7 @@ public class NonoBot {
    * @param reconnectPeriod how long wait before it attempts to reconnect in millis
    * @return this instance so it can be used fluently
    */
-  public NonoBot registerAdapter(BotAdapter adapter, long reconnectPeriod) {
+  public Bot registerAdapter(BotAdapter adapter, long reconnectPeriod) {
     this.delegate.registerAdapter((io.nonobot.core.adapter.BotAdapter)adapter.getDelegate(), reconnectPeriod);
     return this;
   }

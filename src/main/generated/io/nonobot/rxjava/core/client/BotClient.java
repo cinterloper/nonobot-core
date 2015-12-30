@@ -19,9 +19,9 @@ package io.nonobot.rxjava.core.client;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.rxjava.core.Bot;
 import java.util.List;
 import io.nonobot.core.client.ReceiveOptions;
-import io.nonobot.rxjava.core.NonoBot;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -48,8 +48,8 @@ public class BotClient {
    * @return the bot this client exposes.
    * @return 
    */
-  public NonoBot bot() { 
-    NonoBot ret= NonoBot.newInstance(this.delegate.bot());
+  public Bot bot() { 
+    Bot ret= Bot.newInstance(this.delegate.bot());
     return ret;
   }
 

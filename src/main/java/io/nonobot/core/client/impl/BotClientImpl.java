@@ -16,7 +16,7 @@
 
 package io.nonobot.core.client.impl;
 
-import io.nonobot.core.NonoBot;
+import io.nonobot.core.Bot;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.client.ReceiveOptions;
@@ -42,14 +42,14 @@ import java.util.regex.Pattern;
 public abstract class BotClientImpl implements BotClient {
 
   final Context context;
-  private final NonoBot bot;
+  private final Bot bot;
   private volatile Pattern botPattern;
   private final ClientOptions options;
   private final String inboundAddress;
   Handler<Message> messageHandler;
   Handler<Void> closeHandler;
 
-  public BotClientImpl(NonoBot bot, Context context, ClientOptions options) {
+  public BotClientImpl(Bot bot, Context context, ClientOptions options) {
 
     // Default names
     rename(Arrays.asList(bot.name(), "@" + bot.name()));
@@ -94,7 +94,7 @@ public abstract class BotClientImpl implements BotClient {
   }
 
   @Override
-  public NonoBot bot() {
+  public Bot bot() {
     return bot;
   }
 

@@ -2,29 +2,29 @@ require 'nonobot/bot_adapter'
 require 'vertx/vertx'
 require 'nonobot/bot_client'
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.NonoBot
+# Generated from io.nonobot.core.Bot
 module Nonobot
   #  The bot.
-  class NonoBot
+  class Bot
     # @private
-    # @param j_del [::Nonobot::NonoBot] the java delegate
+    # @param j_del [::Nonobot::Bot] the java delegate
     def initialize(j_del)
       @j_del = j_del
     end
     # @private
-    # @return [::Nonobot::NonoBot] the underlying java delegate
+    # @return [::Nonobot::Bot] the underlying java delegate
     def j_del
       @j_del
     end
     #  Create a new bot for the Vert.x instance and specified options.
     # @param [::Vertx::Vertx] vertx the Vert.x instance
     # @param [Hash] options the options
-    # @return [::Nonobot::NonoBot] the created bot
+    # @return [::Nonobot::Bot] the created bot
     def self.create(vertx=nil,options=nil)
       if vertx.class.method_defined?(:j_del) && !block_given? && options == nil
-        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::NonoBot.java_method(:create, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::NonoBot)
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:create, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::Bot)
       elsif vertx.class.method_defined?(:j_del) && options.class == Hash && !block_given?
-        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::NonoBot.java_method(:create, [Java::IoVertxCore::Vertx.java_class,Java::IoNonobotCore::BotOptions.java_class]).call(vertx.j_del,Java::IoNonobotCore::BotOptions.new(::Vertx::Util::Utils.to_json_object(options))),::Nonobot::NonoBot)
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:create, [Java::IoVertxCore::Vertx.java_class,Java::IoNonobotCore::BotOptions.java_class]).call(vertx.j_del,Java::IoNonobotCore::BotOptions.new(::Vertx::Util::Utils.to_json_object(options))),::Nonobot::Bot)
       end
       raise ArgumentError, "Invalid arguments when calling create(vertx,options)"
     end

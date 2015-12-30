@@ -14,7 +14,7 @@
  * under the License.
  */
 
-/** @module nonobot-js/nono_bot */
+/** @module nonobot-js/bot */
 var utils = require('vertx-js/util/utils');
 var BotAdapter = require('nonobot-js/bot_adapter');
 var Vertx = require('vertx-js/vertx');
@@ -22,7 +22,7 @@ var BotClient = require('nonobot-js/bot_client');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JNonoBot = io.nonobot.core.NonoBot;
+var JBot = io.nonobot.core.Bot;
 var BotOptions = io.nonobot.core.BotOptions;
 var ClientOptions = io.nonobot.core.client.ClientOptions;
 
@@ -31,9 +31,9 @@ var ClientOptions = io.nonobot.core.client.ClientOptions;
 
  @class
 */
-var NonoBot = function(j_val) {
+var Bot = function(j_val) {
 
-  var j_nonoBot = j_val;
+  var j_bot = j_val;
   var that = this;
 
   /**
@@ -47,7 +47,7 @@ var NonoBot = function(j_val) {
     var __args = arguments;
     if (__args.length === 0) {
       if (that.cachedvertx == null) {
-        that.cachedvertx = utils.convReturnVertxGen(j_nonoBot["vertx()"](), Vertx);
+        that.cachedvertx = utils.convReturnVertxGen(j_bot["vertx()"](), Vertx);
       }
       return that.cachedvertx;
     } else throw new TypeError('function invoked with invalid arguments');
@@ -64,7 +64,7 @@ var NonoBot = function(j_val) {
     var __args = arguments;
     if (__args.length === 0) {
       if (that.cachedname == null) {
-        that.cachedname = j_nonoBot["name()"]();
+        that.cachedname = j_bot["name()"]();
       }
       return that.cachedname;
     } else throw new TypeError('function invoked with invalid arguments');
@@ -76,12 +76,12 @@ var NonoBot = function(j_val) {
    @public
    @param options {Object} the client options 
    @param handler {function} receives the  after initialization 
-   @return {NonoBot} this instance so it can be used fluently
+   @return {Bot} this instance so it can be used fluently
    */
   this.createClient = function() {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_nonoBot["createClient(io.vertx.core.Handler)"](function(ar) {
+      j_bot["createClient(io.vertx.core.Handler)"](function(ar) {
       if (ar.succeeded()) {
         __args[0](utils.convReturnVertxGen(ar.result(), BotClient), null);
       } else {
@@ -90,7 +90,7 @@ var NonoBot = function(j_val) {
     });
       return that;
     }  else if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
-      j_nonoBot["createClient(io.nonobot.core.client.ClientOptions,io.vertx.core.Handler)"](__args[0] != null ? new ClientOptions(new JsonObject(JSON.stringify(__args[0]))) : null, function(ar) {
+      j_bot["createClient(io.nonobot.core.client.ClientOptions,io.vertx.core.Handler)"](__args[0] != null ? new ClientOptions(new JsonObject(JSON.stringify(__args[0]))) : null, function(ar) {
       if (ar.succeeded()) {
         __args[1](utils.convReturnVertxGen(ar.result(), BotClient), null);
       } else {
@@ -108,15 +108,15 @@ var NonoBot = function(j_val) {
    @public
    @param adapter {BotAdapter} the bot adapter 
    @param reconnectPeriod {number} how long wait before it attempts to reconnect in millis 
-   @return {NonoBot} this instance so it can be used fluently
+   @return {Bot} this instance so it can be used fluently
    */
   this.registerAdapter = function() {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-      j_nonoBot["registerAdapter(io.nonobot.core.adapter.BotAdapter)"](__args[0]._jdel);
+      j_bot["registerAdapter(io.nonobot.core.adapter.BotAdapter)"](__args[0]._jdel);
       return that;
     }  else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] ==='number') {
-      j_nonoBot["registerAdapter(io.nonobot.core.adapter.BotAdapter,long)"](__args[0]._jdel, __args[1]);
+      j_bot["registerAdapter(io.nonobot.core.adapter.BotAdapter,long)"](__args[0]._jdel, __args[1]);
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };
@@ -130,32 +130,32 @@ var NonoBot = function(j_val) {
   this.close = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_nonoBot["close()"]();
+      j_bot["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_nonoBot;
+  this._jdel = j_bot;
 };
 
 /**
  Create a new bot for the Vert.x instance and specified options.
 
- @memberof module:nonobot-js/nono_bot
+ @memberof module:nonobot-js/bot
  @param vertx {Vertx} the Vert.x instance 
  @param options {Object} the options 
- @return {NonoBot} the created bot
+ @return {Bot} the created bot
  */
-NonoBot.create = function() {
+Bot.create = function() {
   var __args = arguments;
   if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-    return utils.convReturnVertxGen(JNonoBot["create(io.vertx.core.Vertx)"](__args[0]._jdel), NonoBot);
+    return utils.convReturnVertxGen(JBot["create(io.vertx.core.Vertx)"](__args[0]._jdel), Bot);
   }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && (typeof __args[1] === 'object' && __args[1] != null)) {
-    return utils.convReturnVertxGen(JNonoBot["create(io.vertx.core.Vertx,io.nonobot.core.BotOptions)"](__args[0]._jdel, __args[1] != null ? new BotOptions(new JsonObject(JSON.stringify(__args[1]))) : null), NonoBot);
+    return utils.convReturnVertxGen(JBot["create(io.vertx.core.Vertx,io.nonobot.core.BotOptions)"](__args[0]._jdel, __args[1] != null ? new BotOptions(new JsonObject(JSON.stringify(__args[1]))) : null), Bot);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function
-module.exports = NonoBot;
+module.exports = Bot;

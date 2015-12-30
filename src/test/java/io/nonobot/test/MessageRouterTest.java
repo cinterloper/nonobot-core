@@ -16,7 +16,7 @@
 
 package io.nonobot.test;
 
-import io.nonobot.core.NonoBot;
+import io.nonobot.core.Bot;
 import io.nonobot.core.client.ReceiveOptions;
 import io.nonobot.core.identity.Identity;
 import io.nonobot.core.message.MessageRouter;
@@ -68,7 +68,7 @@ public class MessageRouterTest extends BaseTest {
           context.assertEquals("echo hello world", msg.body());
           handleLatch.complete();
         });
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), message, ar -> {});
     }));
@@ -81,7 +81,7 @@ public class MessageRouterTest extends BaseTest {
           context.assertEquals("echo hello world", msg.body());
           handleLatch.complete();
         });
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), "echo hello world", ar -> {});
     }));
@@ -90,7 +90,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testTimeout(TestContext context) {
     Async failureLatch = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions().setTimeout(300), "echo hello world", ar -> {
         context.assertTrue(ar.failed());
@@ -102,7 +102,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testHandlerOrder(TestContext context) {
     Async doneLatch = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     router.when("foobar", msg -> {
       msg.reply("1");
       doneLatch.countDown();
@@ -119,7 +119,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testConcurrentReplies(TestContext context) {
     Async doneLatch = context.async(2);
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     Future<Void> replied = Future.future();
     router.when("foobar", msg -> {
       msg.reply("1", context.asyncAssertSuccess());
@@ -148,7 +148,7 @@ public class MessageRouterTest extends BaseTest {
       context.assertEquals("echo hello world", msg.body());
       msg.reply("the_reply");
     });
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.rename(Arrays.asList("bb8", "r2d2"));
       client.receiveMessage(new ReceiveOptions(), "bb8 echo hello world", ar -> {
@@ -163,7 +163,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testIdentity(TestContext context) {
     Async doneLatch = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     router.when("foobar", msg -> {
       Identity room = msg.room();
       context.assertEquals("the_room_id", room.getId());
@@ -184,7 +184,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testSendMessage(TestContext context) {
     Async doneLatch = context.async();
-    NonoBot bot = NonoBot.create(vertx);
+    Bot bot = Bot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.messageHandler(msg -> {
         context.assertEquals("the_id", msg.target().getId());
