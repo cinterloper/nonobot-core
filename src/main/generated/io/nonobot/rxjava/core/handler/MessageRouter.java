@@ -14,12 +14,12 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.message;
+package io.nonobot.rxjava.core.handler;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.core.message.SendOptions;
+import io.nonobot.core.handler.SendOptions;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -28,14 +28,14 @@ import io.vertx.core.Handler;
  * The message router.
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.message.MessageRouter original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.MessageRouter original} non RX-ified interface using Vert.x codegen.
  */
 
 public class MessageRouter {
 
-  final io.nonobot.core.message.MessageRouter delegate;
+  final io.nonobot.core.handler.MessageRouter delegate;
 
-  public MessageRouter(io.nonobot.core.message.MessageRouter delegate) {
+  public MessageRouter(io.nonobot.core.handler.MessageRouter delegate) {
     this.delegate = delegate;
   }
 
@@ -44,7 +44,7 @@ public class MessageRouter {
   }
 
   public static MessageRouter getShared(Vertx vertx) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
     return ret;
   }
 
@@ -56,7 +56,7 @@ public class MessageRouter {
    * @return the message router
    */
   public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
     return ret;
   }
 
@@ -67,8 +67,8 @@ public class MessageRouter {
    * @return the message handler object
    */
   public MessageHandler when(String pattern, Handler<Message> handler) { 
-    MessageHandler ret= MessageHandler.newInstance(this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
+    MessageHandler ret= MessageHandler.newInstance(this.delegate.when(pattern, new Handler<io.nonobot.core.handler.Message>() {
+      public void handle(io.nonobot.core.handler.Message event) {
         handler.handle(new Message(event));
       }
     }));
@@ -83,8 +83,8 @@ public class MessageRouter {
    * @return the message handler object
    */
   public MessageHandler respond(String pattern, Handler<Message> handler) { 
-    MessageHandler ret= MessageHandler.newInstance(this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
+    MessageHandler ret= MessageHandler.newInstance(this.delegate.respond(pattern, new Handler<io.nonobot.core.handler.Message>() {
+      public void handle(io.nonobot.core.handler.Message event) {
         handler.handle(new Message(event));
       }
     }));
@@ -110,7 +110,7 @@ public class MessageRouter {
   }
 
 
-  public static MessageRouter newInstance(io.nonobot.core.message.MessageRouter arg) {
+  public static MessageRouter newInstance(io.nonobot.core.handler.MessageRouter arg) {
     return arg != null ? new MessageRouter(arg) : null;
   }
 }

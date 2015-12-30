@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.message;
+package io.nonobot.core.handler;
 
-import io.nonobot.core.identity.Identity;
-import io.nonobot.core.message.impl.MessageRouterImpl;
+import io.nonobot.core.handler.impl.MessageRouterImpl;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;

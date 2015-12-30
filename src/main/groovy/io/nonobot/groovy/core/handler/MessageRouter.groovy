@@ -14,11 +14,11 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.message;
+package io.nonobot.groovy.core.handler;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.nonobot.core.message.SendOptions
+import io.nonobot.core.handler.SendOptions
 import io.vertx.groovy.core.Vertx
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
@@ -27,15 +27,15 @@ import io.vertx.core.Handler
 */
 @CompileStatic
 public class MessageRouter {
-  private final def io.nonobot.core.message.MessageRouter delegate;
+  private final def io.nonobot.core.handler.MessageRouter delegate;
   public MessageRouter(Object delegate) {
-    this.delegate = (io.nonobot.core.message.MessageRouter) delegate;
+    this.delegate = (io.nonobot.core.handler.MessageRouter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
   public static MessageRouter getShared(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.message.MessageRouter.class);
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.handler.MessageRouter.class);
     return ret;
   }
   /**
@@ -46,7 +46,7 @@ public class MessageRouter {
    * @return the message router
    */
   public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.message.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), initHandler), io.nonobot.groovy.core.message.MessageRouter.class);
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), initHandler), io.nonobot.groovy.core.handler.MessageRouter.class);
     return ret;
   }
   /**
@@ -56,11 +56,11 @@ public class MessageRouter {
    * @return the message handler object
    */
   public MessageHandler when(String pattern, Handler<Message> handler) {
-    def ret= InternalHelper.safeCreate(this.delegate.when(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
-        handler.handle(new io.nonobot.groovy.core.message.Message(event));
+    def ret= InternalHelper.safeCreate(this.delegate.when(pattern, new Handler<io.nonobot.core.handler.Message>() {
+      public void handle(io.nonobot.core.handler.Message event) {
+        handler.handle(new io.nonobot.groovy.core.handler.Message(event));
       }
-    }), io.nonobot.groovy.core.message.MessageHandler.class);
+    }), io.nonobot.groovy.core.handler.MessageHandler.class);
     return ret;
   }
   /**
@@ -71,11 +71,11 @@ public class MessageRouter {
    * @return the message handler object
    */
   public MessageHandler respond(String pattern, Handler<Message> handler) {
-    def ret= InternalHelper.safeCreate(this.delegate.respond(pattern, new Handler<io.nonobot.core.message.Message>() {
-      public void handle(io.nonobot.core.message.Message event) {
-        handler.handle(new io.nonobot.groovy.core.message.Message(event));
+    def ret= InternalHelper.safeCreate(this.delegate.respond(pattern, new Handler<io.nonobot.core.handler.Message>() {
+      public void handle(io.nonobot.core.handler.Message event) {
+        handler.handle(new io.nonobot.groovy.core.handler.Message(event));
       }
-    }), io.nonobot.groovy.core.message.MessageHandler.class);
+    }), io.nonobot.groovy.core.handler.MessageHandler.class);
     return ret;
   }
   /**
@@ -85,7 +85,7 @@ public class MessageRouter {
    * @return this object so it can be used fluently
    */
   public MessageRouter sendMessage(Map<String, Object> options = [:], String body) {
-    this.delegate.sendMessage(options != null ? new io.nonobot.core.message.SendOptions(new io.vertx.core.json.JsonObject(options)) : null, body);
+    this.delegate.sendMessage(options != null ? new io.nonobot.core.handler.SendOptions(new io.vertx.core.json.JsonObject(options)) : null, body);
     return this;
   }
   /**

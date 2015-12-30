@@ -22,8 +22,8 @@ var Message = require('nonobot-js/message');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JMessageRouter = io.nonobot.core.message.MessageRouter;
-var SendOptions = io.nonobot.core.message.SendOptions;
+var JMessageRouter = io.nonobot.core.handler.MessageRouter;
+var SendOptions = io.nonobot.core.handler.SendOptions;
 
 /**
  The message router.
@@ -81,7 +81,7 @@ var MessageRouter = function(j_val) {
   this.sendMessage = function(options, body) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'string') {
-      j_messageRouter["sendMessage(io.nonobot.core.message.SendOptions,java.lang.String)"](options != null ? new SendOptions(new JsonObject(JSON.stringify(options))) : null, body);
+      j_messageRouter["sendMessage(io.nonobot.core.handler.SendOptions,java.lang.String)"](options != null ? new SendOptions(new JsonObject(JSON.stringify(options))) : null, body);
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };

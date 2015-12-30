@@ -1,5 +1,5 @@
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.message.MessageHandler
+# Generated from io.nonobot.core.handler.MessageHandler
 module Nonobot
   #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
   class MessageHandler

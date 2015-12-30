@@ -1,20 +1,5 @@
 = Cheatsheets
 
-[[SendOptions]]
-== SendOptions
-
-++++
- @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[target]]`target`|`link:dataobjects.html#Identity[Identity]`|-
-|===
-
 [[BotOptions]]
 == BotOptions
 
@@ -48,6 +33,21 @@
 The timeout in millis to wait until a message is considered not processed by the bot.
 +++
 |[[user]]`user`|`link:dataobjects.html#Identity[Identity]`|-
+|===
+
+[[SendOptions]]
+== SendOptions
+
+++++
+ @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[target]]`target`|`link:dataobjects.html#Identity[Identity]`|-
 |===
 
 [[ClientOptions]]

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.message.impl;
+package io.nonobot.core.handler.impl;
 
 import io.nonobot.core.identity.Identity;
-import io.nonobot.core.message.Message;
-import io.nonobot.core.message.MessageHandler;
-import io.nonobot.core.message.MessageRouter;
-import io.nonobot.core.message.SendOptions;
+import io.nonobot.core.handler.Message;
+import io.nonobot.core.handler.MessageHandler;
+import io.nonobot.core.handler.MessageRouter;
+import io.nonobot.core.handler.SendOptions;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -173,14 +173,14 @@ public class MessageRouterImpl implements MessageRouter {
   }
 
   @Override
-  public io.nonobot.core.message.MessageHandler when(String pattern, Handler<Message> handler) {
+  public io.nonobot.core.handler.MessageHandler when(String pattern, Handler<Message> handler) {
     MessageHandlerImpl messageHandler = new MessageHandlerImpl(false, Pattern.compile(pattern), handler);
     messageHandlers.add(messageHandler);
     return messageHandler;
   }
 
   @Override
-  public io.nonobot.core.message.MessageHandler respond(String pattern, Handler<Message> handler) {
+  public io.nonobot.core.handler.MessageHandler respond(String pattern, Handler<Message> handler) {
     MessageHandlerImpl messageHandler = new MessageHandlerImpl(true, Pattern.compile(pattern), handler);
     messageHandlers.add(messageHandler);
     return messageHandler;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.message;
+package io.nonobot.core.handler;
 
 import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.VertxGen;

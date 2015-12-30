@@ -69,7 +69,7 @@ public class Bot {
 
   /**
    * Run the bot with the , the bot will take care of the adapter life cycle and restart it when
-   * it gets disconnected.
+   * it gets disconnected, until {@link io.nonobot.rxjava.core.Bot#close} is called.
    * @param adapter the bot adapter
    * @return this instance so it can be used fluently
    */

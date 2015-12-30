@@ -38,7 +38,7 @@ var Bot = function(j_val) {
 
   /**
    Run the bot with the , the bot will take care of the adapter life cycle and restart it when
-   it gets disconnected.
+   it gets disconnected, until {@link Bot#close} is called.
 
    @public
    @param adapter {BotAdapter} the bot adapter 

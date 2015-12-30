@@ -16,7 +16,7 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.message.MessageRouter;
+import io.nonobot.core.handler.MessageRouter;
 import io.vertx.core.AbstractVerticle;
 
 /**

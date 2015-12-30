@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.message;
+package io.nonobot.rxjava.core.handler;
 
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
@@ -27,14 +27,14 @@ import io.vertx.core.Handler;
  * A message sent to an handler.
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.message.Message original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.Message original} non RX-ified interface using Vert.x codegen.
  */
 
 public class Message {
 
-  final io.nonobot.core.message.Message delegate;
+  final io.nonobot.core.handler.Message delegate;
 
-  public Message(io.nonobot.core.message.Message delegate) {
+  public Message(io.nonobot.core.handler.Message delegate) {
     this.delegate = delegate;
   }
 
@@ -112,7 +112,7 @@ public class Message {
   }
 
 
-  public static Message newInstance(io.nonobot.core.message.Message arg) {
+  public static Message newInstance(io.nonobot.core.handler.Message arg) {
     return arg != null ? new Message(arg) : null;
   }
 }

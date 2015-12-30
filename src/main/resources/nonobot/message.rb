@@ -1,5 +1,5 @@
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.message.Message
+# Generated from io.nonobot.core.handler.Message
 module Nonobot
   #  A message sent to an handler.
   class Message

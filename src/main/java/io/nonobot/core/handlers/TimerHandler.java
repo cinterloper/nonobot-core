@@ -16,8 +16,8 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.message.MessageRouter;
-import io.nonobot.core.message.SendOptions;
+import io.nonobot.core.handler.MessageRouter;
+import io.nonobot.core.handler.SendOptions;
 import io.vertx.core.AbstractVerticle;
 
 import java.util.regex.Matcher;

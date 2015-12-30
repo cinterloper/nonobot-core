@@ -14,19 +14,37 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.message;
+package io.nonobot.core.handler;
 
-import io.vertx.codegen.annotations.VertxGen;
+import io.nonobot.core.identity.Identity;
+import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-@VertxGen
-public interface MessageHandler {
+@DataObject
+public class SendOptions {
 
-  /**
-   * Close the message handler.
-   */
-  void close();
+  private Identity target;
 
+  public SendOptions() {
+  }
+
+  public SendOptions(JsonObject json) {
+    throw new UnsupportedOperationException("todo");
+  }
+
+  public SendOptions(SendOptions that) {
+    target = that.target != null ? new Identity(that.target) : null;
+  }
+
+  public Identity getTarget() {
+    return target;
+  }
+
+  public SendOptions setTarget(Identity target) {
+    this.target = target;
+    return this;
+  }
 }

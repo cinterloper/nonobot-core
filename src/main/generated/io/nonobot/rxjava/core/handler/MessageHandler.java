@@ -14,26 +14,40 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.message;
-import groovy.transform.CompileStatic
-import io.vertx.lang.groovy.InternalHelper
-import io.vertx.core.json.JsonObject
+package io.nonobot.rxjava.core.handler;
+
+import java.util.Map;
+import io.vertx.lang.rxjava.InternalHelper;
+import rx.Observable;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-*/
-@CompileStatic
+ *
+ * <p/>
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.MessageHandler original} non RX-ified interface using Vert.x codegen.
+ */
+
 public class MessageHandler {
-  private final def io.nonobot.core.message.MessageHandler delegate;
-  public MessageHandler(Object delegate) {
-    this.delegate = (io.nonobot.core.message.MessageHandler) delegate;
+
+  final io.nonobot.core.handler.MessageHandler delegate;
+
+  public MessageHandler(io.nonobot.core.handler.MessageHandler delegate) {
+    this.delegate = delegate;
   }
+
   public Object getDelegate() {
     return delegate;
   }
+
   /**
    * Close the message handler.
    */
-  public void close() {
+  public void close() { 
     this.delegate.close();
+  }
+
+
+  public static MessageHandler newInstance(io.nonobot.core.handler.MessageHandler arg) {
+    return arg != null ? new MessageHandler(arg) : null;
   }
 }

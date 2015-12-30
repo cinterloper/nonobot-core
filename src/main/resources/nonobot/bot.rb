@@ -29,7 +29,7 @@ module Nonobot
       raise ArgumentError, "Invalid arguments when calling create(vertx,options)"
     end
     #  Run the bot with the , the bot will take care of the adapter life cycle and restart it when
-    #  it gets disconnected.
+    #  it gets disconnected, until {::Nonobot::Bot#close} is called.
     # @param [::Nonobot::BotAdapter] adapter the bot adapter
     # @return [self]
     def run(adapter=nil)

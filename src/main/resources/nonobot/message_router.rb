@@ -2,7 +2,7 @@ require 'nonobot/message_handler'
 require 'vertx/vertx'
 require 'nonobot/message'
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.message.MessageRouter
+# Generated from io.nonobot.core.handler.MessageRouter
 module Nonobot
   #  The message router.
   class MessageRouter
@@ -23,9 +23,9 @@ module Nonobot
     # @return [::Nonobot::MessageRouter] the message router
     def self.get_shared(vertx=nil)
       if vertx.class.method_defined?(:j_del) && !block_given?
-        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreMessage::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::MessageRouter)
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreHandler::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::MessageRouter)
       elsif vertx.class.method_defined?(:j_del) && block_given?
-        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreMessage::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class,Java::IoVertxCore::Handler.java_class]).call(vertx.j_del,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) })),::Nonobot::MessageRouter)
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreHandler::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class,Java::IoVertxCore::Handler.java_class]).call(vertx.j_del,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) })),::Nonobot::MessageRouter)
       end
       raise ArgumentError, "Invalid arguments when calling get_shared(vertx)"
     end
@@ -56,7 +56,7 @@ module Nonobot
     # @return [self]
     def send_message(options=nil,body=nil)
       if options.class == Hash && body.class == String && !block_given?
-        @j_del.java_method(:sendMessage, [Java::IoNonobotCoreMessage::SendOptions.java_class,Java::java.lang.String.java_class]).call(Java::IoNonobotCoreMessage::SendOptions.new(::Vertx::Util::Utils.to_json_object(options)),body)
+        @j_del.java_method(:sendMessage, [Java::IoNonobotCoreHandler::SendOptions.java_class,Java::java.lang.String.java_class]).call(Java::IoNonobotCoreHandler::SendOptions.new(::Vertx::Util::Utils.to_json_object(options)),body)
         return self
       end
       raise ArgumentError, "Invalid arguments when calling send_message(options,body)"
