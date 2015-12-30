@@ -46,16 +46,6 @@ public class NonoBot {
   }
 
   /**
-   * @param vertx the vertx instance
-   * @param vertx 
-   * @return the shared bot instance
-   */
-  public static NonoBot getShared(Vertx vertx) { 
-    NonoBot ret= NonoBot.newInstance(io.nonobot.core.NonoBot.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
-    return ret;
-  }
-
-  /**
    * Create a new bot for the Vert.x instance.
    * @param vertx the Vert.x instance
    * @return the created bot

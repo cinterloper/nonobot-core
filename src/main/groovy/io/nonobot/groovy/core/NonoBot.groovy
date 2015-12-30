@@ -37,15 +37,6 @@ public class NonoBot {
     return delegate;
   }
   /**
-   * @param vertx the vertx instance
-   * @param vertx 
-   * @return the shared bot instance
-   */
-  public static NonoBot getShared(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.NonoBot.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.NonoBot.class);
-    return ret;
-  }
-  /**
    * Create a new bot for the Vert.x instance.
    * @param vertx the Vert.x instance
    * @return the created bot

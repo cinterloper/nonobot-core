@@ -33,19 +33,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class NonoBotImpl implements NonoBot {
-
-  static final ConcurrentMap<Vertx, NonoBotImpl> sharedBots = new ConcurrentHashMap<>();
-
-  public static NonoBot getShared(Vertx vertx) {
-    return sharedBots.computeIfAbsent(vertx, NonoBotImpl::new);
-  }
 
   final String name = "nono"; // Bot name : make this configurable via options
   final Vertx vertx;

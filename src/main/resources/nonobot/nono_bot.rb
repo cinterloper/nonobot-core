@@ -16,15 +16,6 @@ module Nonobot
     def j_del
       @j_del
     end
-    #  @param vertx the vertx instance
-    # @param [::Vertx::Vertx] vertx 
-    # @return [::Nonobot::NonoBot] the shared bot instance
-    def self.get_shared(vertx=nil)
-      if vertx.class.method_defined?(:j_del) && !block_given?
-        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::NonoBot.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::NonoBot)
-      end
-      raise ArgumentError, "Invalid arguments when calling get_shared(vertx)"
-    end
     #  Create a new bot for the Vert.x instance.
     # @param [::Vertx::Vertx] vertx the Vert.x instance
     # @return [::Nonobot::NonoBot] the created bot

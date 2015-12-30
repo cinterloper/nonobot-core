@@ -36,15 +36,6 @@ import io.vertx.core.Vertx;
 public interface NonoBot {
 
   /**
-   * @param vertx the vertx instance
-   *
-   * @return the shared bot instance
-   */
-  static NonoBot getShared(Vertx vertx) {
-    return NonoBotImpl.getShared(vertx);
-  }
-
-  /**
    * Create a new bot for the Vert.x instance.
    *
    * @param vertx the Vert.x instance

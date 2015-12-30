@@ -58,7 +58,7 @@ public class BotVerticle extends AbstractVerticle {
       req.response().putHeader("Content-Type", "text/plain").end("Application started");
     }).listen(Integer.getInteger("http.port", 8080), System.getProperty("http.address", "localhost"));
 
-    NonoBot bot = NonoBot.getShared(vertx);
+    NonoBot bot = NonoBot.create(vertx);
 
     if (initializedInstances.putIfAbsent(bot, "whatever") == null) {
       Iterator<BotAdapterFactory> adapterFactoryIt = ServiceLoader.load(BotAdapterFactory.class).iterator();
