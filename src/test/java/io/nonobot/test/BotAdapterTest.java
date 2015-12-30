@@ -157,7 +157,7 @@ public class BotAdapterTest extends BaseTest {
       });
       completionFuture.complete();
       ctx.runOnContext(v -> {
-        vertx.eventBus().send("nonobot.outbound", new JsonObject().put("target", new JsonObject().put("id", "the_id").put("name", "the_name")).put("body", "the_body"));
+        vertx.eventBus().send("bots.nono.outbound", new JsonObject().put("target", new JsonObject().put("id", "the_id").put("name", "the_name")).put("body", "the_body"));
       });
     });
     bot.registerAdapter(adapter, 100);

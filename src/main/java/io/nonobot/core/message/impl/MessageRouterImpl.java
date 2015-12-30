@@ -43,10 +43,30 @@ import java.util.regex.Pattern;
  */
 public class MessageRouterImpl implements MessageRouter {
 
-  static final ConcurrentMap<Vertx, MessageRouterImpl> routers = new ConcurrentHashMap<>();
+  static final class Key {
+
+    final Vertx vertx;
+    final String name;
+
+    public Key(Vertx vertx, String name) {
+      this.vertx = vertx;
+      this.name = name;
+    }
+
+    public boolean equals(Object that) {
+      return ((Key) that).vertx == vertx && ((Key) that).name.equals(name);
+    }
+
+    @Override
+    public int hashCode() {
+      return vertx.hashCode() ^ name.hashCode();
+    }
+  }
+
+  static final ConcurrentMap<Key, MessageRouterImpl> routers = new ConcurrentHashMap<>();
 
   public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
-    MessageRouterImpl router = routers.computeIfAbsent(vertx, MessageRouterImpl::new);
+    MessageRouterImpl router = routers.computeIfAbsent(new Key(vertx, "nono"), key -> new MessageRouterImpl(key.vertx, key.name));
     if (initHandler != null) {
       Context context = vertx.getOrCreateContext();
       router.registerForInit(ar -> context.runOnContext(v -> initHandler.handle(ar)));
@@ -59,10 +79,12 @@ public class MessageRouterImpl implements MessageRouter {
   final List<MessageHandlerImpl> messageHandlers = new ArrayList<>();
   final List<Handler<AsyncResult<Void>>> initHandlers = new CopyOnWriteArrayList<>();
   final Future<Void> initFuture = Future.future();
+  final String outboundAddress;
 
-  public MessageRouterImpl(Vertx vertx) {
-    this.consumer = vertx.eventBus().consumer("nonobot.inbound", this::handle);
+  public MessageRouterImpl(Vertx vertx, String name) {
+    this.consumer = vertx.eventBus().consumer("bots." + name + ".inbound", this::handle);
     this.vertx = vertx;
+    this.outboundAddress = "bots." + name + ".outbound";
 
     consumer.completionHandler(ar -> {
       if (ar.succeeded()) {
@@ -167,7 +189,7 @@ public class MessageRouterImpl implements MessageRouter {
   @Override
   public MessageRouter sendMessage(SendOptions options, String body) {
 
-    vertx.eventBus().publish("nonobot.outbound", new JsonObject().put("target", options.getTarget().toJson()).put("body", body));
+    vertx.eventBus().publish(outboundAddress, new JsonObject().put("target", options.getTarget().toJson()).put("body", body));
 
     return this;
   }

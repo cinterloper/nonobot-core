@@ -44,22 +44,22 @@ public class MessageRouterTest extends BaseTest {
 
   @Test
   public void testRespondToMessage1(TestContext context) {
-    testRespondToMessage(context, "nonobot echo hello world");
+    testRespondToMessage(context, "nono echo hello world");
   }
 
   @Test
   public void testRespondToMessage2(TestContext context) {
-    testRespondToMessage(context, "nonobot:echo hello world");
+    testRespondToMessage(context, "nono:echo hello world");
   }
 
   @Test
   public void testRespondToMessage3(TestContext context) {
-    testRespondToMessage(context, "@nonobot echo hello world");
+    testRespondToMessage(context, "@nono echo hello world");
   }
 
   @Test
   public void testRespondToMessage4(TestContext context) {
-    testRespondToMessage(context, "@nonobot:echo hello world");
+    testRespondToMessage(context, "@nono:echo hello world");
   }
 
   private void testRespondToMessage(TestContext context, String message) {
@@ -124,7 +124,7 @@ public class MessageRouterTest extends BaseTest {
     router.when("foobar", msg -> {
       msg.reply("1", context.asyncAssertSuccess());
     });
-    new MessageRouterImpl(vertx).when("foobar", msg -> {
+    new MessageRouterImpl(vertx, "nono").when("foobar", msg -> {
       replied.setHandler(v1 -> {
         msg.reply("2", 200, context.asyncAssertFailure(v2 -> {
           doneLatch.countDown();

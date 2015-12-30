@@ -45,6 +45,7 @@ public abstract class BotClientImpl implements BotClient {
   private final NonoBot bot;
   private volatile Pattern botPattern;
   private final ClientOptions options;
+  private final String inboundAddress;
   Handler<Message> messageHandler;
   Handler<Void> closeHandler;
 
@@ -53,11 +54,10 @@ public abstract class BotClientImpl implements BotClient {
     // Default names
     rename(Arrays.asList(bot.name(), "@" + bot.name()));
 
-
-
     this.context = context;
     this.bot = bot;
     this.options = new ClientOptions(options);
+    this.inboundAddress = "bots." + bot.name() + ".inbound";
   }
 
   public void handle(Message msg) {
@@ -135,7 +135,7 @@ public abstract class BotClientImpl implements BotClient {
         if (options.getRoom() != null) {
           msg.put("room", options.getRoom().toJson());
         }
-        bot.vertx().eventBus().publish("nonobot.inbound", msg);
+        bot.vertx().eventBus().publish(inboundAddress, msg);
         bot.vertx().setTimer(options.getTimeout(), timerID -> {
           if (!reply.isComplete()) {
             consumer.unregister();

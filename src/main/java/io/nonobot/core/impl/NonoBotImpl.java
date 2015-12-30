@@ -47,16 +47,17 @@ public class NonoBotImpl implements NonoBot {
     return sharedBots.computeIfAbsent(vertx, NonoBotImpl::new);
   }
 
-  final String name = "nonobot"; // Bot name : make this configurable via options
+  final String name = "nono"; // Bot name : make this configurable via options
   final Vertx vertx;
   private boolean closed;
   private Set<BotAdapter> adapters = new HashSet<>();
   final List<BotClientImpl> clients = new ArrayList<>();
+  final String outboundAddress = "bots." + name + ".outbound";
 
   public NonoBotImpl(Vertx vertx) {
     this.vertx = vertx;
 
-    vertx.eventBus().<JsonObject>consumer("nonobot.outbound", msg -> {
+    vertx.eventBus().<JsonObject>consumer(outboundAddress, msg -> {
       Identity target = new Identity(msg.body().getJsonObject("target"));
       String body = msg.body().getString("body");
       synchronized (NonoBotImpl.this) {
