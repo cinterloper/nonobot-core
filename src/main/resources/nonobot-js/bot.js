@@ -16,15 +16,12 @@
 
 /** @module nonobot-js/bot */
 var utils = require('vertx-js/util/utils');
-var BotAdapter = require('nonobot-js/bot_adapter');
 var Vertx = require('vertx-js/vertx');
-var BotClient = require('nonobot-js/bot_client');
+var ChatRouter = require('nonobot-js/chat_router');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JBot = io.nonobot.core.Bot;
-var BotOptions = io.nonobot.core.BotOptions;
-var ClientOptions = io.nonobot.core.client.ClientOptions;
 
 /**
  The bot.
@@ -35,22 +32,6 @@ var Bot = function(j_val) {
 
   var j_bot = j_val;
   var that = this;
-
-  /**
-   Run the bot with the , the bot will take care of the adapter life cycle and restart it when
-   it gets disconnected, until {@link Bot#close} is called.
-
-   @public
-   @param adapter {BotAdapter} the bot adapter 
-   @return {Bot} this instance so it can be used fluently
-   */
-  this.run = function(adapter) {
-    var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-      j_bot["run(io.nonobot.core.adapter.BotAdapter)"](adapter._jdel);
-      return that;
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
 
   /**
    @return the Vert.x instance used by this bot
@@ -70,6 +51,22 @@ var Bot = function(j_val) {
   };
 
   /**
+
+   @public
+
+   @return {ChatRouter}
+   */
+  this.chatRouter = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      if (that.cachedchatRouter == null) {
+        that.cachedchatRouter = utils.convReturnVertxGen(j_bot["chatRouter()"](), ChatRouter);
+      }
+      return that.cachedchatRouter;
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
    @return the bot name
 
    @public
@@ -83,37 +80,6 @@ var Bot = function(j_val) {
         that.cachedname = j_bot["name()"]();
       }
       return that.cachedname;
-    } else throw new TypeError('function invoked with invalid arguments');
-  };
-
-  /**
-   Create a new bot client with the specified .
-
-   @public
-   @param options {Object} the client options 
-   @param handler {function} receives the  after initialization 
-   @return {Bot} this instance so it can be used fluently
-   */
-  this.createClient = function() {
-    var __args = arguments;
-    if (__args.length === 1 && typeof __args[0] === 'function') {
-      j_bot["createClient(io.vertx.core.Handler)"](function(ar) {
-      if (ar.succeeded()) {
-        __args[0](utils.convReturnVertxGen(ar.result(), BotClient), null);
-      } else {
-        __args[0](null, ar.cause());
-      }
-    });
-      return that;
-    }  else if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
-      j_bot["createClient(io.nonobot.core.client.ClientOptions,io.vertx.core.Handler)"](__args[0] != null ? new ClientOptions(new JsonObject(JSON.stringify(__args[0]))) : null, function(ar) {
-      if (ar.succeeded()) {
-        __args[1](utils.convReturnVertxGen(ar.result(), BotClient), null);
-      } else {
-        __args[1](null, ar.cause());
-      }
-    });
-      return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -137,19 +103,36 @@ var Bot = function(j_val) {
 };
 
 /**
+ Gets a shared bot instance for the Vert.x instance.
+
+ @memberof module:nonobot-js/bot
+ @param vertx {Vertx} the Vert.x instance 
+ @param name {string} the bot name 
+ @return {Bot} the bot instance
+ */
+Bot.getShared = function() {
+  var __args = arguments;
+  if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+    return utils.convReturnVertxGen(JBot["getShared(io.vertx.core.Vertx)"](__args[0]._jdel), Bot);
+  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string') {
+    return utils.convReturnVertxGen(JBot["getShared(io.vertx.core.Vertx,java.lang.String)"](__args[0]._jdel, __args[1]), Bot);
+  } else throw new TypeError('function invoked with invalid arguments');
+};
+
+/**
  Create a new bot for the Vert.x instance and specified options.
 
  @memberof module:nonobot-js/bot
  @param vertx {Vertx} the Vert.x instance 
- @param options {Object} the options 
+ @param name {string} the bot name 
  @return {Bot} the created bot
  */
 Bot.create = function() {
   var __args = arguments;
   if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
     return utils.convReturnVertxGen(JBot["create(io.vertx.core.Vertx)"](__args[0]._jdel), Bot);
-  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && (typeof __args[1] === 'object' && __args[1] != null)) {
-    return utils.convReturnVertxGen(JBot["create(io.vertx.core.Vertx,io.nonobot.core.BotOptions)"](__args[0]._jdel, __args[1] != null ? new BotOptions(new JsonObject(JSON.stringify(__args[1]))) : null), Bot);
+  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string') {
+    return utils.convReturnVertxGen(JBot["create(io.vertx.core.Vertx,java.lang.String)"](__args[0]._jdel, __args[1]), Bot);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 

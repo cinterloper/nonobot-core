@@ -21,18 +21,22 @@ import io.vertx.core.json.JsonObject
 import io.nonobot.groovy.core.client.BotClient
 import io.vertx.groovy.core.Future
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * A connection request.
 */
 @CompileStatic
-public class ConnectionListener extends Future<Void> {
-  private final def io.nonobot.core.adapter.ConnectionListener delegate;
-  public ConnectionListener(Object delegate) {
-    super((io.nonobot.core.adapter.ConnectionListener) delegate);
-    this.delegate = (io.nonobot.core.adapter.ConnectionListener) delegate;
+public class ConnectionRequest extends Future<Void> {
+  private final def io.nonobot.core.adapter.ConnectionRequest delegate;
+  public ConnectionRequest(Object delegate) {
+    super((io.nonobot.core.adapter.ConnectionRequest) delegate);
+    this.delegate = (io.nonobot.core.adapter.ConnectionRequest) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
+  /**
+   * @return the client used by the connection
+   * @return 
+   */
   public BotClient client() {
     if (cached_0 != null) {
       return cached_0;

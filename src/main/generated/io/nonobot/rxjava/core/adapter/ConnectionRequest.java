@@ -23,17 +23,17 @@ import io.nonobot.rxjava.core.client.BotClient;
 import io.vertx.rxjava.core.Future;
 
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * A connection request.
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.adapter.ConnectionListener original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.adapter.ConnectionRequest original} non RX-ified interface using Vert.x codegen.
  */
 
-public class ConnectionListener extends Future<Void> {
+public class ConnectionRequest extends Future<Void> {
 
-  final io.nonobot.core.adapter.ConnectionListener delegate;
+  final io.nonobot.core.adapter.ConnectionRequest delegate;
 
-  public ConnectionListener(io.nonobot.core.adapter.ConnectionListener delegate) {
+  public ConnectionRequest(io.nonobot.core.adapter.ConnectionRequest delegate) {
     super(delegate);
     this.delegate = delegate;
   }
@@ -42,6 +42,10 @@ public class ConnectionListener extends Future<Void> {
     return delegate;
   }
 
+  /**
+   * @return the client used by the connection
+   * @return 
+   */
   public BotClient client() { 
     if (cached_0 != null) {
       return cached_0;
@@ -53,7 +57,7 @@ public class ConnectionListener extends Future<Void> {
 
   private BotClient cached_0;
 
-  public static ConnectionListener newInstance(io.nonobot.core.adapter.ConnectionListener arg) {
-    return arg != null ? new ConnectionListener(arg) : null;
+  public static ConnectionRequest newInstance(io.nonobot.core.adapter.ConnectionRequest arg) {
+    return arg != null ? new ConnectionRequest(arg) : null;
   }
 }

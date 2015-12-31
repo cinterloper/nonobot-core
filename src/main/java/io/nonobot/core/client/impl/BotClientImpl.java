@@ -16,7 +16,6 @@
 
 package io.nonobot.core.client.impl;
 
-import io.nonobot.core.Bot;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.client.ReceiveOptions;
@@ -25,6 +24,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 
@@ -39,25 +39,49 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public abstract class BotClientImpl implements BotClient {
+public class BotClientImpl implements BotClient {
 
+  final String name;
+  final Vertx vertx;
   final Context context;
-  private final Bot bot;
   private volatile Pattern botPattern;
-  private final ClientOptions options;
   private final String inboundAddress;
+  private final String outboundAddress;
   Handler<Message> messageHandler;
   Handler<Void> closeHandler;
 
-  public BotClientImpl(Bot bot, Context context, ClientOptions options) {
+  public BotClientImpl(Vertx vertx, Context context, ClientOptions options, Handler<AsyncResult<BotClient>> handler) {
+
+    this.name = options.getName();
+    this.inboundAddress = "bots." + name + ".inbound";
+    this.outboundAddress = "bots." + name + ".outbound";
 
     // Default names
-    rename(Arrays.asList(bot.name(), "@" + bot.name()));
+    alias(Arrays.asList(name, "@" + name));
+
+    vertx.eventBus().<JsonObject>consumer(outboundAddress, msg -> {
+      String chatId = msg.body().getString("chatId");
+      String body = msg.body().getString("body");
+      handle(new Message() {
+        @Override
+        public String chatId() {
+          return chatId;
+        }
+        @Override
+        public String body() {
+          return body;
+        }
+      });
+    }).completionHandler(ar -> {
+      if (ar.succeeded()) {
+        handler.handle(Future.succeededFuture(this));
+      } else {
+        handler.handle(Future.failedFuture(ar.cause()));
+      }
+    });
 
     this.context = context;
-    this.bot = bot;
-    this.options = new ClientOptions(options);
-    this.inboundAddress = "bots." + bot.name() + ".inbound";
+    this.vertx = vertx;
   }
 
   public void handle(Message msg) {
@@ -73,12 +97,35 @@ public abstract class BotClientImpl implements BotClient {
   }
 
   @Override
-  public void rename(String name) {
-    rename(Collections.singletonList(name));
+  public String name() {
+    return name;
   }
 
   @Override
-  public void rename(List<String> names) {
+  public Vertx vertx() {
+    return vertx;
+  }
+
+  @Override
+  public void close() {
+    Handler<Void> handler;
+    synchronized (this) {
+      handler = closeHandler;
+    }
+    if (handler != null) {
+      context.runOnContext(v -> {
+        closeHandler.handle(null);
+      });
+    }
+  }
+
+  @Override
+  public void alias(String name) {
+    alias(Collections.singletonList(name));
+  }
+
+  @Override
+  public void alias(List<String> names) {
     StringBuilder tmp = new StringBuilder("^(?:");
     Iterator<String> it = names.iterator();
     while (it.hasNext()) {
@@ -94,16 +141,11 @@ public abstract class BotClientImpl implements BotClient {
   }
 
   @Override
-  public Bot bot() {
-    return bot;
-  }
-
-  @Override
   public void receiveMessage(ReceiveOptions options, String message, Handler<AsyncResult<String>> replyHandler) {
     String replyAddress = UUID.randomUUID().toString();
     Future<String> reply = Future.future();
     reply.setHandler(replyHandler);
-    MessageConsumer<String> consumer = bot.vertx().eventBus().consumer(replyAddress);
+    MessageConsumer<String> consumer = vertx.eventBus().consumer(replyAddress);
     consumer.handler(msg -> {
       String content = msg.body();
       if (content != null && !reply.isComplete()) {
@@ -130,8 +172,8 @@ public abstract class BotClientImpl implements BotClient {
           msg.put("respond", false);
           msg.put("content", message);
         }
-        bot.vertx().eventBus().publish(inboundAddress, msg);
-        bot.vertx().setTimer(options.getTimeout(), timerID -> {
+        vertx.eventBus().publish(inboundAddress, msg);
+        vertx.setTimer(options.getTimeout(), timerID -> {
           if (!reply.isComplete()) {
             consumer.unregister();
             reply.fail(new Exception("timeout"));

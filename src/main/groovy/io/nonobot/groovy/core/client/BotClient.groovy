@@ -18,9 +18,10 @@ package io.nonobot.groovy.core.client;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.nonobot.groovy.core.Bot
 import java.util.List
 import io.nonobot.core.client.ReceiveOptions
+import io.nonobot.core.client.ClientOptions
+import io.vertx.groovy.core.Vertx
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
@@ -35,29 +36,55 @@ public class BotClient {
   public Object getDelegate() {
     return delegate;
   }
-  /**
-   * @return the bot this client exposes.
-   * @return 
-   */
-  public Bot bot() {
-    def ret= InternalHelper.safeCreate(this.delegate.bot(), io.nonobot.groovy.core.Bot.class);
+  public static void client(Vertx vertx, Map<String, Object> options, Handler<AsyncResult<BotClient>> handler) {
+    io.nonobot.core.client.BotClient.client((io.vertx.core.Vertx)vertx.getDelegate(), options != null ? new io.nonobot.core.client.ClientOptions(new io.vertx.core.json.JsonObject(options)) : null, new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
+      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
+        AsyncResult<BotClient> f
+        if (event.succeeded()) {
+          f = InternalHelper.<BotClient>result(new BotClient(event.result()))
+        } else {
+          f = InternalHelper.<BotClient>failure(event.cause())
+        }
+        handler.handle(f)
+      }
+    });
+  }
+  public static void client(Vertx vertx, Handler<AsyncResult<BotClient>> handler) {
+    io.nonobot.core.client.BotClient.client((io.vertx.core.Vertx)vertx.getDelegate(), new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
+      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
+        AsyncResult<BotClient> f
+        if (event.succeeded()) {
+          f = InternalHelper.<BotClient>result(new BotClient(event.result()))
+        } else {
+          f = InternalHelper.<BotClient>failure(event.cause())
+        }
+        handler.handle(f)
+      }
+    });
+  }
+  public String name() {
+    def ret = this.delegate.name();
+    return ret;
+  }
+  public Vertx vertx() {
+    def ret= InternalHelper.safeCreate(this.delegate.vertx(), io.vertx.groovy.core.Vertx.class);
     return ret;
   }
   /**
-   * Rename the bot for this client, when the client process a message it will use the specified <code>name</code> to
+   * Alias the bot for this client, when the client process a message it will use the specified <code>name</code> to
    * detect if the message is addressed to the bot or not.
    * @param name the bot name
    */
-  public void rename(String name) {
-    this.delegate.rename(name);
+  public void alias(String name) {
+    this.delegate.alias(name);
   }
   /**
-   * Rename the bot for this client, when the client process a message it will use the specified <code>name</code> to
+   * Alias the bot for this client, when the client process a message it will use the specified <code>name</code> to
    * detect if the message is addressed to the bot or not.
    * @param names the bot names
    */
-  public void rename(List<String> names) {
-    this.delegate.rename(names);
+  public void alias(List<String> names) {
+    this.delegate.alias(names);
   }
   /**
    * Receive a message, the message might trigger a reply from an handler, if that happens it should be fast. However
@@ -84,7 +111,7 @@ public class BotClient {
     return this;
   }
   /**
-   * Set an handler called when the client is closed, note that calling {@link io.nonobot.groovy.core.client.BotClient#close} will not call this handler.
+   * Set an handler called when the client is closed.
    * @param handler the handler
    * @return this object so it can be used fluently
    */

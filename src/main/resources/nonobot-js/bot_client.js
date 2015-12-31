@@ -16,13 +16,14 @@
 
 /** @module nonobot-js/bot_client */
 var utils = require('vertx-js/util/utils');
-var Bot = require('nonobot-js/bot');
 var Message = require('nonobot-js/message');
+var Vertx = require('vertx-js/vertx');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JBotClient = io.nonobot.core.client.BotClient;
 var ReceiveOptions = io.nonobot.core.client.ReceiveOptions;
+var ClientOptions = io.nonobot.core.client.ClientOptions;
 
 /**
  The bot client provides a customized client interface for interacting with the bot.
@@ -35,32 +36,44 @@ var BotClient = function(j_val) {
   var that = this;
 
   /**
-   @return the bot this client exposes.
 
    @public
 
-   @return {Bot}
+   @return {string}
    */
-  this.bot = function() {
+  this.name = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      return utils.convReturnVertxGen(j_botClient["bot()"](), Bot);
+      return j_botClient["name()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   /**
-   Rename the bot for this client, when the client process a message it will use the specified <code>name</code> to
+
+   @public
+
+   @return {Vertx}
+   */
+  this.vertx = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      return utils.convReturnVertxGen(j_botClient["vertx()"](), Vertx);
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+   Alias the bot for this client, when the client process a message it will use the specified <code>name</code> to
    detect if the message is addressed to the bot or not.
 
    @public
    @param names {Array.<string>} the bot names 
    */
-  this.rename = function() {
+  this.alias = function() {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'string') {
-      j_botClient["rename(java.lang.String)"](__args[0]);
+      j_botClient["alias(java.lang.String)"](__args[0]);
     }  else if (__args.length === 1 && typeof __args[0] === 'object' && __args[0] instanceof Array) {
-      j_botClient["rename(java.util.List)"](__args[0]);
+      j_botClient["alias(java.util.List)"](__args[0]);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -105,7 +118,7 @@ var BotClient = function(j_val) {
   };
 
   /**
-   Set an handler called when the client is closed, note that calling {@link BotClient#close} will not call this handler.
+   Set an handler called when the client is closed.
 
    @public
    @param handler {function} the handler 
@@ -136,6 +149,34 @@ var BotClient = function(j_val) {
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
   this._jdel = j_botClient;
+};
+
+/**
+
+ @memberof module:nonobot-js/bot_client
+ @param vertx {Vertx} 
+ @param options {Object} 
+ @param handler {function} 
+ */
+BotClient.client = function() {
+  var __args = arguments;
+  if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
+    JBotClient["client(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
+    if (ar.succeeded()) {
+      __args[1](utils.convReturnVertxGen(ar.result(), BotClient), null);
+    } else {
+      __args[1](null, ar.cause());
+    }
+  });
+  }else if (__args.length === 3 && typeof __args[0] === 'object' && __args[0]._jdel && (typeof __args[1] === 'object' && __args[1] != null) && typeof __args[2] === 'function') {
+    JBotClient["client(io.vertx.core.Vertx,io.nonobot.core.client.ClientOptions,io.vertx.core.Handler)"](__args[0]._jdel, __args[1] != null ? new ClientOptions(new JsonObject(JSON.stringify(__args[1]))) : null, function(ar) {
+    if (ar.succeeded()) {
+      __args[2](utils.convReturnVertxGen(ar.result(), BotClient), null);
+    } else {
+      __args[2](null, ar.cause());
+    }
+  });
+  } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function

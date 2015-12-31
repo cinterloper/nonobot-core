@@ -18,6 +18,7 @@ package io.nonobot.core;
 
 import io.nonobot.core.adapter.BotAdapter;
 import io.nonobot.core.adapter.ConsoleBotAdapter;
+import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.handlers.EchoHandler;
 import io.nonobot.core.handlers.GiphyHandler;
 import io.nonobot.core.handlers.HelpHandler;
@@ -36,7 +37,8 @@ import java.util.ServiceLoader;
  */
 public class BotVerticle extends AbstractVerticle {
 
-  private Bot bot;
+//  private Bot bot;
+  private BotAdapter adapter;
 
   @Override
   public void start() throws Exception {
@@ -57,9 +59,8 @@ public class BotVerticle extends AbstractVerticle {
       }
     };
 
-    bot = Bot.create(vertx, new BotOptions().setName(botName));
+//    bot = Bot.getShared(vertx, botName);
 
-    BotAdapter adapter = null;
     Iterator<BotAdapterFactory> adapterFactoryIt = ServiceLoader.load(BotAdapterFactory.class).iterator();
     while (true) {
       BotAdapterFactory factory = null;
@@ -73,7 +74,7 @@ public class BotVerticle extends AbstractVerticle {
         e.printStackTrace();
       }
       if (factory != null) {
-        adapter = factory.create(config);
+        adapter = factory.create(vertx, config);
         if (adapter != null) {
           break;
         }
@@ -81,12 +82,12 @@ public class BotVerticle extends AbstractVerticle {
     }
 
     if (adapter == null && "true".equals(config.getProperty("console"))) {
-      adapter = new ConsoleBotAdapter();
+      adapter = BotAdapter.create(vertx).requestHandler(new ConsoleBotAdapter());
     }
 
     //
     if (adapter != null) {
-      bot.run(adapter);
+      adapter.run(new ClientOptions());
     } else {
       throw new Exception("No adapter found");
     }
@@ -102,6 +103,9 @@ public class BotVerticle extends AbstractVerticle {
 
   @Override
   public void stop() throws Exception {
-    bot.close();
+//    bot.close();
+    if (adapter != null) {
+      adapter.close();
+    }
   }
 }

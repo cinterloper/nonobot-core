@@ -16,15 +16,10 @@
 
 package io.nonobot.core;
 
-import io.nonobot.core.adapter.BotAdapter;
-import io.nonobot.core.client.BotClient;
-import io.nonobot.core.client.ClientOptions;
+import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.impl.BotImpl;
 import io.vertx.codegen.annotations.CacheReturn;
-import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
 /**
@@ -36,35 +31,46 @@ import io.vertx.core.Vertx;
 public interface Bot {
 
   /**
+   * Gets a shared bot instance for the Vert.x instance.
+   *
+   * @param vertx the Vert.x instance
+   * @param name the bot name
+   * @return the bot instance
+   */
+  static Bot getShared(Vertx vertx, String name) {
+    return BotImpl.getShared(vertx, name);
+  }
+
+  /**
+   * Gets a shared bot instance for the Vert.x instance.
+   *
+   * @param vertx the Vert.x instance
+   * @return the bot instance
+   */
+  static Bot getShared(Vertx vertx) {
+    return BotImpl.getShared(vertx, "nono");
+  }
+
+  /**
    * Create a new bot for the Vert.x instance
    *
    * @param vertx the Vert.x instance
    * @return the created bot
    */
   static Bot create(Vertx vertx) {
-    return new BotImpl(vertx, new BotOptions());
+    return new BotImpl(vertx, "nono");
   }
 
   /**
    * Create a new bot for the Vert.x instance and specified options.
    *
    * @param vertx the Vert.x instance
-   * @param options the options
+   * @param name the bot name
    * @return the created bot
    */
-  static Bot create(Vertx vertx, BotOptions options) {
-    return new BotImpl(vertx, options);
+  static Bot create(Vertx vertx, String name) {
+    return new BotImpl(vertx, name);
   }
-
-  /**
-   * Run the bot with the {@literal adapter}, the bot will take care of the adapter life cycle and restart it when
-   * it gets disconnected, until {@link #close()} is called.
-   *
-   * @param adapter the bot adapter
-   * @return this instance so it can be used fluently
-   */
-  @Fluent
-  Bot run(BotAdapter adapter);
 
   /**
    * @return the Vert.x instance used by this bot
@@ -72,30 +78,14 @@ public interface Bot {
   @CacheReturn
   Vertx vertx();
 
+  @CacheReturn
+  ChatRouter chatRouter();
+
   /**
    * @return the bot name
    */
   @CacheReturn
   String name();
-
-  /**
-   * Create a new bot client.
-   *
-   * @param handler receives the {@link BotClient} after initialization
-   * @return this instance so it can be used fluently
-   */
-  @Fluent
-  Bot createClient(Handler<AsyncResult<BotClient>> handler);
-
-  /**
-   * Create a new bot client with the specified {@link ClientOptions}.
-   *
-   * @param options the client options
-   * @param handler receives the {@link BotClient} after initialization
-   * @return this instance so it can be used fluently
-   */
-  @Fluent
-  Bot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler);
 
   /**
    * Close the bot.

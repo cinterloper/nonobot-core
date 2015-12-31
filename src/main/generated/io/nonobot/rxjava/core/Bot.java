@@ -19,13 +19,8 @@ package io.nonobot.rxjava.core;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.core.BotOptions;
-import io.nonobot.rxjava.core.adapter.BotAdapter;
-import io.nonobot.core.client.ClientOptions;
 import io.vertx.rxjava.core.Vertx;
-import io.nonobot.rxjava.core.client.BotClient;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.nonobot.rxjava.core.handler.ChatRouter;
 
 /**
  * The bot.
@@ -47,6 +42,27 @@ public class Bot {
   }
 
   /**
+   * Gets a shared bot instance for the Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @param name the bot name
+   * @return the bot instance
+   */
+  public static Bot getShared(Vertx vertx, String name) { 
+    Bot ret= Bot.newInstance(io.nonobot.core.Bot.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name));
+    return ret;
+  }
+
+  /**
+   * Gets a shared bot instance for the Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @return the bot instance
+   */
+  public static Bot getShared(Vertx vertx) { 
+    Bot ret= Bot.newInstance(io.nonobot.core.Bot.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
+    return ret;
+  }
+
+  /**
    * Create a new bot for the Vert.x instance
    * @param vertx the Vert.x instance
    * @return the created bot
@@ -59,23 +75,12 @@ public class Bot {
   /**
    * Create a new bot for the Vert.x instance and specified options.
    * @param vertx the Vert.x instance
-   * @param options the options
+   * @param name the bot name
    * @return the created bot
    */
-  public static Bot create(Vertx vertx, BotOptions options) { 
-    Bot ret= Bot.newInstance(io.nonobot.core.Bot.create((io.vertx.core.Vertx) vertx.getDelegate(), options));
+  public static Bot create(Vertx vertx, String name) { 
+    Bot ret= Bot.newInstance(io.nonobot.core.Bot.create((io.vertx.core.Vertx) vertx.getDelegate(), name));
     return ret;
-  }
-
-  /**
-   * Run the bot with the , the bot will take care of the adapter life cycle and restart it when
-   * it gets disconnected, until {@link io.nonobot.rxjava.core.Bot#close} is called.
-   * @param adapter the bot adapter
-   * @return this instance so it can be used fluently
-   */
-  public Bot run(BotAdapter adapter) { 
-    this.delegate.run((io.nonobot.core.adapter.BotAdapter) adapter.getDelegate());
-    return this;
   }
 
   /**
@@ -91,79 +96,26 @@ public class Bot {
     return ret;
   }
 
-  /**
-   * @return the bot name
-   * @return 
-   */
-  public String name() { 
+  public ChatRouter chatRouter() { 
     if (cached_1 != null) {
       return cached_1;
     }
-    String ret = this.delegate.name();
+    ChatRouter ret= ChatRouter.newInstance(this.delegate.chatRouter());
     cached_1 = ret;
     return ret;
   }
 
   /**
-   * Create a new bot client.
-   * @param handler receives the  after initialization
-   * @return this instance so it can be used fluently
-   */
-  public Bot createClient(Handler<AsyncResult<BotClient>> handler) { 
-    this.delegate.createClient(new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
-      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
-        AsyncResult<BotClient> f;
-        if (event.succeeded()) {
-          f = InternalHelper.<BotClient>result(new BotClient(event.result()));
-        } else {
-          f = InternalHelper.<BotClient>failure(event.cause());
-        }
-        handler.handle(f);
-      }
-    });
-    return this;
-  }
-
-  /**
-   * Create a new bot client.
+   * @return the bot name
    * @return 
    */
-  public Observable<BotClient> createClientObservable() { 
-    io.vertx.rx.java.ObservableFuture<BotClient> handler = io.vertx.rx.java.RxHelper.observableFuture();
-    createClient(handler.toHandler());
-    return handler;
-  }
-
-  /**
-   * Create a new bot client with the specified .
-   * @param options the client options
-   * @param handler receives the  after initialization
-   * @return this instance so it can be used fluently
-   */
-  public Bot createClient(ClientOptions options, Handler<AsyncResult<BotClient>> handler) { 
-    this.delegate.createClient(options, new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
-      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
-        AsyncResult<BotClient> f;
-        if (event.succeeded()) {
-          f = InternalHelper.<BotClient>result(new BotClient(event.result()));
-        } else {
-          f = InternalHelper.<BotClient>failure(event.cause());
-        }
-        handler.handle(f);
-      }
-    });
-    return this;
-  }
-
-  /**
-   * Create a new bot client with the specified .
-   * @param options the client options
-   * @return 
-   */
-  public Observable<BotClient> createClientObservable(ClientOptions options) { 
-    io.vertx.rx.java.ObservableFuture<BotClient> handler = io.vertx.rx.java.RxHelper.observableFuture();
-    createClient(options, handler.toHandler());
-    return handler;
+  public String name() { 
+    if (cached_2 != null) {
+      return cached_2;
+    }
+    String ret = this.delegate.name();
+    cached_2 = ret;
+    return ret;
   }
 
   /**
@@ -174,7 +126,8 @@ public class Bot {
   }
 
   private Vertx cached_0;
-  private java.lang.String cached_1;
+  private ChatRouter cached_1;
+  private java.lang.String cached_2;
 
   public static Bot newInstance(io.nonobot.core.Bot arg) {
     return arg != null ? new Bot(arg) : null;

@@ -17,10 +17,11 @@
 package io.nonobot.test;
 
 import io.nonobot.core.Bot;
+import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ReceiveOptions;
 import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.handler.SendOptions;
-import io.nonobot.core.handler.impl.MessageRouterImpl;
+import io.nonobot.core.handler.impl.ChatRouterImpl;
 import io.vertx.core.Future;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -31,14 +32,14 @@ import java.util.Arrays;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class MessageRouterTest extends BaseTest {
+public class ChatRouterTest extends BaseTest {
 
   ChatRouter router;
 
   @Override
   public void before() {
     super.before();
-    router = ChatRouter.getShared(vertx, ar -> {});
+    router = Bot.create(vertx).chatRouter();
   }
 
   @Test
@@ -67,8 +68,7 @@ public class MessageRouterTest extends BaseTest {
           context.assertEquals("echo hello world", msg.body());
           handleLatch.complete();
         });
-    Bot bot = Bot.create(vertx);
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), message, ar -> {});
     }));
   }
@@ -80,8 +80,7 @@ public class MessageRouterTest extends BaseTest {
           context.assertEquals("echo hello world", msg.body());
           handleLatch.complete();
         });
-    Bot bot = Bot.create(vertx);
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), "echo hello world", ar -> {});
     }));
   }
@@ -89,8 +88,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testTimeout(TestContext context) {
     Async failureLatch = context.async();
-    Bot bot = Bot.create(vertx);
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions().setTimeout(300), "echo hello world", ar -> {
         context.assertTrue(ar.failed());
         failureLatch.complete();
@@ -109,7 +107,7 @@ public class MessageRouterTest extends BaseTest {
     router.when("foobar", msg -> {
       context.fail();
     });
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), "foobar", ar -> {
       });
     }));
@@ -118,19 +116,18 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testConcurrentReplies(TestContext context) {
     Async doneLatch = context.async(2);
-    Bot bot = Bot.create(vertx);
     Future<Void> replied = Future.future();
     router.when("foobar", msg -> {
       msg.reply("1", context.asyncAssertSuccess());
     });
-    new MessageRouterImpl(vertx, "nono").when("foobar", msg -> {
+    new ChatRouterImpl(vertx, "nono").when("foobar", msg -> {
       replied.setHandler(v1 -> {
         msg.reply("2", 200, context.asyncAssertFailure(v2 -> {
           doneLatch.countDown();
         }));
       });
     });
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), "foobar", ar -> {
         context.assertTrue(ar.succeeded());
         context.assertEquals("1", ar.result());
@@ -147,9 +144,8 @@ public class MessageRouterTest extends BaseTest {
       context.assertEquals("echo hello world", msg.body());
       msg.reply("the_reply");
     });
-    Bot bot = Bot.create(vertx);
-    bot.createClient(context.asyncAssertSuccess(client -> {
-      client.rename(Arrays.asList("bb8", "r2d2"));
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
+      client.alias(Arrays.asList("bb8", "r2d2"));
       client.receiveMessage(new ReceiveOptions(), "bb8 echo hello world", ar -> {
         handleLatch.countDown();
       });
@@ -162,12 +158,11 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testIdentity(TestContext context) {
     Async doneLatch = context.async();
-    Bot bot = Bot.create(vertx);
     router.when("foobar", msg -> {
       context.assertEquals("the_chat_id", msg.chatId());
       doneLatch.countDown();
     });
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions().
           setChatId("the_chat_id"), "foobar", ar -> {
       });
@@ -177,8 +172,7 @@ public class MessageRouterTest extends BaseTest {
   @Test
   public void testSendMessage(TestContext context) {
     Async doneLatch = context.async();
-    Bot bot = Bot.create(vertx);
-    bot.createClient(context.asyncAssertSuccess(client -> {
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.messageHandler(msg -> {
         context.assertEquals("the_chat_id", msg.chatId());
         context.assertEquals("the_message", msg.body());

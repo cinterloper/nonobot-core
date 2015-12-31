@@ -25,14 +25,11 @@ import io.vertx.core.json.JsonObject;
 @DataObject
 public class BotOptions {
 
-  public static final long DEFAULT_RECONNECT_PERIOD = 3000;
   public static final String DEFAULT_NAME = "nono";
 
-  private long reconnectPeriod;
   private String name;
 
   public BotOptions() {
-    reconnectPeriod = DEFAULT_RECONNECT_PERIOD;
     name = DEFAULT_NAME;
   }
 
@@ -41,17 +38,7 @@ public class BotOptions {
   }
 
   public BotOptions(BotOptions that) {
-    reconnectPeriod = that.reconnectPeriod;
     name = that.name;
-  }
-
-  public long getReconnectPeriod() {
-    return reconnectPeriod;
-  }
-
-  public BotOptions setReconnectPeriod(long reconnectPeriod) {
-    this.reconnectPeriod = reconnectPeriod;
-    return this;
   }
 
   public String getName() {

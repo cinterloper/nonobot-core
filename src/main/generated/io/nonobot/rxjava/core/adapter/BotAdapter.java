@@ -19,6 +19,8 @@ package io.nonobot.rxjava.core.adapter;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.core.client.ClientOptions;
+import io.vertx.rxjava.core.Vertx;
 import io.nonobot.rxjava.core.client.BotClient;
 import io.vertx.core.Handler;
 import io.vertx.rxjava.core.Future;
@@ -42,30 +44,67 @@ public class BotAdapter {
     return delegate;
   }
 
-  public static BotAdapter create(Handler<ConnectionListener> handler) { 
-    BotAdapter ret= BotAdapter.newInstance(io.nonobot.core.adapter.BotAdapter.create(new Handler<io.nonobot.core.adapter.ConnectionListener>() {
-      public void handle(io.nonobot.core.adapter.ConnectionListener event) {
-        handler.handle(new ConnectionListener(event));
-      }
-    }));
+  /**
+   * Create new adapter.
+   * @param vertx the vertx instance to use
+   * @return the bot adapter
+   */
+  public static BotAdapter create(Vertx vertx) { 
+    BotAdapter ret= BotAdapter.newInstance(io.nonobot.core.adapter.BotAdapter.create((io.vertx.core.Vertx) vertx.getDelegate()));
     return ret;
+  }
+
+  /**
+   * Run the bot adapter, until it is closed.
+   * @param options the client options to use
+   */
+  public void run(ClientOptions options) { 
+    this.delegate.run(options);
+  }
+
+  public boolean isRunning() { 
+    boolean ret = this.delegate.isRunning();
+    return ret;
+  }
+
+  public boolean isConnected() { 
+    boolean ret = this.delegate.isConnected();
+    return ret;
+  }
+
+  /**
+   * Set the connection request handler.
+   * @param handler the connection request handler
+   * @return this object so it can be used fluently
+   */
+  public BotAdapter requestHandler(Handler<ConnectionRequest> handler) { 
+    this.delegate.requestHandler(new Handler<io.nonobot.core.adapter.ConnectionRequest>() {
+      public void handle(io.nonobot.core.adapter.ConnectionRequest event) {
+        handler.handle(new ConnectionRequest(event));
+      }
+    });
+    return this;
   }
 
   /**
    * Like {@link io.nonobot.rxjava.core.adapter.BotAdapter#connect}.
    * @param client 
+   * @return 
    */
-  public void connect(BotClient client) { 
+  public BotAdapter connect(BotClient client) { 
     this.delegate.connect((io.nonobot.core.client.BotClient) client.getDelegate());
+    return this;
   }
 
   /**
    * Connect to the adapted service.
-   * @param client 
+   * @param client the client to use
    * @param completionFuture the future to complete or fail when connection is either a success or a failure
+   * @return this object so it can be used fluently
    */
-  public void connect(BotClient client, Future<Void> completionFuture) { 
+  public BotAdapter connect(BotClient client, Future<Void> completionFuture) { 
     this.delegate.connect((io.nonobot.core.client.BotClient) client.getDelegate(), (io.vertx.core.Future<java.lang.Void>) completionFuture.getDelegate());
+    return this;
   }
 
   /**

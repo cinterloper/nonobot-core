@@ -18,6 +18,8 @@ package io.nonobot.groovy.core.adapter;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.core.client.ClientOptions
+import io.vertx.groovy.core.Vertx
 import io.nonobot.groovy.core.client.BotClient
 import io.vertx.core.Handler
 import io.vertx.groovy.core.Future
@@ -33,28 +35,61 @@ public class BotAdapter {
   public Object getDelegate() {
     return delegate;
   }
-  public static BotAdapter create(Handler<ConnectionListener> handler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.adapter.BotAdapter.create(new Handler<io.nonobot.core.adapter.ConnectionListener>() {
-      public void handle(io.nonobot.core.adapter.ConnectionListener event) {
-        handler.handle(new io.nonobot.groovy.core.adapter.ConnectionListener(event));
-      }
-    }), io.nonobot.groovy.core.adapter.BotAdapter.class);
+  /**
+   * Create new adapter.
+   * @param vertx the vertx instance to use
+   * @return the bot adapter
+   */
+  public static BotAdapter create(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.adapter.BotAdapter.create((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.adapter.BotAdapter.class);
     return ret;
+  }
+  /**
+   * Run the bot adapter, until it is closed.
+   * @param options the client options to use (see <a href="../../../../../../../cheatsheet/ClientOptions.html">ClientOptions</a>)
+   */
+  public void run(Map<String, Object> options = [:]) {
+    this.delegate.run(options != null ? new io.nonobot.core.client.ClientOptions(new io.vertx.core.json.JsonObject(options)) : null);
+  }
+  public boolean isRunning() {
+    def ret = this.delegate.isRunning();
+    return ret;
+  }
+  public boolean isConnected() {
+    def ret = this.delegate.isConnected();
+    return ret;
+  }
+  /**
+   * Set the connection request handler.
+   * @param handler the connection request handler
+   * @return this object so it can be used fluently
+   */
+  public BotAdapter requestHandler(Handler<ConnectionRequest> handler) {
+    this.delegate.requestHandler(new Handler<io.nonobot.core.adapter.ConnectionRequest>() {
+      public void handle(io.nonobot.core.adapter.ConnectionRequest event) {
+        handler.handle(new io.nonobot.groovy.core.adapter.ConnectionRequest(event));
+      }
+    });
+    return this;
   }
   /**
    * Like {@link io.nonobot.groovy.core.adapter.BotAdapter#connect}.
    * @param client 
+   * @return 
    */
-  public void connect(BotClient client) {
+  public BotAdapter connect(BotClient client) {
     this.delegate.connect((io.nonobot.core.client.BotClient)client.getDelegate());
+    return this;
   }
   /**
    * Connect to the adapted service.
-   * @param client 
+   * @param client the client to use
    * @param completionFuture the future to complete or fail when connection is either a success or a failure
+   * @return this object so it can be used fluently
    */
-  public void connect(BotClient client, Future<Void> completionFuture) {
+  public BotAdapter connect(BotClient client, Future<Void> completionFuture) {
     this.delegate.connect((io.nonobot.core.client.BotClient)client.getDelegate(), (io.vertx.core.Future<java.lang.Void>)completionFuture.getDelegate());
+    return this;
   }
   /**
    * Close the adapter.

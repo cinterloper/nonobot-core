@@ -20,8 +20,6 @@ import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
 import io.nonobot.core.handler.SendOptions;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 /**
@@ -41,41 +39,6 @@ public class ChatRouter {
 
   public Object getDelegate() {
     return delegate;
-  }
-
-  public static ChatRouter getShared(Vertx vertx) { 
-    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
-    return ret;
-  }
-
-  public static ChatRouter getShared(Vertx vertx, String name) { 
-    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name));
-    return ret;
-  }
-
-  /**
-   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
-   * Vert.x instance.
-   * @param vertx the Vert.x instance
-   * @param initHandler the handler notified when the router is fully initialized
-   * @return the message router
-   */
-  public static ChatRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) { 
-    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
-    return ret;
-  }
-
-  /**
-   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
-   * Vert.x instance.
-   * @param vertx the Vert.x instance
-   * @param name the bot name
-   * @param initHandler the handler notified when the router is fully initialized
-   * @return the message router
-   */
-  public static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) { 
-    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name, initHandler));
-    return ret;
   }
 
   /**

@@ -13,7 +13,6 @@
 |===
 ^|Name | Type ^| Description
 |[[name]]`name`|`String`|-
-|[[reconnectPeriod]]`reconnectPeriod`|`Number (long)`|-
 |===
 
 [[ReceiveOptions]]
@@ -69,5 +68,7 @@ Set the id that identifies the chat where this message should be sent.
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[name]]`name`|`String`|-
+|[[reconnectPeriod]]`reconnectPeriod`|`Number (long)`|-
 |===
 

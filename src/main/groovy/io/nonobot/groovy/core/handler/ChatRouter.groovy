@@ -19,8 +19,6 @@ import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
 import io.nonobot.core.handler.SendOptions
-import io.vertx.groovy.core.Vertx
-import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 /**
  * The message router.
@@ -33,37 +31,6 @@ public class ChatRouter {
   }
   public Object getDelegate() {
     return delegate;
-  }
-  public static ChatRouter getShared(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.handler.ChatRouter.class);
-    return ret;
-  }
-  public static ChatRouter getShared(Vertx vertx, String name) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name), io.nonobot.groovy.core.handler.ChatRouter.class);
-    return ret;
-  }
-  /**
-   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
-   * Vert.x instance.
-   * @param vertx the Vert.x instance
-   * @param initHandler the handler notified when the router is fully initialized
-   * @return the message router
-   */
-  public static ChatRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), initHandler), io.nonobot.groovy.core.handler.ChatRouter.class);
-    return ret;
-  }
-  /**
-   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
-   * Vert.x instance.
-   * @param vertx the Vert.x instance
-   * @param name the bot name
-   * @param initHandler the handler notified when the router is fully initialized
-   * @return the message router
-   */
-  public static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name, initHandler), io.nonobot.groovy.core.handler.ChatRouter.class);
-    return ret;
   }
   /**
    * Add a message handler triggered when the <code>pattern</code> is fully matched, the pattern is a <code>java.util.regex</code>.

@@ -16,6 +16,8 @@
 
 package io.nonobot.core.handlers;
 
+import io.nonobot.core.handler.ChatRouter;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
@@ -24,6 +26,7 @@ public class EchoHandler extends BaseHandlerVerticle {
   @Override
   public void start() throws Exception {
     super.start();
+    ChatRouter router = bot.chatRouter();
     router.respond("^echo\\s+(.+)", msg -> {
       msg.reply(msg.body().substring(4));
     });

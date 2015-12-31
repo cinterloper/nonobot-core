@@ -17,7 +17,6 @@
 /** @module nonobot-js/chat_router */
 var utils = require('vertx-js/util/utils');
 var ChatHandler = require('nonobot-js/chat_handler');
-var Vertx = require('vertx-js/vertx');
 var Message = require('nonobot-js/message');
 
 var io = Packages.io;
@@ -103,41 +102,6 @@ var ChatRouter = function(j_val) {
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
   this._jdel = j_chatRouter;
-};
-
-/**
- Gets a shared message router instance for the Vert.x instance. There should be a single message router per
- Vert.x instance.
-
- @memberof module:nonobot-js/chat_router
- @param vertx {Vertx} the Vert.x instance 
- @param name {string} the bot name 
- @param initHandler {function} the handler notified when the router is fully initialized 
- @return {ChatRouter} the message router
- */
-ChatRouter.getShared = function() {
-  var __args = arguments;
-  if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx)"](__args[0]._jdel), ChatRouter);
-  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string') {
-    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx,java.lang.String)"](__args[0]._jdel, __args[1]), ChatRouter);
-  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
-    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
-    if (ar.succeeded()) {
-      __args[1](null, null);
-    } else {
-      __args[1](null, ar.cause());
-    }
-  }), ChatRouter);
-  }else if (__args.length === 3 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string' && typeof __args[2] === 'function') {
-    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx,java.lang.String,io.vertx.core.Handler)"](__args[0]._jdel, __args[1], function(ar) {
-    if (ar.succeeded()) {
-      __args[2](null, null);
-    } else {
-      __args[2](null, ar.cause());
-    }
-  }), ChatRouter);
-  } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function

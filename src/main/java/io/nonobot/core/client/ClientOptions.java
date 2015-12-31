@@ -25,13 +25,41 @@ import io.vertx.core.json.JsonObject;
 @DataObject
 public class ClientOptions {
 
+  public static final long DEFAULT_RECONNECT_PERIOD = 3000;
+  public static final String DEFAULT_NAME = "nono";
+
+  private long reconnectPeriod;
+  private String name;
+
   public ClientOptions() {
+    reconnectPeriod = DEFAULT_RECONNECT_PERIOD;
+    name = DEFAULT_NAME;
   }
 
   public ClientOptions(JsonObject json) {
-    throw new UnsupportedOperationException("todo");
+    throw new UnsupportedOperationException();
   }
 
   public ClientOptions(ClientOptions that) {
+    reconnectPeriod = that.reconnectPeriod;
+    name = that.name;
+  }
+
+  public long getReconnectPeriod() {
+    return reconnectPeriod;
+  }
+
+  public ClientOptions setReconnectPeriod(long reconnectPeriod) {
+    this.reconnectPeriod = reconnectPeriod;
+    return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ClientOptions setName(String name) {
+    this.name = name;
+    return this;
   }
 }

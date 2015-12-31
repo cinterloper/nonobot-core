@@ -19,7 +19,7 @@ package io.nonobot.core.adapter;
 import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ReceiveOptions;
 import io.vertx.core.Context;
-import io.vertx.core.Future;
+import io.vertx.core.Handler;
 
 import java.io.Console;
 import java.io.PrintWriter;
@@ -27,7 +27,7 @@ import java.io.PrintWriter;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class ConsoleBotAdapter implements BotAdapter {
+public class ConsoleBotAdapter implements Handler<ConnectionRequest> {
 
   private Thread consoleThread;
   private final Console console = System.console();
@@ -37,12 +37,13 @@ public class ConsoleBotAdapter implements BotAdapter {
   }
 
   @Override
-  public void connect(BotClient client, Future<Void> completionFuture) {
-    Context context = client.bot().vertx().getOrCreateContext();
+  public void handle(ConnectionRequest event) {
+    BotClient client = event.client();
+    Context context = client.vertx().getOrCreateContext();
     synchronized (ConsoleBotAdapter.this) {
       consoleThread = new Thread(() -> {
         context.runOnContext(v -> {
-          completionFuture.complete();
+          event.complete();
         });
         try {
           run(client);
@@ -60,11 +61,11 @@ public class ConsoleBotAdapter implements BotAdapter {
     client.messageHandler(msg -> {
       if (msg.chatId().equals("console")) {
         System.out.println(msg.body());
-        System.out.print("\n" + client.bot().name() + "> ");
+        System.out.print("\n" + client.name() + "> ");
       }
     });
     while (true) {
-      writer.write("\n" + client.bot().name() + "> ");
+      writer.write("\n" + client.name() + "> ");
       writer.flush();
       String line = console.readLine();
       if (line == null) {
@@ -73,14 +74,9 @@ public class ConsoleBotAdapter implements BotAdapter {
       client.receiveMessage(new ReceiveOptions().setChatId("console"), line, ar -> {
         if (ar.succeeded()) {
           System.out.println(ar.result());
-          System.out.print("\n" + client.bot().name() + "> ");
+          System.out.print("\n" + client.name() + "> ");
         }
       });
     }
-  }
-
-  @Override
-  public synchronized void close() {
-    // ?
   }
 }

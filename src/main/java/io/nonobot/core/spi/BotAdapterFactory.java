@@ -18,6 +18,7 @@ package io.nonobot.core.spi;
 
 import io.nonobot.core.Config;
 import io.nonobot.core.adapter.BotAdapter;
+import io.vertx.core.Vertx;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
@@ -31,6 +32,6 @@ public interface BotAdapterFactory {
    * @param config the bot config
    * @return the adapter
    */
-  BotAdapter create(Config config);
+  BotAdapter create(Vertx vertx, Config config);
 
 }

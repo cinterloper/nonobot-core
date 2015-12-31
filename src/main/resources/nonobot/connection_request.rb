@@ -1,21 +1,22 @@
 require 'nonobot/bot_client'
 require 'vertx/future'
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.adapter.ConnectionListener
+# Generated from io.nonobot.core.adapter.ConnectionRequest
 module Nonobot
-  #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-  class ConnectionListener < ::Vertx::Future
+  #  A connection request.
+  class ConnectionRequest < ::Vertx::Future
     # @private
-    # @param j_del [::Nonobot::ConnectionListener] the java delegate
+    # @param j_del [::Nonobot::ConnectionRequest] the java delegate
     def initialize(j_del)
       super(j_del)
       @j_del = j_del
     end
     # @private
-    # @return [::Nonobot::ConnectionListener] the underlying java delegate
+    # @return [::Nonobot::ConnectionRequest] the underlying java delegate
     def j_del
       @j_del
     end
+    #  @return the client used by the connection
     # @return [::Nonobot::BotClient]
     def client
       if !block_given?

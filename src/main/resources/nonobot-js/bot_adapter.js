@@ -16,13 +16,15 @@
 
 /** @module nonobot-js/bot_adapter */
 var utils = require('vertx-js/util/utils');
+var ConnectionRequest = require('nonobot-js/connection_request');
+var Vertx = require('vertx-js/vertx');
 var BotClient = require('nonobot-js/bot_client');
 var Future = require('vertx-js/future');
-var ConnectionListener = require('nonobot-js/connection_listener');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JBotAdapter = io.nonobot.core.adapter.BotAdapter;
+var ClientOptions = io.nonobot.core.client.ClientOptions;
 
 /**
  Expose the bot to an external (usually remote) service.
@@ -35,18 +37,77 @@ var BotAdapter = function(j_val) {
   var that = this;
 
   /**
+   Run the bot adapter, until it is closed.
+
+   @public
+   @param options {Object} the client options to use 
+   */
+  this.run = function(options) {
+    var __args = arguments;
+    if (__args.length === 1 && (typeof __args[0] === 'object' && __args[0] != null)) {
+      j_botAdapter["run(io.nonobot.core.client.ClientOptions)"](options != null ? new ClientOptions(new JsonObject(JSON.stringify(options))) : null);
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+
+   @return {boolean}
+   */
+  this.isRunning = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      return j_botAdapter["isRunning()"]();
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+
+   @public
+
+   @return {boolean}
+   */
+  this.isConnected = function() {
+    var __args = arguments;
+    if (__args.length === 0) {
+      return j_botAdapter["isConnected()"]();
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+   Set the connection request handler.
+
+   @public
+   @param handler {function} the connection request handler 
+   @return {BotAdapter} this object so it can be used fluently
+   */
+  this.requestHandler = function(handler) {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] === 'function') {
+      j_botAdapter["requestHandler(io.vertx.core.Handler)"](function(jVal) {
+      handler(utils.convReturnVertxGen(jVal, ConnectionRequest));
+    });
+      return that;
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
    Connect to the adapted service.
 
    @public
-   @param client {BotClient} 
+   @param client {BotClient} the client to use 
    @param completionFuture {Future} the future to complete or fail when connection is either a success or a failure 
+   @return {BotAdapter} this object so it can be used fluently
    */
   this.connect = function() {
     var __args = arguments;
     if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
       j_botAdapter["connect(io.nonobot.core.client.BotClient)"](__args[0]._jdel);
+      return that;
     }  else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'object' && __args[1]._jdel) {
       j_botAdapter["connect(io.nonobot.core.client.BotClient,io.vertx.core.Future)"](__args[0]._jdel, __args[1]._jdel);
+      return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -70,17 +131,16 @@ var BotAdapter = function(j_val) {
 };
 
 /**
+ Create new adapter.
 
  @memberof module:nonobot-js/bot_adapter
- @param handler {function} 
- @return {BotAdapter}
+ @param vertx {Vertx} the vertx instance to use 
+ @return {BotAdapter} the bot adapter
  */
-BotAdapter.create = function(handler) {
+BotAdapter.create = function(vertx) {
   var __args = arguments;
-  if (__args.length === 1 && typeof __args[0] === 'function') {
-    return utils.convReturnVertxGen(JBotAdapter["create(io.vertx.core.Handler)"](function(jVal) {
-    handler(utils.convReturnVertxGen(jVal, ConnectionListener));
-  }), BotAdapter);
+  if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
+    return utils.convReturnVertxGen(JBotAdapter["create(io.vertx.core.Vertx)"](vertx._jdel), BotAdapter);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 

@@ -16,6 +16,7 @@
 
 package io.nonobot.core.handlers;
 
+import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.handler.SendOptions;
 
 import java.util.regex.Matcher;
@@ -31,6 +32,7 @@ public class TimerHandler extends BaseHandlerVerticle {
   @Override
   public void start() throws Exception {
     super.start();
+    ChatRouter router = bot.chatRouter();
     router.respond(p.pattern(), msg -> {
       Matcher matcher = p.matcher(msg.body());
       matcher.matches();

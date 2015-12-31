@@ -16,6 +16,8 @@
 
 package io.nonobot.core.handlers;
 
+import io.nonobot.core.handler.ChatRouter;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
@@ -24,6 +26,7 @@ public class HelpHandler extends BaseHandlerVerticle {
   @Override
   public void start() throws Exception {
     super.start();
+    ChatRouter router = bot.chatRouter();
     router.respond("^help(\\s.+)?", msg -> msg.reply(
         "Nonobot version 0.01 - https://github.com/nonobot/nonobot-core\n" +
             "\n" +

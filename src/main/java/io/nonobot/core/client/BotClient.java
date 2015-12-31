@@ -16,11 +16,12 @@
 
 package io.nonobot.core.client;
 
-import io.nonobot.core.Bot;
+import io.nonobot.core.client.impl.BotClientImpl;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 
 import java.util.List;
 
@@ -32,26 +33,33 @@ import java.util.List;
 @VertxGen
 public interface BotClient {
 
-  /**
-   * @return the bot this client exposes.
-   */
-  Bot bot();
+  static void client(Vertx vertx, ClientOptions options, Handler<AsyncResult<BotClient>> handler) {
+    new BotClientImpl(vertx, vertx.getOrCreateContext(), options, handler);
+  }
+
+  static void client(Vertx vertx, Handler<AsyncResult<BotClient>> handler) {
+    new BotClientImpl(vertx, vertx.getOrCreateContext(), new ClientOptions(), handler);
+  }
+
+  String name();
+
+  Vertx vertx();
 
   /**
-   * Rename the bot for this client, when the client process a message it will use the specified {@code name} to
+   * Alias the bot for this client, when the client process a message it will use the specified {@code name} to
    * detect if the message is addressed to the bot or not.
    *
    * @param name the bot name
    */
-  void rename(String name);
+  void alias(String name);
 
   /**
-   * Rename the bot for this client, when the client process a message it will use the specified {@code name} to
+   * Alias the bot for this client, when the client process a message it will use the specified {@code name} to
    * detect if the message is addressed to the bot or not.
    *
    * @param names the bot names
    */
-  void rename(List<String> names);
+  void alias(List<String> names);
 
   /**
    * Receive a message, the message might trigger a reply from an handler, if that happens it should be fast. However
@@ -74,7 +82,7 @@ public interface BotClient {
   BotClient messageHandler(Handler<Message> handler);
 
   /**
-   * Set an handler called when the client is closed, note that calling {@link #close()} will not call this handler.
+   * Set an handler called when the client is closed.
    *
    * @param handler the handler
    * @return this object so it can be used fluently

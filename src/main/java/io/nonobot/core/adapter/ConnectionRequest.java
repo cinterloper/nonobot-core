@@ -22,11 +22,16 @@ import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Future;
 
 /**
+ * A connection request.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
-public interface ConnectionListener extends Future<Void> {
+public interface ConnectionRequest extends Future<Void> {
 
+  /**
+   * @return the client used by the connection
+   */
   @CacheReturn
   BotClient client();
 

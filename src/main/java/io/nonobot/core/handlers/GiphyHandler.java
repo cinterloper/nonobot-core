@@ -38,7 +38,7 @@ public class GiphyHandler extends BaseHandlerVerticle {
   public void start() throws Exception {
     super.start();
     client = vertx.createHttpClient();
-    router.respond(p.pattern(), this::handle);
+    bot.chatRouter().respond(p.pattern(), this::handle);
   }
 
   public void handle(Message msg) {

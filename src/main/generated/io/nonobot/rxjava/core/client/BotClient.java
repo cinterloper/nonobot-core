@@ -19,9 +19,10 @@ package io.nonobot.rxjava.core.client;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.rxjava.core.Bot;
 import java.util.List;
 import io.nonobot.core.client.ReceiveOptions;
+import io.nonobot.core.client.ClientOptions;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -44,31 +45,72 @@ public class BotClient {
     return delegate;
   }
 
-  /**
-   * @return the bot this client exposes.
-   * @return 
-   */
-  public Bot bot() { 
-    Bot ret= Bot.newInstance(this.delegate.bot());
+  public static void client(Vertx vertx, ClientOptions options, Handler<AsyncResult<BotClient>> handler) { 
+    io.nonobot.core.client.BotClient.client((io.vertx.core.Vertx) vertx.getDelegate(), options, new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
+      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
+        AsyncResult<BotClient> f;
+        if (event.succeeded()) {
+          f = InternalHelper.<BotClient>result(new BotClient(event.result()));
+        } else {
+          f = InternalHelper.<BotClient>failure(event.cause());
+        }
+        handler.handle(f);
+      }
+    });
+  }
+
+  public static Observable<BotClient> clientObservable(Vertx vertx, ClientOptions options) { 
+    io.vertx.rx.java.ObservableFuture<BotClient> handler = io.vertx.rx.java.RxHelper.observableFuture();
+    client(vertx, options, handler.toHandler());
+    return handler;
+  }
+
+  public static void client(Vertx vertx, Handler<AsyncResult<BotClient>> handler) { 
+    io.nonobot.core.client.BotClient.client((io.vertx.core.Vertx) vertx.getDelegate(), new Handler<AsyncResult<io.nonobot.core.client.BotClient>>() {
+      public void handle(AsyncResult<io.nonobot.core.client.BotClient> event) {
+        AsyncResult<BotClient> f;
+        if (event.succeeded()) {
+          f = InternalHelper.<BotClient>result(new BotClient(event.result()));
+        } else {
+          f = InternalHelper.<BotClient>failure(event.cause());
+        }
+        handler.handle(f);
+      }
+    });
+  }
+
+  public static Observable<BotClient> clientObservable(Vertx vertx) { 
+    io.vertx.rx.java.ObservableFuture<BotClient> handler = io.vertx.rx.java.RxHelper.observableFuture();
+    client(vertx, handler.toHandler());
+    return handler;
+  }
+
+  public String name() { 
+    String ret = this.delegate.name();
+    return ret;
+  }
+
+  public Vertx vertx() { 
+    Vertx ret= Vertx.newInstance(this.delegate.vertx());
     return ret;
   }
 
   /**
-   * Rename the bot for this client, when the client process a message it will use the specified <code>name</code> to
+   * Alias the bot for this client, when the client process a message it will use the specified <code>name</code> to
    * detect if the message is addressed to the bot or not.
    * @param name the bot name
    */
-  public void rename(String name) { 
-    this.delegate.rename(name);
+  public void alias(String name) { 
+    this.delegate.alias(name);
   }
 
   /**
-   * Rename the bot for this client, when the client process a message it will use the specified <code>name</code> to
+   * Alias the bot for this client, when the client process a message it will use the specified <code>name</code> to
    * detect if the message is addressed to the bot or not.
    * @param names the bot names
    */
-  public void rename(List<String> names) { 
-    this.delegate.rename(names);
+  public void alias(List<String> names) { 
+    this.delegate.alias(names);
   }
 
   /**
@@ -112,7 +154,7 @@ public class BotClient {
   }
 
   /**
-   * Set an handler called when the client is closed, note that calling {@link io.nonobot.rxjava.core.client.BotClient#close} will not call this handler.
+   * Set an handler called when the client is closed.
    * @param handler the handler
    * @return this object so it can be used fluently
    */

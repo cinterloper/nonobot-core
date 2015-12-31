@@ -1,6 +1,5 @@
-require 'nonobot/bot_adapter'
 require 'vertx/vertx'
-require 'nonobot/bot_client'
+require 'nonobot/chat_router'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.Bot
 module Nonobot
@@ -16,28 +15,29 @@ module Nonobot
     def j_del
       @j_del
     end
+    #  Gets a shared bot instance for the Vert.x instance.
+    # @param [::Vertx::Vertx] vertx the Vert.x instance
+    # @param [String] name the bot name
+    # @return [::Nonobot::Bot] the bot instance
+    def self.get_shared(vertx=nil,name=nil)
+      if vertx.class.method_defined?(:j_del) && !block_given? && name == nil
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::Bot)
+      elsif vertx.class.method_defined?(:j_del) && name.class == String && !block_given?
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class,Java::java.lang.String.java_class]).call(vertx.j_del,name),::Nonobot::Bot)
+      end
+      raise ArgumentError, "Invalid arguments when calling get_shared(vertx,name)"
+    end
     #  Create a new bot for the Vert.x instance and specified options.
     # @param [::Vertx::Vertx] vertx the Vert.x instance
-    # @param [Hash] options the options
+    # @param [String] name the bot name
     # @return [::Nonobot::Bot] the created bot
-    def self.create(vertx=nil,options=nil)
-      if vertx.class.method_defined?(:j_del) && !block_given? && options == nil
+    def self.create(vertx=nil,name=nil)
+      if vertx.class.method_defined?(:j_del) && !block_given? && name == nil
         return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:create, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::Bot)
-      elsif vertx.class.method_defined?(:j_del) && options.class == Hash && !block_given?
-        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:create, [Java::IoVertxCore::Vertx.java_class,Java::IoNonobotCore::BotOptions.java_class]).call(vertx.j_del,Java::IoNonobotCore::BotOptions.new(::Vertx::Util::Utils.to_json_object(options))),::Nonobot::Bot)
+      elsif vertx.class.method_defined?(:j_del) && name.class == String && !block_given?
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCore::Bot.java_method(:create, [Java::IoVertxCore::Vertx.java_class,Java::java.lang.String.java_class]).call(vertx.j_del,name),::Nonobot::Bot)
       end
-      raise ArgumentError, "Invalid arguments when calling create(vertx,options)"
-    end
-    #  Run the bot with the , the bot will take care of the adapter life cycle and restart it when
-    #  it gets disconnected, until {::Nonobot::Bot#close} is called.
-    # @param [::Nonobot::BotAdapter] adapter the bot adapter
-    # @return [self]
-    def run(adapter=nil)
-      if adapter.class.method_defined?(:j_del) && !block_given?
-        @j_del.java_method(:run, [Java::IoNonobotCoreAdapter::BotAdapter.java_class]).call(adapter.j_del)
-        return self
-      end
-      raise ArgumentError, "Invalid arguments when calling run(adapter)"
+      raise ArgumentError, "Invalid arguments when calling create(vertx,name)"
     end
     #  @return the Vert.x instance used by this bot
     # @return [::Vertx::Vertx]
@@ -50,6 +50,16 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling vertx()"
     end
+    # @return [::Nonobot::ChatRouter]
+    def chat_router
+      if !block_given?
+        if @cached_chat_router != nil
+          return @cached_chat_router
+        end
+        return @cached_chat_router = ::Vertx::Util::Utils.safe_create(@j_del.java_method(:chatRouter, []).call(),::Nonobot::ChatRouter)
+      end
+      raise ArgumentError, "Invalid arguments when calling chat_router()"
+    end
     #  @return the bot name
     # @return [String]
     def name
@@ -60,20 +70,6 @@ module Nonobot
         return @cached_name = @j_del.java_method(:name, []).call()
       end
       raise ArgumentError, "Invalid arguments when calling name()"
-    end
-    #  Create a new bot client with the specified .
-    # @param [Hash] options the client options
-    # @yield receives the  after initialization
-    # @return [self]
-    def create_client(options=nil)
-      if block_given? && options == nil
-        @j_del.java_method(:createClient, [Java::IoVertxCore::Handler.java_class]).call((Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ::Vertx::Util::Utils.safe_create(ar.result,::Nonobot::BotClient) : nil) }))
-        return self
-      elsif options.class == Hash && block_given?
-        @j_del.java_method(:createClient, [Java::IoNonobotCoreClient::ClientOptions.java_class,Java::IoVertxCore::Handler.java_class]).call(Java::IoNonobotCoreClient::ClientOptions.new(::Vertx::Util::Utils.to_json_object(options)),(Proc.new { |ar| yield(ar.failed ? ar.cause : nil, ar.succeeded ? ::Vertx::Util::Utils.safe_create(ar.result,::Nonobot::BotClient) : nil) }))
-        return self
-      end
-      raise ArgumentError, "Invalid arguments when calling create_client(options)"
     end
     #  Close the bot.
     # @return [void]

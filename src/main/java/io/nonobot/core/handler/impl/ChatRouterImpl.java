@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class MessageRouterImpl implements ChatRouter {
+public class ChatRouterImpl implements ChatRouter {
 
   static final class Key {
 
@@ -62,10 +62,10 @@ public class MessageRouterImpl implements ChatRouter {
     }
   }
 
-  static final ConcurrentMap<Key, MessageRouterImpl> routers = new ConcurrentHashMap<>();
+  static final ConcurrentMap<Key, ChatRouterImpl> routers = new ConcurrentHashMap<>();
 
   public static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
-    MessageRouterImpl router = routers.computeIfAbsent(new Key(vertx, name), key -> new MessageRouterImpl(key.vertx, key.name));
+    ChatRouterImpl router = routers.computeIfAbsent(new Key(vertx, name), key -> new ChatRouterImpl(key.vertx, key.name));
     if (initHandler != null) {
       Context context = vertx.getOrCreateContext();
       router.registerForInit(ar -> context.runOnContext(v -> initHandler.handle(ar)));
@@ -80,7 +80,7 @@ public class MessageRouterImpl implements ChatRouter {
   final Future<Void> initFuture = Future.future();
   final String outboundAddress;
 
-  public MessageRouterImpl(Vertx vertx, String name) {
+  public ChatRouterImpl(Vertx vertx, String name) {
     this.consumer = vertx.eventBus().consumer("bots." + name + ".inbound", this::handle);
     this.vertx = vertx;
     this.outboundAddress = "bots." + name + ".outbound";
@@ -94,7 +94,7 @@ public class MessageRouterImpl implements ChatRouter {
     });
 
     initFuture.setHandler(ar -> {
-      synchronized (MessageRouterImpl.this) {
+      synchronized (ChatRouterImpl.this) {
         for (Handler<AsyncResult<Void>> completionHandler : initHandlers) {
           completionHandler.handle(ar);
         }
@@ -102,7 +102,7 @@ public class MessageRouterImpl implements ChatRouter {
     });
   }
 
-  private synchronized MessageRouterImpl registerForInit(Handler<AsyncResult<Void>> initHandler) {
+  private synchronized ChatRouterImpl registerForInit(Handler<AsyncResult<Void>> initHandler) {
     if (initFuture.isComplete()) {
       initHandler.handle(initFuture);
     } else {
@@ -182,9 +182,7 @@ public class MessageRouterImpl implements ChatRouter {
 
   @Override
   public ChatRouter sendMessage(SendOptions options, String body) {
-
     vertx.eventBus().publish(outboundAddress, new JsonObject().put("chatId", options.getChatId()).put("body", body));
-
     return this;
   }
 

@@ -14,26 +14,28 @@
  * under the License.
  */
 
-/** @module nonobot-js/connection_listener */
+/** @module nonobot-js/connection_request */
 var utils = require('vertx-js/util/utils');
 var BotClient = require('nonobot-js/bot_client');
 var Future = require('vertx-js/future');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JConnectionListener = io.nonobot.core.adapter.ConnectionListener;
+var JConnectionRequest = io.nonobot.core.adapter.ConnectionRequest;
 
 /**
+ A connection request.
 
  @class
 */
-var ConnectionListener = function(j_val) {
+var ConnectionRequest = function(j_val) {
 
-  var j_connectionListener = j_val;
+  var j_connectionRequest = j_val;
   var that = this;
   Future.call(this, j_val);
 
   /**
+   @return the client used by the connection
 
    @public
 
@@ -43,7 +45,7 @@ var ConnectionListener = function(j_val) {
     var __args = arguments;
     if (__args.length === 0) {
       if (that.cachedclient == null) {
-        that.cachedclient = utils.convReturnVertxGen(j_connectionListener["client()"](), BotClient);
+        that.cachedclient = utils.convReturnVertxGen(j_connectionRequest["client()"](), BotClient);
       }
       return that.cachedclient;
     } else throw new TypeError('function invoked with invalid arguments');
@@ -52,8 +54,8 @@ var ConnectionListener = function(j_val) {
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_connectionListener;
+  this._jdel = j_connectionRequest;
 };
 
 // We export the Constructor function
-module.exports = ConnectionListener;
+module.exports = ConnectionRequest;
