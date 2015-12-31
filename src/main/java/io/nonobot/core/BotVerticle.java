@@ -57,11 +57,6 @@ public class BotVerticle extends AbstractVerticle {
       }
     };
 
-    // Basic status
-    vertx.createHttpServer().requestHandler(req -> {
-      req.response().putHeader("Content-Type", "text/plain").end("Application started");
-    }).listen(Integer.getInteger("http.port", 8080), System.getProperty("http.address", "localhost"));
-
     bot = Bot.create(vertx, new BotOptions().setName(botName));
 
     BotAdapter adapter = null;
