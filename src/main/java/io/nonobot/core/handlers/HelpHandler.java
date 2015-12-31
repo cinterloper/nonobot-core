@@ -22,11 +22,11 @@ import io.vertx.core.AbstractVerticle;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class HelpHandler extends AbstractVerticle {
+public class HelpHandler extends BaseHandlerVerticle {
 
   @Override
   public void start() throws Exception {
-    MessageRouter router = MessageRouter.getShared(vertx);
+    super.start();
     router.respond("^help(\\s.+)?", msg -> msg.reply(
         "Nonobot version 0.01 - https://github.com/nonobot/nonobot-core\n" +
             "\n" +

@@ -48,6 +48,11 @@ public class MessageRouter {
     return ret;
   }
 
+  public static MessageRouter getShared(Vertx vertx, String name) { 
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name));
+    return ret;
+  }
+
   /**
    * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
    * Vert.x instance.
@@ -57,6 +62,19 @@ public class MessageRouter {
    */
   public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) { 
     MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
+    return ret;
+  }
+
+  /**
+   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
+   * Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @param name the bot name
+   * @param initHandler the handler notified when the router is fully initialized
+   * @return the message router
+   */
+  public static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) { 
+    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name, initHandler));
     return ret;
   }
 

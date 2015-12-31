@@ -22,11 +22,11 @@ import io.vertx.core.AbstractVerticle;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class EchoHandler extends AbstractVerticle {
+public class EchoHandler extends BaseHandlerVerticle {
 
   @Override
   public void start() throws Exception {
-    MessageRouter router = MessageRouter.getShared(vertx);
+    super.start();
     router.respond("^echo\\s+(.+)", msg -> {
       msg.reply(msg.body().substring(4));
     });

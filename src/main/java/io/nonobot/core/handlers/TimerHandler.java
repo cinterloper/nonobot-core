@@ -26,13 +26,13 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class TimerHandler extends AbstractVerticle {
+public class TimerHandler extends BaseHandlerVerticle {
 
   Pattern p = Pattern.compile("^timer ([0-9]+)");
 
   @Override
   public void start() throws Exception {
-    MessageRouter router = MessageRouter.getShared(vertx);
+    super.start();
     router.respond(p.pattern(), msg -> {
       Matcher matcher = p.matcher(msg.body());
       matcher.matches();

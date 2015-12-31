@@ -16,19 +16,21 @@
 
 package io.nonobot.core.handlers;
 
+import io.nonobot.core.BotOptions;
 import io.nonobot.core.handler.MessageRouter;
 import io.vertx.core.AbstractVerticle;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class PingHandler extends BaseHandlerVerticle {
+public class BaseHandlerVerticle extends AbstractVerticle {
+
+  protected MessageRouter router;
 
   @Override
   public void start() throws Exception {
     super.start();
-    router.respond("^ping", msg -> {
-      msg.reply("pong");
-    });
+    String botName = config().getString("nonobot.name", BotOptions.DEFAULT_NAME);
+    router = MessageRouter.getShared(vertx, botName);
   }
 }

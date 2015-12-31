@@ -31,15 +31,15 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class GiphyHandler extends AbstractVerticle {
+public class GiphyHandler extends BaseHandlerVerticle {
 
   public static final Pattern p = Pattern.compile("^giphy\\s+(.+)");
   private HttpClient client;
 
   @Override
   public void start() throws Exception {
+    super.start();
     client = vertx.createHttpClient();
-    MessageRouter router = MessageRouter.getShared(vertx);
     router.respond(p.pattern(), this::handle);
   }
 

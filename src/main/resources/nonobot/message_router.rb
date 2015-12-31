@@ -19,15 +19,20 @@ module Nonobot
     #  Gets a shared message router instance for the Vert.x instance. There should be a single message router per
     #  Vert.x instance.
     # @param [::Vertx::Vertx] vertx the Vert.x instance
+    # @param [String] name the bot name
     # @yield the handler notified when the router is fully initialized
     # @return [::Nonobot::MessageRouter] the message router
-    def self.get_shared(vertx=nil)
-      if vertx.class.method_defined?(:j_del) && !block_given?
+    def self.get_shared(vertx=nil,name=nil)
+      if vertx.class.method_defined?(:j_del) && !block_given? && name == nil
         return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreHandler::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class]).call(vertx.j_del),::Nonobot::MessageRouter)
-      elsif vertx.class.method_defined?(:j_del) && block_given?
+      elsif vertx.class.method_defined?(:j_del) && name.class == String && !block_given?
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreHandler::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class,Java::java.lang.String.java_class]).call(vertx.j_del,name),::Nonobot::MessageRouter)
+      elsif vertx.class.method_defined?(:j_del) && block_given? && name == nil
         return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreHandler::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class,Java::IoVertxCore::Handler.java_class]).call(vertx.j_del,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) })),::Nonobot::MessageRouter)
+      elsif vertx.class.method_defined?(:j_del) && name.class == String && block_given?
+        return ::Vertx::Util::Utils.safe_create(Java::IoNonobotCoreHandler::MessageRouter.java_method(:getShared, [Java::IoVertxCore::Vertx.java_class,Java::java.lang.String.java_class,Java::IoVertxCore::Handler.java_class]).call(vertx.j_del,name,(Proc.new { |ar| yield(ar.failed ? ar.cause : nil) })),::Nonobot::MessageRouter)
       end
-      raise ArgumentError, "Invalid arguments when calling get_shared(vertx)"
+      raise ArgumentError, "Invalid arguments when calling get_shared(vertx,name)"
     end
     #  Add a message handler triggered when the <code>pattern</code> is fully matched, the pattern is a <code>java.util.regex</code>.
     # @param [String] pattern the matching pattern

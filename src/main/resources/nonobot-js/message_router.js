@@ -111,6 +111,7 @@ var MessageRouter = function(j_val) {
 
  @memberof module:nonobot-js/message_router
  @param vertx {Vertx} the Vert.x instance 
+ @param name {string} the bot name 
  @param initHandler {function} the handler notified when the router is fully initialized 
  @return {MessageRouter} the message router
  */
@@ -118,12 +119,22 @@ MessageRouter.getShared = function() {
   var __args = arguments;
   if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
     return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx)"](__args[0]._jdel), MessageRouter);
+  }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string') {
+    return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx,java.lang.String)"](__args[0]._jdel, __args[1]), MessageRouter);
   }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
     return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
     if (ar.succeeded()) {
       __args[1](null, null);
     } else {
       __args[1](null, ar.cause());
+    }
+  }), MessageRouter);
+  }else if (__args.length === 3 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string' && typeof __args[2] === 'function') {
+    return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx,java.lang.String,io.vertx.core.Handler)"](__args[0]._jdel, __args[1], function(ar) {
+    if (ar.succeeded()) {
+      __args[2](null, null);
+    } else {
+      __args[2](null, ar.cause());
     }
   }), MessageRouter);
   } else throw new TypeError('function invoked with invalid arguments');

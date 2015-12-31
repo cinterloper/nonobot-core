@@ -12,6 +12,7 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[name]]`name`|`String`|-
 |[[reconnectPeriod]]`reconnectPeriod`|`Number (long)`|-
 |===
 

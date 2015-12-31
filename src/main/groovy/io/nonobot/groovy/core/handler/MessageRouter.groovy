@@ -38,6 +38,10 @@ public class MessageRouter {
     def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.handler.MessageRouter.class);
     return ret;
   }
+  public static MessageRouter getShared(Vertx vertx, String name) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name), io.nonobot.groovy.core.handler.MessageRouter.class);
+    return ret;
+  }
   /**
    * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
    * Vert.x instance.
@@ -47,6 +51,18 @@ public class MessageRouter {
    */
   public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
     def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), initHandler), io.nonobot.groovy.core.handler.MessageRouter.class);
+    return ret;
+  }
+  /**
+   * Gets a shared message router instance for the Vert.x instance. There should be a single message router per
+   * Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @param name the bot name
+   * @param initHandler the handler notified when the router is fully initialized
+   * @return the message router
+   */
+  public static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name, initHandler), io.nonobot.groovy.core.handler.MessageRouter.class);
     return ret;
   }
   /**

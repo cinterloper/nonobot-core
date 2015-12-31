@@ -25,6 +25,8 @@ import io.nonobot.core.handlers.PingHandler;
 import io.nonobot.core.handlers.TimerHandler;
 import io.nonobot.core.spi.BotAdapterFactory;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.json.JsonObject;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -49,12 +51,14 @@ public class BotVerticle extends AbstractVerticle {
   @Override
   public void start() throws Exception {
 
+    String botName = "nono";
+
     // Basic status
     vertx.createHttpServer().requestHandler(req -> {
       req.response().putHeader("Content-Type", "text/plain").end("Application started");
     }).listen(Integer.getInteger("http.port", 8080), System.getProperty("http.address", "localhost"));
 
-    bot = Bot.create(vertx);
+    bot = Bot.create(vertx, new BotOptions().setName(botName));
 
     BotAdapter adapter = null;
     Iterator<BotAdapterFactory> adapterFactoryIt = ServiceLoader.load(BotAdapterFactory.class).iterator();
@@ -88,11 +92,13 @@ public class BotVerticle extends AbstractVerticle {
       throw new Exception("No adapter found");
     }
 
-    vertx.deployVerticle(new GiphyHandler());
-    vertx.deployVerticle(new HelpHandler());
-    vertx.deployVerticle(new PingHandler());
-    vertx.deployVerticle(new EchoHandler());
-    vertx.deployVerticle(new TimerHandler());
+    DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("nonobot.name", botName));
+
+    vertx.deployVerticle(new GiphyHandler(), options);
+    vertx.deployVerticle(new HelpHandler(), options);
+    vertx.deployVerticle(new PingHandler(), options);
+    vertx.deployVerticle(new EchoHandler(), options);
+    vertx.deployVerticle(new TimerHandler(), options);
   }
 
   @Override

@@ -39,16 +39,18 @@ import java.util.List;
 public class BotImpl implements Bot {
 
   final long reconnectPeriod;
-  final String name = "nono"; // Bot name : make this configurable via options
+  final String name;
   final Vertx vertx;
   private BotAdapter adapter;
   private boolean closed;
   final List<BotClientImpl> clients = new ArrayList<>();
-  final String outboundAddress = "bots." + name + ".outbound";
+  final String outboundAddress;
 
   public BotImpl(Vertx vertx, BotOptions options) {
     this.reconnectPeriod = options.getReconnectPeriod();
     this.vertx = vertx;
+    this.name = options.getName();
+    this.outboundAddress = "bots." + name + ".outbound";
 
     vertx.eventBus().<JsonObject>consumer(outboundAddress, msg -> {
       Identity target = new Identity(msg.body().getJsonObject("target"));

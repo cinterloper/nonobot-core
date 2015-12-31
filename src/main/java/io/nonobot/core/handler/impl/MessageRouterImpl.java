@@ -65,8 +65,8 @@ public class MessageRouterImpl implements MessageRouter {
 
   static final ConcurrentMap<Key, MessageRouterImpl> routers = new ConcurrentHashMap<>();
 
-  public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
-    MessageRouterImpl router = routers.computeIfAbsent(new Key(vertx, "nono"), key -> new MessageRouterImpl(key.vertx, key.name));
+  public static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
+    MessageRouterImpl router = routers.computeIfAbsent(new Key(vertx, name), key -> new MessageRouterImpl(key.vertx, key.name));
     if (initHandler != null) {
       Context context = vertx.getOrCreateContext();
       router.registerForInit(ar -> context.runOnContext(v -> initHandler.handle(ar)));
