@@ -37,21 +37,25 @@ import java.util.ServiceLoader;
 public class BotVerticle extends AbstractVerticle {
 
   private Bot bot;
-  private final Config config = new Config() {
-    @Override
-    public String getProperty(String name) {
-      Object value = config().getValue(name);
-      if (value == null) {
-        value = System.getenv(name.replace('.', '_').replace('-', '_').toUpperCase());
-      }
-      return value != null ? value.toString() : null;
-    }
-  };
 
   @Override
   public void start() throws Exception {
 
-    String botName = "nono";
+    // Get bot name
+    String botName = config().getString("bot.name", "nono");
+
+    // Config
+    Config config = new Config() {
+      @Override
+      public String getProperty(String name) {
+        Object value = config().getValue(name);
+        if (value == null) {
+          String envKey = botName + "." + name;
+          value = System.getenv(envKey.replace('.', '_').replace('-', '_').toUpperCase());
+        }
+        return value != null ? value.toString() : null;
+      }
+    };
 
     // Basic status
     vertx.createHttpServer().requestHandler(req -> {
@@ -92,7 +96,7 @@ public class BotVerticle extends AbstractVerticle {
       throw new Exception("No adapter found");
     }
 
-    DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("nonobot.name", botName));
+    DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("bot.name", botName));
 
     vertx.deployVerticle(new GiphyHandler(), options);
     vertx.deployVerticle(new HelpHandler(), options);

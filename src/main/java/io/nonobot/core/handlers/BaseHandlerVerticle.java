@@ -30,7 +30,7 @@ public class BaseHandlerVerticle extends AbstractVerticle {
   @Override
   public void start() throws Exception {
     super.start();
-    String botName = config().getString("nonobot.name", BotOptions.DEFAULT_NAME);
+    String botName = config().getString("bot.name", BotOptions.DEFAULT_NAME);
     router = MessageRouter.getShared(vertx, botName);
   }
 }
