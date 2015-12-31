@@ -29,13 +29,13 @@ import io.vertx.core.Vertx;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
-public interface MessageRouter {
+public interface ChatRouter {
 
-  static MessageRouter getShared(Vertx vertx) {
+  static ChatRouter getShared(Vertx vertx) {
     return getShared(vertx, "nono");
   }
 
-  static MessageRouter getShared(Vertx vertx, String name) {
+  static ChatRouter getShared(Vertx vertx, String name) {
     return getShared(vertx, name, null);
   }
 
@@ -47,7 +47,7 @@ public interface MessageRouter {
    * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
+  static ChatRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
     return getShared(vertx, "nono", initHandler);
   }
 
@@ -60,7 +60,7 @@ public interface MessageRouter {
    * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
+  static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
     return MessageRouterImpl.getShared(vertx, name, initHandler);
   }
 
@@ -71,7 +71,7 @@ public interface MessageRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  MessageHandler when(String pattern, Handler<Message> handler);
+  ChatHandler when(String pattern, Handler<Message> handler);
 
   /**
    * Add a message handler triggered when the {@code pattern} prepended with the bot name is fully matched,
@@ -81,7 +81,7 @@ public interface MessageRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  MessageHandler respond(String pattern, Handler<Message> handler);
+  ChatHandler respond(String pattern, Handler<Message> handler);
 
   /**
    * Send a message to a target.
@@ -91,7 +91,7 @@ public interface MessageRouter {
    * @return this object so it can be used fluently
    */
   @Fluent
-  MessageRouter sendMessage(SendOptions options, String body);
+  ChatRouter sendMessage(SendOptions options, String body);
 
   /**
    * Close the message router.

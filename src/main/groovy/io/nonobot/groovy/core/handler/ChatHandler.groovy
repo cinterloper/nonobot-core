@@ -22,16 +22,16 @@ import io.vertx.core.json.JsonObject
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
 */
 @CompileStatic
-public class MessageHandler {
-  private final def io.nonobot.core.handler.MessageHandler delegate;
-  public MessageHandler(Object delegate) {
-    this.delegate = (io.nonobot.core.handler.MessageHandler) delegate;
+public class ChatHandler {
+  private final def io.nonobot.core.handler.ChatHandler delegate;
+  public ChatHandler(Object delegate) {
+    this.delegate = (io.nonobot.core.handler.ChatHandler) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
   /**
-   * Close the message handler.
+   * Close the chat handler.
    */
   public void close() {
     this.delegate.close();

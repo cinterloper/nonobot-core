@@ -17,7 +17,7 @@
 package io.nonobot.core.handlers;
 
 import io.nonobot.core.BotOptions;
-import io.nonobot.core.handler.MessageRouter;
+import io.nonobot.core.handler.ChatRouter;
 import io.vertx.core.AbstractVerticle;
 
 /**
@@ -25,12 +25,12 @@ import io.vertx.core.AbstractVerticle;
  */
 public class BaseHandlerVerticle extends AbstractVerticle {
 
-  protected MessageRouter router;
+  protected ChatRouter router;
 
   @Override
   public void start() throws Exception {
     super.start();
     String botName = config().getString("bot.name", BotOptions.DEFAULT_NAME);
-    router = MessageRouter.getShared(vertx, botName);
+    router = ChatRouter.getShared(vertx, botName);
   }
 }

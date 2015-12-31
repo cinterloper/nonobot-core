@@ -17,8 +17,6 @@
 package io.nonobot.core.handlers;
 
 import io.nonobot.core.handler.Message;
-import io.nonobot.core.handler.MessageRouter;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;

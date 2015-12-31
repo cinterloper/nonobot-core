@@ -16,9 +16,6 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.handler.MessageRouter;
-import io.vertx.core.AbstractVerticle;
-
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */

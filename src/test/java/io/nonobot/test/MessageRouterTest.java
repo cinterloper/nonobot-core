@@ -18,7 +18,7 @@ package io.nonobot.test;
 
 import io.nonobot.core.Bot;
 import io.nonobot.core.client.ReceiveOptions;
-import io.nonobot.core.handler.MessageRouter;
+import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.handler.SendOptions;
 import io.nonobot.core.handler.impl.MessageRouterImpl;
 import io.vertx.core.Future;
@@ -33,12 +33,12 @@ import java.util.Arrays;
  */
 public class MessageRouterTest extends BaseTest {
 
-  MessageRouter router;
+  ChatRouter router;
 
   @Override
   public void before() {
     super.before();
-    router = MessageRouter.getShared(vertx, ar -> {});
+    router = ChatRouter.getShared(vertx, ar -> {});
   }
 
   @Test

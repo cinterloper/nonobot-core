@@ -28,14 +28,14 @@ import io.vertx.core.Handler;
  * The message router.
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.MessageRouter original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.ChatRouter original} non RX-ified interface using Vert.x codegen.
  */
 
-public class MessageRouter {
+public class ChatRouter {
 
-  final io.nonobot.core.handler.MessageRouter delegate;
+  final io.nonobot.core.handler.ChatRouter delegate;
 
-  public MessageRouter(io.nonobot.core.handler.MessageRouter delegate) {
+  public ChatRouter(io.nonobot.core.handler.ChatRouter delegate) {
     this.delegate = delegate;
   }
 
@@ -43,13 +43,13 @@ public class MessageRouter {
     return delegate;
   }
 
-  public static MessageRouter getShared(Vertx vertx) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
+  public static ChatRouter getShared(Vertx vertx) { 
+    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate()));
     return ret;
   }
 
-  public static MessageRouter getShared(Vertx vertx, String name) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name));
+  public static ChatRouter getShared(Vertx vertx, String name) { 
+    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name));
     return ret;
   }
 
@@ -60,8 +60,8 @@ public class MessageRouter {
    * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
+  public static ChatRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) { 
+    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), initHandler));
     return ret;
   }
 
@@ -73,8 +73,8 @@ public class MessageRouter {
    * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  public static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) { 
-    MessageRouter ret= MessageRouter.newInstance(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name, initHandler));
+  public static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) { 
+    ChatRouter ret= ChatRouter.newInstance(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx) vertx.getDelegate(), name, initHandler));
     return ret;
   }
 
@@ -84,8 +84,8 @@ public class MessageRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  public MessageHandler when(String pattern, Handler<Message> handler) { 
-    MessageHandler ret= MessageHandler.newInstance(this.delegate.when(pattern, new Handler<io.nonobot.core.handler.Message>() {
+  public ChatHandler when(String pattern, Handler<Message> handler) { 
+    ChatHandler ret= ChatHandler.newInstance(this.delegate.when(pattern, new Handler<io.nonobot.core.handler.Message>() {
       public void handle(io.nonobot.core.handler.Message event) {
         handler.handle(new Message(event));
       }
@@ -100,8 +100,8 @@ public class MessageRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  public MessageHandler respond(String pattern, Handler<Message> handler) { 
-    MessageHandler ret= MessageHandler.newInstance(this.delegate.respond(pattern, new Handler<io.nonobot.core.handler.Message>() {
+  public ChatHandler respond(String pattern, Handler<Message> handler) { 
+    ChatHandler ret= ChatHandler.newInstance(this.delegate.respond(pattern, new Handler<io.nonobot.core.handler.Message>() {
       public void handle(io.nonobot.core.handler.Message event) {
         handler.handle(new Message(event));
       }
@@ -115,7 +115,7 @@ public class MessageRouter {
    * @param body the message body
    * @return this object so it can be used fluently
    */
-  public MessageRouter sendMessage(SendOptions options, String body) { 
+  public ChatRouter sendMessage(SendOptions options, String body) { 
     this.delegate.sendMessage(options, body);
     return this;
   }
@@ -128,7 +128,7 @@ public class MessageRouter {
   }
 
 
-  public static MessageRouter newInstance(io.nonobot.core.handler.MessageRouter arg) {
-    return arg != null ? new MessageRouter(arg) : null;
+  public static ChatRouter newInstance(io.nonobot.core.handler.ChatRouter arg) {
+    return arg != null ? new ChatRouter(arg) : null;
   }
 }

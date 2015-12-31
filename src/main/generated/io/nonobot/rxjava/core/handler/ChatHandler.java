@@ -24,14 +24,14 @@ import rx.Observable;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  *
  * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.MessageHandler original} non RX-ified interface using Vert.x codegen.
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.ChatHandler original} non RX-ified interface using Vert.x codegen.
  */
 
-public class MessageHandler {
+public class ChatHandler {
 
-  final io.nonobot.core.handler.MessageHandler delegate;
+  final io.nonobot.core.handler.ChatHandler delegate;
 
-  public MessageHandler(io.nonobot.core.handler.MessageHandler delegate) {
+  public ChatHandler(io.nonobot.core.handler.ChatHandler delegate) {
     this.delegate = delegate;
   }
 
@@ -40,14 +40,14 @@ public class MessageHandler {
   }
 
   /**
-   * Close the message handler.
+   * Close the chat handler.
    */
   public void close() { 
     this.delegate.close();
   }
 
 
-  public static MessageHandler newInstance(io.nonobot.core.handler.MessageHandler arg) {
-    return arg != null ? new MessageHandler(arg) : null;
+  public static ChatHandler newInstance(io.nonobot.core.handler.ChatHandler arg) {
+    return arg != null ? new ChatHandler(arg) : null;
   }
 }

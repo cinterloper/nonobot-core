@@ -17,8 +17,8 @@
 package io.nonobot.core.handler.impl;
 
 import io.nonobot.core.handler.Message;
-import io.nonobot.core.handler.MessageHandler;
-import io.nonobot.core.handler.MessageRouter;
+import io.nonobot.core.handler.ChatHandler;
+import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.handler.SendOptions;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
-public class MessageRouterImpl implements MessageRouter {
+public class MessageRouterImpl implements ChatRouter {
 
   static final class Key {
 
@@ -64,7 +64,7 @@ public class MessageRouterImpl implements MessageRouter {
 
   static final ConcurrentMap<Key, MessageRouterImpl> routers = new ConcurrentHashMap<>();
 
-  public static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
+  public static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
     MessageRouterImpl router = routers.computeIfAbsent(new Key(vertx, name), key -> new MessageRouterImpl(key.vertx, key.name));
     if (initHandler != null) {
       Context context = vertx.getOrCreateContext();
@@ -167,21 +167,21 @@ public class MessageRouterImpl implements MessageRouter {
   }
 
   @Override
-  public io.nonobot.core.handler.MessageHandler when(String pattern, Handler<Message> handler) {
+  public ChatHandler when(String pattern, Handler<Message> handler) {
     MessageHandlerImpl messageHandler = new MessageHandlerImpl(false, Pattern.compile(pattern), handler);
     messageHandlers.add(messageHandler);
     return messageHandler;
   }
 
   @Override
-  public io.nonobot.core.handler.MessageHandler respond(String pattern, Handler<Message> handler) {
+  public ChatHandler respond(String pattern, Handler<Message> handler) {
     MessageHandlerImpl messageHandler = new MessageHandlerImpl(true, Pattern.compile(pattern), handler);
     messageHandlers.add(messageHandler);
     return messageHandler;
   }
 
   @Override
-  public MessageRouter sendMessage(SendOptions options, String body) {
+  public ChatRouter sendMessage(SendOptions options, String body) {
 
     vertx.eventBus().publish(outboundAddress, new JsonObject().put("chatId", options.getChatId()).put("body", body));
 
@@ -193,7 +193,7 @@ public class MessageRouterImpl implements MessageRouter {
     consumer.unregister();
   }
 
-  class MessageHandlerImpl implements MessageHandler {
+  class MessageHandlerImpl implements ChatHandler {
     final boolean respond;
     final Pattern pattern;
     final Handler<Message> handler;

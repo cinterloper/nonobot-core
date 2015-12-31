@@ -1,19 +1,19 @@
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.handler.MessageHandler
+# Generated from io.nonobot.core.handler.ChatHandler
 module Nonobot
   #  @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-  class MessageHandler
+  class ChatHandler
     # @private
-    # @param j_del [::Nonobot::MessageHandler] the java delegate
+    # @param j_del [::Nonobot::ChatHandler] the java delegate
     def initialize(j_del)
       @j_del = j_del
     end
     # @private
-    # @return [::Nonobot::MessageHandler] the underlying java delegate
+    # @return [::Nonobot::ChatHandler] the underlying java delegate
     def j_del
       @j_del
     end
-    #  Close the message handler.
+    #  Close the chat handler.
     # @return [void]
     def close
       if !block_given?

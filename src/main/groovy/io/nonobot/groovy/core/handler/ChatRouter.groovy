@@ -26,20 +26,20 @@ import io.vertx.core.Handler
  * The message router.
 */
 @CompileStatic
-public class MessageRouter {
-  private final def io.nonobot.core.handler.MessageRouter delegate;
-  public MessageRouter(Object delegate) {
-    this.delegate = (io.nonobot.core.handler.MessageRouter) delegate;
+public class ChatRouter {
+  private final def io.nonobot.core.handler.ChatRouter delegate;
+  public ChatRouter(Object delegate) {
+    this.delegate = (io.nonobot.core.handler.ChatRouter) delegate;
   }
   public Object getDelegate() {
     return delegate;
   }
-  public static MessageRouter getShared(Vertx vertx) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.handler.MessageRouter.class);
+  public static ChatRouter getShared(Vertx vertx) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate()), io.nonobot.groovy.core.handler.ChatRouter.class);
     return ret;
   }
-  public static MessageRouter getShared(Vertx vertx, String name) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name), io.nonobot.groovy.core.handler.MessageRouter.class);
+  public static ChatRouter getShared(Vertx vertx, String name) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name), io.nonobot.groovy.core.handler.ChatRouter.class);
     return ret;
   }
   /**
@@ -49,8 +49,8 @@ public class MessageRouter {
    * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  public static MessageRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), initHandler), io.nonobot.groovy.core.handler.MessageRouter.class);
+  public static ChatRouter getShared(Vertx vertx, Handler<AsyncResult<Void>> initHandler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), initHandler), io.nonobot.groovy.core.handler.ChatRouter.class);
     return ret;
   }
   /**
@@ -61,8 +61,8 @@ public class MessageRouter {
    * @param initHandler the handler notified when the router is fully initialized
    * @return the message router
    */
-  public static MessageRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
-    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.MessageRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name, initHandler), io.nonobot.groovy.core.handler.MessageRouter.class);
+  public static ChatRouter getShared(Vertx vertx, String name, Handler<AsyncResult<Void>> initHandler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.handler.ChatRouter.getShared((io.vertx.core.Vertx)vertx.getDelegate(), name, initHandler), io.nonobot.groovy.core.handler.ChatRouter.class);
     return ret;
   }
   /**
@@ -71,12 +71,12 @@ public class MessageRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  public MessageHandler when(String pattern, Handler<Message> handler) {
+  public ChatHandler when(String pattern, Handler<Message> handler) {
     def ret= InternalHelper.safeCreate(this.delegate.when(pattern, new Handler<io.nonobot.core.handler.Message>() {
       public void handle(io.nonobot.core.handler.Message event) {
         handler.handle(new io.nonobot.groovy.core.handler.Message(event));
       }
-    }), io.nonobot.groovy.core.handler.MessageHandler.class);
+    }), io.nonobot.groovy.core.handler.ChatHandler.class);
     return ret;
   }
   /**
@@ -86,12 +86,12 @@ public class MessageRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  public MessageHandler respond(String pattern, Handler<Message> handler) {
+  public ChatHandler respond(String pattern, Handler<Message> handler) {
     def ret= InternalHelper.safeCreate(this.delegate.respond(pattern, new Handler<io.nonobot.core.handler.Message>() {
       public void handle(io.nonobot.core.handler.Message event) {
         handler.handle(new io.nonobot.groovy.core.handler.Message(event));
       }
-    }), io.nonobot.groovy.core.handler.MessageHandler.class);
+    }), io.nonobot.groovy.core.handler.ChatHandler.class);
     return ret;
   }
   /**
@@ -100,7 +100,7 @@ public class MessageRouter {
    * @param body the message body
    * @return this object so it can be used fluently
    */
-  public MessageRouter sendMessage(Map<String, Object> options = [:], String body) {
+  public ChatRouter sendMessage(Map<String, Object> options = [:], String body) {
     this.delegate.sendMessage(options != null ? new io.nonobot.core.handler.SendOptions(new io.vertx.core.json.JsonObject(options)) : null, body);
     return this;
   }

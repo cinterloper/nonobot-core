@@ -14,24 +14,24 @@
  * under the License.
  */
 
-/** @module nonobot-js/message_handler */
+/** @module nonobot-js/chat_handler */
 var utils = require('vertx-js/util/utils');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JMessageHandler = io.nonobot.core.handler.MessageHandler;
+var JChatHandler = io.nonobot.core.handler.ChatHandler;
 
 /**
 
  @class
 */
-var MessageHandler = function(j_val) {
+var ChatHandler = function(j_val) {
 
-  var j_messageHandler = j_val;
+  var j_chatHandler = j_val;
   var that = this;
 
   /**
-   Close the message handler.
+   Close the chat handler.
 
    @public
 
@@ -39,15 +39,15 @@ var MessageHandler = function(j_val) {
   this.close = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_messageHandler["close()"]();
+      j_chatHandler["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_messageHandler;
+  this._jdel = j_chatHandler;
 };
 
 // We export the Constructor function
-module.exports = MessageHandler;
+module.exports = ChatHandler;

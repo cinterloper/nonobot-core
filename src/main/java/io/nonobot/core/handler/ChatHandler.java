@@ -22,10 +22,10 @@ import io.vertx.codegen.annotations.VertxGen;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
-public interface MessageHandler {
+public interface ChatHandler {
 
   /**
-   * Close the message handler.
+   * Close the chat handler.
    */
   void close();
 

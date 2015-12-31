@@ -14,15 +14,15 @@
  * under the License.
  */
 
-/** @module nonobot-js/message_router */
+/** @module nonobot-js/chat_router */
 var utils = require('vertx-js/util/utils');
-var MessageHandler = require('nonobot-js/message_handler');
+var ChatHandler = require('nonobot-js/chat_handler');
 var Vertx = require('vertx-js/vertx');
 var Message = require('nonobot-js/message');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JMessageRouter = io.nonobot.core.handler.MessageRouter;
+var JChatRouter = io.nonobot.core.handler.ChatRouter;
 var SendOptions = io.nonobot.core.handler.SendOptions;
 
 /**
@@ -30,9 +30,9 @@ var SendOptions = io.nonobot.core.handler.SendOptions;
 
  @class
 */
-var MessageRouter = function(j_val) {
+var ChatRouter = function(j_val) {
 
-  var j_messageRouter = j_val;
+  var j_chatRouter = j_val;
   var that = this;
 
   /**
@@ -41,14 +41,14 @@ var MessageRouter = function(j_val) {
    @public
    @param pattern {string} the matching pattern 
    @param handler {function} the message handler 
-   @return {MessageHandler} the message handler object
+   @return {ChatHandler} the message handler object
    */
   this.when = function(pattern, handler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      return utils.convReturnVertxGen(j_messageRouter["when(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
+      return utils.convReturnVertxGen(j_chatRouter["when(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
       handler(utils.convReturnVertxGen(jVal, Message));
-    }), MessageHandler);
+    }), ChatHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -59,14 +59,14 @@ var MessageRouter = function(j_val) {
    @public
    @param pattern {string} the matching pattern 
    @param handler {function} the message handler 
-   @return {MessageHandler} the message handler object
+   @return {ChatHandler} the message handler object
    */
   this.respond = function(pattern, handler) {
     var __args = arguments;
     if (__args.length === 2 && typeof __args[0] === 'string' && typeof __args[1] === 'function') {
-      return utils.convReturnVertxGen(j_messageRouter["respond(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
+      return utils.convReturnVertxGen(j_chatRouter["respond(java.lang.String,io.vertx.core.Handler)"](pattern, function(jVal) {
       handler(utils.convReturnVertxGen(jVal, Message));
-    }), MessageHandler);
+    }), ChatHandler);
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
@@ -76,12 +76,12 @@ var MessageRouter = function(j_val) {
    @public
    @param options {Object} the options 
    @param body {string} the message body 
-   @return {MessageRouter} this object so it can be used fluently
+   @return {ChatRouter} this object so it can be used fluently
    */
   this.sendMessage = function(options, body) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'string') {
-      j_messageRouter["sendMessage(io.nonobot.core.handler.SendOptions,java.lang.String)"](options != null ? new SendOptions(new JsonObject(JSON.stringify(options))) : null, body);
+      j_chatRouter["sendMessage(io.nonobot.core.handler.SendOptions,java.lang.String)"](options != null ? new SendOptions(new JsonObject(JSON.stringify(options))) : null, body);
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };
@@ -95,50 +95,50 @@ var MessageRouter = function(j_val) {
   this.close = function() {
     var __args = arguments;
     if (__args.length === 0) {
-      j_messageRouter["close()"]();
+      j_chatRouter["close()"]();
     } else throw new TypeError('function invoked with invalid arguments');
   };
 
   // A reference to the underlying Java delegate
   // NOTE! This is an internal API and must not be used in user code.
   // If you rely on this property your code is likely to break if we change it / remove it without warning.
-  this._jdel = j_messageRouter;
+  this._jdel = j_chatRouter;
 };
 
 /**
  Gets a shared message router instance for the Vert.x instance. There should be a single message router per
  Vert.x instance.
 
- @memberof module:nonobot-js/message_router
+ @memberof module:nonobot-js/chat_router
  @param vertx {Vertx} the Vert.x instance 
  @param name {string} the bot name 
  @param initHandler {function} the handler notified when the router is fully initialized 
- @return {MessageRouter} the message router
+ @return {ChatRouter} the message router
  */
-MessageRouter.getShared = function() {
+ChatRouter.getShared = function() {
   var __args = arguments;
   if (__args.length === 1 && typeof __args[0] === 'object' && __args[0]._jdel) {
-    return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx)"](__args[0]._jdel), MessageRouter);
+    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx)"](__args[0]._jdel), ChatRouter);
   }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string') {
-    return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx,java.lang.String)"](__args[0]._jdel, __args[1]), MessageRouter);
+    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx,java.lang.String)"](__args[0]._jdel, __args[1]), ChatRouter);
   }else if (__args.length === 2 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'function') {
-    return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
+    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx,io.vertx.core.Handler)"](__args[0]._jdel, function(ar) {
     if (ar.succeeded()) {
       __args[1](null, null);
     } else {
       __args[1](null, ar.cause());
     }
-  }), MessageRouter);
+  }), ChatRouter);
   }else if (__args.length === 3 && typeof __args[0] === 'object' && __args[0]._jdel && typeof __args[1] === 'string' && typeof __args[2] === 'function') {
-    return utils.convReturnVertxGen(JMessageRouter["getShared(io.vertx.core.Vertx,java.lang.String,io.vertx.core.Handler)"](__args[0]._jdel, __args[1], function(ar) {
+    return utils.convReturnVertxGen(JChatRouter["getShared(io.vertx.core.Vertx,java.lang.String,io.vertx.core.Handler)"](__args[0]._jdel, __args[1], function(ar) {
     if (ar.succeeded()) {
       __args[2](null, null);
     } else {
       __args[2](null, ar.cause());
     }
-  }), MessageRouter);
+  }), ChatRouter);
   } else throw new TypeError('function invoked with invalid arguments');
 };
 
 // We export the Constructor function
-module.exports = MessageRouter;
+module.exports = ChatRouter;
