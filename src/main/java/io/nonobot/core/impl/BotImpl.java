@@ -23,7 +23,6 @@ import io.nonobot.core.client.BotClient;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.client.Message;
 import io.nonobot.core.client.impl.BotClientImpl;
-import io.nonobot.core.identity.Identity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -53,14 +52,14 @@ public class BotImpl implements Bot {
     this.outboundAddress = "bots." + name + ".outbound";
 
     vertx.eventBus().<JsonObject>consumer(outboundAddress, msg -> {
-      Identity target = new Identity(msg.body().getJsonObject("target"));
+      String chatId = msg.body().getString("chatId");
       String body = msg.body().getString("body");
       synchronized (BotImpl.this) {
         for (BotClientImpl client : clients) {
           client.handle(new Message() {
             @Override
-            public Identity target() {
-              return target;
+            public String chatId() {
+              return chatId;
             }
             @Override
             public String body() {

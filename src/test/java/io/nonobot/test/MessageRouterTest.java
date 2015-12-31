@@ -18,7 +18,6 @@ package io.nonobot.test;
 
 import io.nonobot.core.Bot;
 import io.nonobot.core.client.ReceiveOptions;
-import io.nonobot.core.identity.Identity;
 import io.nonobot.core.handler.MessageRouter;
 import io.nonobot.core.handler.SendOptions;
 import io.nonobot.core.handler.impl.MessageRouterImpl;
@@ -165,18 +164,12 @@ public class MessageRouterTest extends BaseTest {
     Async doneLatch = context.async();
     Bot bot = Bot.create(vertx);
     router.when("foobar", msg -> {
-      Identity room = msg.room();
-      context.assertEquals("the_room_id", room.getId());
-      context.assertEquals("the_room_name", room.getName());
-      Identity user = msg.user();
-      context.assertEquals("the_user_id", user.getId());
-      context.assertEquals("the_user_name", user.getName());
+      context.assertEquals("the_chat_id", msg.chatId());
       doneLatch.countDown();
     });
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions().
-          setRoom(new Identity().setId("the_room_id").setName("the_room_name")).
-          setUser(new Identity().setId("the_user_id").setName("the_user_name")), "foobar", ar -> {
+          setChatId("the_chat_id"), "foobar", ar -> {
       });
     }));
   }
@@ -187,12 +180,11 @@ public class MessageRouterTest extends BaseTest {
     Bot bot = Bot.create(vertx);
     bot.createClient(context.asyncAssertSuccess(client -> {
       client.messageHandler(msg -> {
-        context.assertEquals("the_id", msg.target().getId());
-        context.assertEquals("the_name", msg.target().getName());
+        context.assertEquals("the_chat_id", msg.chatId());
         context.assertEquals("the_message", msg.body());
         doneLatch.complete();
       });
     }));
-    router.sendMessage(new SendOptions().setTarget(new Identity().setId("the_id").setName("the_name")), "the_message");
+    router.sendMessage(new SendOptions().setChatId("the_chat_id"), "the_message");
   }
 }

@@ -16,7 +16,6 @@
 
 package io.nonobot.core.handler;
 
-import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
@@ -26,7 +25,7 @@ import io.vertx.core.json.JsonObject;
 @DataObject
 public class SendOptions {
 
-  private Identity target;
+  private String chatId;
 
   public SendOptions() {
   }
@@ -36,15 +35,21 @@ public class SendOptions {
   }
 
   public SendOptions(SendOptions that) {
-    target = that.target != null ? new Identity(that.target) : null;
+    chatId = that.chatId;
   }
 
-  public Identity getTarget() {
-    return target;
+  public String getChatId() {
+    return chatId;
   }
 
-  public SendOptions setTarget(Identity target) {
-    this.target = target;
+  /**
+   * Set the id that identifies the chat where this message should be sent.
+   *
+   * @param chatId the chat id
+   * @return this object so it can be used fluently
+   */
+  public SendOptions setChatId(String chatId) {
+    this.chatId = chatId;
     return this;
   }
 }

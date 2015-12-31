@@ -19,10 +19,9 @@ package io.nonobot.rxjava.core.client;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
-import io.nonobot.core.identity.Identity;
 
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * A message to send.
  *
  * <p/>
  * NOTE: This class has been automatically generated from the {@link io.nonobot.core.client.Message original} non RX-ified interface using Vert.x codegen.
@@ -40,11 +39,19 @@ public class Message {
     return delegate;
   }
 
-  public Identity target() { 
-    Identity ret = this.delegate.target();
+  /**
+   * @return the chat id where the message should be posted
+   * @return 
+   */
+  public String chatId() { 
+    String ret = this.delegate.chatId();
     return ret;
   }
 
+  /**
+   * @return the message body
+   * @return 
+   */
   public String body() { 
     String ret = this.delegate.body();
     return ret;

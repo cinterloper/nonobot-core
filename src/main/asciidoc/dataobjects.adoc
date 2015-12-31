@@ -28,12 +28,15 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[room]]`room`|`link:dataobjects.html#Identity[Identity]`|-
+|[[chatId]]`chatId`|`String`|
++++
+Set the id that uniquely identifies where the message is coming from. This id can be used for idenfying the source
+ of this message or to post a message some time later to the chat.
++++
 |[[timeout]]`timeout`|`Number (long)`|
 +++
 The timeout in millis to wait until a message is considered not processed by the bot.
 +++
-|[[user]]`user`|`link:dataobjects.html#Identity[Identity]`|-
 |===
 
 [[SendOptions]]
@@ -48,7 +51,10 @@ The timeout in millis to wait until a message is considered not processed by the
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[target]]`target`|`link:dataobjects.html#Identity[Identity]`|-
+|[[chatId]]`chatId`|`String`|
++++
+Set the id that identifies the chat where this message should be sent.
++++
 |===
 
 [[ClientOptions]]
@@ -63,21 +69,5 @@ The timeout in millis to wait until a message is considered not processed by the
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|===
-
-[[Identity]]
-== Identity
-
-++++
- @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[id]]`id`|`String`|-
-|[[name]]`name`|`String`|-
 |===
 

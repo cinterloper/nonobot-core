@@ -16,7 +16,6 @@
 
 package io.nonobot.core.handler;
 
-import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -29,9 +28,11 @@ import io.vertx.core.Handler;
 @VertxGen
 public interface Message {
 
-  Identity room();
-
-  Identity user();
+  /**
+   * @return the id that uniquely identifies the chat this message is coming from, this id can be used for posting
+   *         messages to the chat
+   */
+  String chatId();
 
   /**
    * @return the message body

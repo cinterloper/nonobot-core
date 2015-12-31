@@ -16,7 +16,6 @@
 
 package io.nonobot.core.handler.impl;
 
-import io.nonobot.core.identity.Identity;
 import io.nonobot.core.handler.Message;
 import io.nonobot.core.handler.MessageHandler;
 import io.nonobot.core.handler.MessageRouter;
@@ -117,8 +116,7 @@ public class MessageRouterImpl implements MessageRouter {
     boolean respond = body.getBoolean("respond");
     String content = body.getString("content");
     String replyAddress = body.getString("replyAddress");
-    Identity room = body.getJsonObject("room") != null ? new Identity(body.getJsonObject("room")) : null;
-    Identity user = body.getJsonObject("user") != null ? new Identity(body.getJsonObject("user")) : null;
+    String chatId = body.getString("chatId");
     for (MessageHandlerImpl handler : messageHandlers) {
       if (handler.respond == respond) {
         Matcher matcher = handler.pattern.matcher(content);
@@ -126,12 +124,8 @@ public class MessageRouterImpl implements MessageRouter {
           handler.handler.handle(new Message() {
             boolean replied;
             @Override
-            public Identity room() {
-              return room;
-            }
-            @Override
-            public Identity user() {
-              return user;
+            public String chatId() {
+              return chatId;
             }
             @Override
             public String body() {
@@ -189,7 +183,7 @@ public class MessageRouterImpl implements MessageRouter {
   @Override
   public MessageRouter sendMessage(SendOptions options, String body) {
 
-    vertx.eventBus().publish(outboundAddress, new JsonObject().put("target", options.getTarget().toJson()).put("body", body));
+    vertx.eventBus().publish(outboundAddress, new JsonObject().put("chatId", options.getChatId()).put("body", body));
 
     return this;
   }

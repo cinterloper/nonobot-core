@@ -16,7 +16,6 @@
 
 package io.nonobot.core.client;
 
-import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
@@ -29,8 +28,7 @@ public class ReceiveOptions {
   private static final long DEFAULT_TIMEOUT = 10000;
 
   private long timeout;
-  private Identity room;
-  private Identity user;
+  private String chatId;
 
   public ReceiveOptions() {
     timeout = DEFAULT_TIMEOUT;
@@ -42,8 +40,7 @@ public class ReceiveOptions {
 
   public ReceiveOptions(ReceiveOptions that) {
     timeout = that.timeout;
-    room = that.room != null ? new Identity(that.room) : null;
-    user = that.user != null ? new Identity(that.user) : null;
+    chatId = that.chatId;
   }
 
   public long getTimeout() {
@@ -61,21 +58,19 @@ public class ReceiveOptions {
     return this;
   }
 
-  public Identity getRoom() {
-    return room;
+  public String getChatId() {
+    return chatId;
   }
 
-  public ReceiveOptions setRoom(Identity room) {
-    this.room = room;
-    return this;
-  }
-
-  public Identity getUser() {
-    return user;
-  }
-
-  public ReceiveOptions setUser(Identity user) {
-    this.user = user;
+  /**
+   * Set the id that uniquely identifies where the message is coming from. This id can be used for idenfying the source
+   * of this message or to post a message some time later to the chat.
+   *
+   * @param chatId the chat id
+   * @return this object so it can be used fluently
+   */
+  public ReceiveOptions setChatId(String chatId) {
+    this.chatId = chatId;
     return this;
   }
 }

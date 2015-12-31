@@ -39,7 +39,7 @@ public class TimerHandler extends BaseHandlerVerticle {
       long period = Long.parseLong(matcher.group(1));
       msg.reply("Timer will fire in " + period + " ms");
       vertx.setTimer(period, h -> {
-        router.sendMessage(new SendOptions().setTarget(msg.user()), "Timer fired");
+        router.sendMessage(new SendOptions().setChatId(msg.chatId()), "Timer fired");
       });
     });
   }

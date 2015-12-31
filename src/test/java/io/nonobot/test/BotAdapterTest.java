@@ -152,13 +152,12 @@ public class BotAdapterTest extends BaseTest {
     BotAdapter adapter = adapterFactory.apply((client, completionFuture) -> {
       client.messageHandler(msg -> {
         context.assertEquals("the_body", msg.body());
-        context.assertEquals("the_id", msg.target().getId());
-        context.assertEquals("the_name", msg.target().getName());
+        context.assertEquals("the_chat_id", msg.chatId());
         async.complete();
       });
       completionFuture.complete();
       ctx.runOnContext(v -> {
-        vertx.eventBus().send("bots.nono.outbound", new JsonObject().put("target", new JsonObject().put("id", "the_id").put("name", "the_name")).put("body", "the_body"));
+        vertx.eventBus().send("bots.nono.outbound", new JsonObject().put("chatId", "the_chat_id").put("body", "the_body"));
       });
     });
     bot.run(adapter);

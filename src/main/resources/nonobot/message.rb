@@ -13,19 +13,14 @@ module Nonobot
     def j_del
       @j_del
     end
-    # @return [Hash]
-    def room
+    #  @return the id that uniquely identifies the chat this message is coming from, this id can be used for posting
+    #          messages to the chat
+    # @return [String]
+    def chat_id
       if !block_given?
-        return @j_del.java_method(:room, []).call() != nil ? JSON.parse(@j_del.java_method(:room, []).call().toJson.encode) : nil
+        return @j_del.java_method(:chatId, []).call()
       end
-      raise ArgumentError, "Invalid arguments when calling room()"
-    end
-    # @return [Hash]
-    def user
-      if !block_given?
-        return @j_del.java_method(:user, []).call() != nil ? JSON.parse(@j_del.java_method(:user, []).call().toJson.encode) : nil
-      end
-      raise ArgumentError, "Invalid arguments when calling user()"
+      raise ArgumentError, "Invalid arguments when calling chat_id()"
     end
     #  @return the message body
     # @return [String]

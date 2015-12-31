@@ -16,17 +16,24 @@
 
 package io.nonobot.core.client;
 
-import io.nonobot.core.identity.Identity;
 import io.vertx.codegen.annotations.VertxGen;
 
 /**
+ * A message to send.
+ *
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 @VertxGen
 public interface Message {
 
-  Identity target();
+  /**
+   * @return the chat id where the message should be posted
+   */
+  String chatId();
 
+  /**
+   * @return the message body
+   */
   String body();
 
 }

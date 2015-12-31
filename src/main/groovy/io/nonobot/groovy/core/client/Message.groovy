@@ -18,9 +18,8 @@ package io.nonobot.groovy.core.client;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
-import io.nonobot.core.identity.Identity
 /**
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+ * A message to send.
 */
 @CompileStatic
 public class Message {
@@ -31,10 +30,18 @@ public class Message {
   public Object getDelegate() {
     return delegate;
   }
-  public Map<String, Object> target() {
-    def ret = (Map<String, Object>)InternalHelper.wrapObject(this.delegate.target()?.toJson());
+  /**
+   * @return the chat id where the message should be posted
+   * @return 
+   */
+  public String chatId() {
+    def ret = this.delegate.chatId();
     return ret;
   }
+  /**
+   * @return the message body
+   * @return 
+   */
   public String body() {
     def ret = this.delegate.body();
     return ret;

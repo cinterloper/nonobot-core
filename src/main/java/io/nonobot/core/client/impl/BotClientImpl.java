@@ -122,18 +122,13 @@ public abstract class BotClientImpl implements BotClient {
       if (ar.succeeded()) {
         Matcher botMatcher = botPattern.matcher(message);
         JsonObject msg = new JsonObject().put("replyAddress", replyAddress);
+        msg.put("chatId", options.getChatId());
         if (botMatcher.find()) {
           msg.put("respond", true);
           msg.put("content", botMatcher.group(1));
         } else {
           msg.put("respond", false);
           msg.put("content", message);
-        }
-        if (options.getUser() != null) {
-          msg.put("user", options.getUser().toJson());
-        }
-        if (options.getRoom() != null) {
-          msg.put("room", options.getRoom().toJson());
         }
         bot.vertx().eventBus().publish(inboundAddress, msg);
         bot.vertx().setTimer(options.getTimeout(), timerID -> {
