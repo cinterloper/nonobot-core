@@ -16,11 +16,8 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.handler.ChatRouter;
-import io.nonobot.core.handler.SendOptions;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.chat.SendOptions;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

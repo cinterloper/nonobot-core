@@ -14,48 +14,38 @@
  * under the License.
  */
 
-package io.nonobot.rxjava.core.handler;
-
-import java.util.Map;
-import io.vertx.lang.rxjava.InternalHelper;
-import rx.Observable;
-import io.nonobot.core.handler.SendOptions;
-import io.vertx.core.Handler;
-
+package io.nonobot.groovy.core.chat;
+import groovy.transform.CompileStatic
+import io.vertx.lang.groovy.InternalHelper
+import io.vertx.core.json.JsonObject
+import io.nonobot.core.chat.SendOptions
+import io.vertx.core.Handler
 /**
  * The message router.
- *
- * <p/>
- * NOTE: This class has been automatically generated from the {@link io.nonobot.core.handler.ChatRouter original} non RX-ified interface using Vert.x codegen.
- */
-
+*/
+@CompileStatic
 public class ChatRouter {
-
-  final io.nonobot.core.handler.ChatRouter delegate;
-
-  public ChatRouter(io.nonobot.core.handler.ChatRouter delegate) {
-    this.delegate = delegate;
+  private final def io.nonobot.core.chat.ChatRouter delegate;
+  public ChatRouter(Object delegate) {
+    this.delegate = (io.nonobot.core.chat.ChatRouter) delegate;
   }
-
   public Object getDelegate() {
     return delegate;
   }
-
   /**
    * Add a message handler triggered when the <code>pattern</code> is fully matched, the pattern is a <code>java.util.regex</code>.
    * @param pattern the matching pattern
    * @param handler the message handler
    * @return the message handler object
    */
-  public ChatHandler when(String pattern, Handler<Message> handler) { 
-    ChatHandler ret= ChatHandler.newInstance(this.delegate.when(pattern, new Handler<io.nonobot.core.handler.Message>() {
-      public void handle(io.nonobot.core.handler.Message event) {
-        handler.handle(new Message(event));
+  public ChatHandler when(String pattern, Handler<Message> handler) {
+    def ret= InternalHelper.safeCreate(this.delegate.when(pattern, new Handler<io.nonobot.core.chat.Message>() {
+      public void handle(io.nonobot.core.chat.Message event) {
+        handler.handle(new io.nonobot.groovy.core.chat.Message(event));
       }
-    }));
+    }), io.nonobot.groovy.core.chat.ChatHandler.class);
     return ret;
   }
-
   /**
    * Add a message handler triggered when the <code>pattern</code> prepended with the bot name is fully matched,
    * the pattern is a <code>java.util.regex</code>.
@@ -63,35 +53,28 @@ public class ChatRouter {
    * @param handler the message handler
    * @return the message handler object
    */
-  public ChatHandler respond(String pattern, Handler<Message> handler) { 
-    ChatHandler ret= ChatHandler.newInstance(this.delegate.respond(pattern, new Handler<io.nonobot.core.handler.Message>() {
-      public void handle(io.nonobot.core.handler.Message event) {
-        handler.handle(new Message(event));
+  public ChatHandler respond(String pattern, Handler<Message> handler) {
+    def ret= InternalHelper.safeCreate(this.delegate.respond(pattern, new Handler<io.nonobot.core.chat.Message>() {
+      public void handle(io.nonobot.core.chat.Message event) {
+        handler.handle(new io.nonobot.groovy.core.chat.Message(event));
       }
-    }));
+    }), io.nonobot.groovy.core.chat.ChatHandler.class);
     return ret;
   }
-
   /**
    * Send a message to a target.
-   * @param options the options
+   * @param options the options (see <a href="../../../../../../../cheatsheet/SendOptions.html">SendOptions</a>)
    * @param body the message body
    * @return this object so it can be used fluently
    */
-  public ChatRouter sendMessage(SendOptions options, String body) { 
-    this.delegate.sendMessage(options, body);
+  public ChatRouter sendMessage(Map<String, Object> options = [:], String body) {
+    this.delegate.sendMessage(options != null ? new io.nonobot.core.chat.SendOptions(new io.vertx.core.json.JsonObject(options)) : null, body);
     return this;
   }
-
   /**
    * Close the message router.
    */
-  public void close() { 
+  public void close() {
     this.delegate.close();
-  }
-
-
-  public static ChatRouter newInstance(io.nonobot.core.handler.ChatRouter arg) {
-    return arg != null ? new ChatRouter(arg) : null;
   }
 }

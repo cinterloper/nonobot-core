@@ -16,7 +16,7 @@
 
 package io.nonobot.core.handlers;
 
-import io.nonobot.core.handler.ChatRouter;
+import io.nonobot.core.chat.ChatRouter;
 
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>

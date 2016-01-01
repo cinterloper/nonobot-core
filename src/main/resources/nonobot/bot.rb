@@ -1,5 +1,5 @@
-require 'vertx/vertx'
 require 'nonobot/chat_router'
+require 'vertx/vertx'
 require 'vertx-web/router'
 require 'vertx/util/utils.rb'
 # Generated from io.nonobot.core.Bot
@@ -72,7 +72,12 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling chat_router()"
     end
-    # @return [::VertxWeb::Router]
+    #  The bot's web router, handlers should add their own route to this router or better mount sub routers. This router is shared
+    #  between the handlers attached to this bot, therefore an handler should not catch all requests going through the router.<p>
+    # 
+    #  The main usage of this router is to provide a web server shared between the handlers, whose purpose is usually to provide
+    #  web service for pushing data to the botin the web hook style.<p>
+    # @return [::VertxWeb::Router] the web router
     def web_router
       if !block_given?
         if @cached_web_router != nil

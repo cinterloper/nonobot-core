@@ -16,13 +16,13 @@
 
 /** @module nonobot-js/chat_router */
 var utils = require('vertx-js/util/utils');
-var ChatHandler = require('nonobot-js/chat_handler');
 var Message = require('nonobot-js/message');
+var ChatHandler = require('nonobot-js/chat_handler');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JChatRouter = io.nonobot.core.handler.ChatRouter;
-var SendOptions = io.nonobot.core.handler.SendOptions;
+var JChatRouter = io.nonobot.core.chat.ChatRouter;
+var SendOptions = io.nonobot.core.chat.SendOptions;
 
 /**
  The message router.
@@ -80,7 +80,7 @@ var ChatRouter = function(j_val) {
   this.sendMessage = function(options, body) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'string') {
-      j_chatRouter["sendMessage(io.nonobot.core.handler.SendOptions,java.lang.String)"](options != null ? new SendOptions(new JsonObject(JSON.stringify(options))) : null, body);
+      j_chatRouter["sendMessage(io.nonobot.core.chat.SendOptions,java.lang.String)"](options != null ? new SendOptions(new JsonObject(JSON.stringify(options))) : null, body);
       return that;
     } else throw new TypeError('function invoked with invalid arguments');
   };

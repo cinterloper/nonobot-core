@@ -1,7 +1,7 @@
-require 'nonobot/chat_handler'
 require 'nonobot/message'
+require 'nonobot/chat_handler'
 require 'vertx/util/utils.rb'
-# Generated from io.nonobot.core.handler.ChatRouter
+# Generated from io.nonobot.core.chat.ChatRouter
 module Nonobot
   #  The message router.
   class ChatRouter
@@ -42,7 +42,7 @@ module Nonobot
     # @return [self]
     def send_message(options=nil,body=nil)
       if options.class == Hash && body.class == String && !block_given?
-        @j_del.java_method(:sendMessage, [Java::IoNonobotCoreHandler::SendOptions.java_class,Java::java.lang.String.java_class]).call(Java::IoNonobotCoreHandler::SendOptions.new(::Vertx::Util::Utils.to_json_object(options)),body)
+        @j_del.java_method(:sendMessage, [Java::IoNonobotCoreChat::SendOptions.java_class,Java::java.lang.String.java_class]).call(Java::IoNonobotCoreChat::SendOptions.new(::Vertx::Util::Utils.to_json_object(options)),body)
         return self
       end
       raise ArgumentError, "Invalid arguments when calling send_message(options,body)"

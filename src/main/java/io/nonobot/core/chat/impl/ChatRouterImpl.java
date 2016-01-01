@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.handler.impl;
+package io.nonobot.core.chat.impl;
 
-import io.nonobot.core.handler.Message;
-import io.nonobot.core.handler.ChatHandler;
-import io.nonobot.core.handler.ChatRouter;
-import io.nonobot.core.handler.SendOptions;
+import io.nonobot.core.chat.Message;
+import io.nonobot.core.chat.ChatHandler;
+import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.chat.SendOptions;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;

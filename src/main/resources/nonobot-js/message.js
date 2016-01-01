@@ -19,7 +19,7 @@ var utils = require('vertx-js/util/utils');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JMessage = io.nonobot.core.handler.Message;
+var JMessage = io.nonobot.core.chat.Message;
 
 /**
  A message sent to an handler.

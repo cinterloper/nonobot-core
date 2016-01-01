@@ -19,8 +19,8 @@ import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
 import io.nonobot.core.BotOptions
+import io.nonobot.groovy.core.chat.ChatRouter
 import io.vertx.groovy.core.Vertx
-import io.nonobot.groovy.core.handler.ChatRouter
 import io.vertx.groovy.ext.web.Router
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
@@ -101,10 +101,18 @@ public class Bot {
     if (cached_1 != null) {
       return cached_1;
     }
-    def ret= InternalHelper.safeCreate(this.delegate.chatRouter(), io.nonobot.groovy.core.handler.ChatRouter.class);
+    def ret= InternalHelper.safeCreate(this.delegate.chatRouter(), io.nonobot.groovy.core.chat.ChatRouter.class);
     cached_1 = ret;
     return ret;
   }
+  /**
+   * The bot's web router, handlers should add their own route to this router or better mount sub routers. This router is shared
+   * between the handlers attached to this bot, therefore an handler should not catch all requests going through the router.<p>
+   *
+   * The main usage of this router is to provide a web server shared between the handlers, whose purpose is usually to provide
+   * web service for pushing data to the botin the web hook style.<p>
+   * @return the web router
+   */
   public Router webRouter() {
     if (cached_2 != null) {
       return cached_2;

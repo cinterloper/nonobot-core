@@ -14,26 +14,40 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.handler;
-import groovy.transform.CompileStatic
-import io.vertx.lang.groovy.InternalHelper
-import io.vertx.core.json.JsonObject
+package io.nonobot.rxjava.core.chat;
+
+import java.util.Map;
+import io.vertx.lang.rxjava.InternalHelper;
+import rx.Observable;
+
 /**
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-*/
-@CompileStatic
+ *
+ * <p/>
+ * NOTE: This class has been automatically generated from the {@link io.nonobot.core.chat.ChatHandler original} non RX-ified interface using Vert.x codegen.
+ */
+
 public class ChatHandler {
-  private final def io.nonobot.core.handler.ChatHandler delegate;
-  public ChatHandler(Object delegate) {
-    this.delegate = (io.nonobot.core.handler.ChatHandler) delegate;
+
+  final io.nonobot.core.chat.ChatHandler delegate;
+
+  public ChatHandler(io.nonobot.core.chat.ChatHandler delegate) {
+    this.delegate = delegate;
   }
+
   public Object getDelegate() {
     return delegate;
   }
+
   /**
    * Close the chat handler.
    */
-  public void close() {
+  public void close() { 
     this.delegate.close();
+  }
+
+
+  public static ChatHandler newInstance(io.nonobot.core.chat.ChatHandler arg) {
+    return arg != null ? new ChatHandler(arg) : null;
   }
 }

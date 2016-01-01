@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.handler;
+package io.nonobot.core.chat;
 
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;

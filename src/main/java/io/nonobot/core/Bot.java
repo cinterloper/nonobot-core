@@ -16,7 +16,7 @@
 
 package io.nonobot.core;
 
-import io.nonobot.core.handler.ChatRouter;
+import io.nonobot.core.chat.ChatRouter;
 import io.nonobot.core.impl.BotImpl;
 import io.vertx.codegen.annotations.CacheReturn;
 import io.vertx.codegen.annotations.VertxGen;

@@ -18,13 +18,12 @@ package io.nonobot.core.impl;
 
 import io.nonobot.core.Bot;
 import io.nonobot.core.BotOptions;
-import io.nonobot.core.handler.ChatRouter;
-import io.nonobot.core.handler.impl.ChatRouterImpl;
+import io.nonobot.core.chat.ChatRouter;
+import io.nonobot.core.chat.impl.ChatRouterImpl;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 

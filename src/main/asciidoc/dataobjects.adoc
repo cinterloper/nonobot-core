@@ -39,6 +39,22 @@ The timeout in millis to wait until a message is considered not processed by the
 +++
 |===
 
+[[ClientOptions]]
+== ClientOptions
+
+++++
+ @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[name]]`name`|`String`|-
+|[[reconnectPeriod]]`reconnectPeriod`|`Number (long)`|-
+|===
+
 [[SendOptions]]
 == SendOptions
 
@@ -55,21 +71,5 @@ The timeout in millis to wait until a message is considered not processed by the
 +++
 Set the id that identifies the chat where this message should be sent.
 +++
-|===
-
-[[ClientOptions]]
-== ClientOptions
-
-++++
- @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[name]]`name`|`String`|-
-|[[reconnectPeriod]]`reconnectPeriod`|`Number (long)`|-
 |===
 

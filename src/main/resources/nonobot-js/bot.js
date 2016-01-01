@@ -16,8 +16,8 @@
 
 /** @module nonobot-js/bot */
 var utils = require('vertx-js/util/utils');
-var Vertx = require('vertx-js/vertx');
 var ChatRouter = require('nonobot-js/chat_router');
+var Vertx = require('vertx-js/vertx');
 var Router = require('vertx-web-js/router');
 
 var io = Packages.io;
@@ -69,10 +69,15 @@ var Bot = function(j_val) {
   };
 
   /**
+   The bot's web router, handlers should add their own route to this router or better mount sub routers. This router is shared
+   between the handlers attached to this bot, therefore an handler should not catch all requests going through the router.<p>
+  
+   The main usage of this router is to provide a web server shared between the handlers, whose purpose is usually to provide
+   web service for pushing data to the botin the web hook style.<p>
 
    @public
 
-   @return {Router}
+   @return {Router} the web router
    */
   this.webRouter = function() {
     var __args = arguments;

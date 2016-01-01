@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package io.nonobot.groovy.core.handler;
+package io.nonobot.groovy.core.chat;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
@@ -25,9 +25,9 @@ import io.vertx.core.Handler
 */
 @CompileStatic
 public class Message {
-  private final def io.nonobot.core.handler.Message delegate;
+  private final def io.nonobot.core.chat.Message delegate;
   public Message(Object delegate) {
-    this.delegate = (io.nonobot.core.handler.Message) delegate;
+    this.delegate = (io.nonobot.core.chat.Message) delegate;
   }
   public Object getDelegate() {
     return delegate;

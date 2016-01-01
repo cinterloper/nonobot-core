@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package io.nonobot.core.handler;
+package io.nonobot.core.chat;
 
-import io.nonobot.core.handler.impl.ChatRouterImpl;
 import io.vertx.codegen.annotations.Fluent;
 import io.vertx.codegen.annotations.VertxGen;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
 
 /**
  * The message router.
