@@ -81,7 +81,8 @@ public class BotVerticle extends AbstractVerticle {
       }
     }
 
-    if (adapter == null && "true".equals(config.getProperty("console"))) {
+    // Use the console adapter
+    if (adapter == null) {
       adapter = BotAdapter.create(vertx).requestHandler(new ConsoleBotAdapter());
     }
 
