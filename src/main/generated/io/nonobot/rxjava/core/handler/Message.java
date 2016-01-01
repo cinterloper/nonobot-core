@@ -61,6 +61,16 @@ public class Message {
   }
 
   /**
+   * Return a group matched in the regex this message matched.
+   * @param index the index of the group
+   * @return the group
+   */
+  public String matchedGroup(int index) { 
+    String ret = this.delegate.matchedGroup(index);
+    return ret;
+  }
+
+  /**
    * Reply to the message.
    * @param msg the reply
    */

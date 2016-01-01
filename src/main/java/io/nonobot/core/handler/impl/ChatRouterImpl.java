@@ -132,6 +132,14 @@ public class ChatRouterImpl implements ChatRouter {
               return content;
             }
             @Override
+            public String matchedGroup(int index) {
+              if (index > 0 && index <= matcher.groupCount()) {
+                return matcher.group(index);
+              } else {
+                return null;
+              }
+            }
+            @Override
             public void reply(String msg) {
               reply(msg, null);
             }

@@ -31,50 +31,44 @@ import java.util.regex.Pattern;
  */
 public class GiphyHandler extends BaseHandlerVerticle {
 
-  public static final Pattern p = Pattern.compile("^giphy\\s+(.+)");
   private HttpClient client;
 
   @Override
   public void start() throws Exception {
     super.start();
     client = vertx.createHttpClient();
-    bot.chatRouter().respond(p.pattern(), this::handle);
+    bot.chatRouter().respond("^giphy\\s+(.+)", this::handle);
   }
 
   public void handle(Message msg) {
-    Matcher matcher = p.matcher(msg.body());
-    if (matcher.matches()) {
-      String query = matcher.group(1);
-      HttpClientRequest req = client.get(80, "api.giphy.com", "/v1/gifs/search?q=" + query + "&api_key=" + "dc6zaTOxFJmzC", resp -> {
-        if (resp.statusCode() == 200 && resp.getHeader("Content-Type").equals("application/json")) {
-          System.out.println(resp.statusCode());
-          System.out.println(resp.statusMessage());
-          System.out.println(resp.getHeader("Content-Type"));
-          resp.exceptionHandler(err -> {
-            msg.reply("Error: " + err.getMessage());
-          });
-          Buffer buf = Buffer.buffer();
-          resp.handler(buf::appendBuffer);
-          resp.endHandler(v -> {
-            JsonObject json = new JsonObject(buf.toString());
-            JsonArray images = json.getJsonArray("data");
-            if (images.size() > 0) {
-              JsonObject image = images.getJsonObject(0); // Should be random !!!
-              String url = image.getJsonObject("images").getJsonObject("original").getString("url");
-              msg.reply(url);
-            }
-            msg.reply("got response " + json);
-          });
-        } else {
-          msg.reply("Error");
-        }
-      });
-      req.exceptionHandler(err -> {
-        msg.reply("Error: " + err.getMessage());
-      });
-      req.end();
-    } else {
-      msg.reply("Error: should not happen");
-    }
+    String query = msg.matchedGroup(1);
+    HttpClientRequest req = client.get(80, "api.giphy.com", "/v1/gifs/search?q=" + query + "&api_key=" + "dc6zaTOxFJmzC", resp -> {
+      if (resp.statusCode() == 200 && resp.getHeader("Content-Type").equals("application/json")) {
+        System.out.println(resp.statusCode());
+        System.out.println(resp.statusMessage());
+        System.out.println(resp.getHeader("Content-Type"));
+        resp.exceptionHandler(err -> {
+          msg.reply("Error: " + err.getMessage());
+        });
+        Buffer buf = Buffer.buffer();
+        resp.handler(buf::appendBuffer);
+        resp.endHandler(v -> {
+          JsonObject json = new JsonObject(buf.toString());
+          JsonArray images = json.getJsonArray("data");
+          if (images.size() > 0) {
+            JsonObject image = images.getJsonObject(0); // Should be random !!!
+            String url = image.getJsonObject("images").getJsonObject("original").getString("url");
+            msg.reply(url);
+          }
+          msg.reply("got response " + json);
+        });
+      } else {
+        msg.reply("Error");
+      }
+    });
+    req.exceptionHandler(err -> {
+      msg.reply("Error: " + err.getMessage());
+    });
+    req.end();
   }
 }

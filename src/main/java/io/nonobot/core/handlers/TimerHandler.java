@@ -27,16 +27,12 @@ import java.util.regex.Pattern;
  */
 public class TimerHandler extends BaseHandlerVerticle {
 
-  Pattern p = Pattern.compile("^timer ([0-9]+)");
-
   @Override
   public void start() throws Exception {
     super.start();
     ChatRouter router = bot.chatRouter();
-    router.respond(p.pattern(), msg -> {
-      Matcher matcher = p.matcher(msg.body());
-      matcher.matches();
-      long period = Long.parseLong(matcher.group(1));
+    router.respond("^timer\\s+([0-9]+)", msg -> {
+      long period = Long.parseLong(msg.matchedGroup(1));
       msg.reply("Timer will fire in " + period + " ms");
       vertx.setTimer(period, h -> {
         router.sendMessage(new SendOptions().setChatId(msg.chatId()), "Timer fired");

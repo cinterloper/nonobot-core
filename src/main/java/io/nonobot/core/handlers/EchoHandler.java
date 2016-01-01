@@ -28,7 +28,7 @@ public class EchoHandler extends BaseHandlerVerticle {
     super.start();
     ChatRouter router = bot.chatRouter();
     router.respond("^echo\\s+(.+)", msg -> {
-      msg.reply(msg.body().substring(4));
+      msg.reply(msg.matchedGroup(1));
     });
   }
 }

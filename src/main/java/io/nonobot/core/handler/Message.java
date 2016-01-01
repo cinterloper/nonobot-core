@@ -40,6 +40,14 @@ public interface Message {
   String body();
 
   /**
+   * Return a group matched in the regex this message matched.
+   *
+   * @param index the index of the group
+   * @return the group
+   */
+  String matchedGroup(int index);
+
+  /**
    * Reply to the message.
    *
    * @param msg the reply

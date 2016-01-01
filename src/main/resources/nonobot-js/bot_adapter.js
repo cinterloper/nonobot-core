@@ -37,7 +37,8 @@ var BotAdapter = function(j_val) {
   var that = this;
 
   /**
-   Run the bot adapter, until it is closed.
+   Run the bot adapter, until it is closed: the adapter performs a connection request. If the connection request
+   fails or if the connection is closed, a new connection request is performed after the reconnect period.
 
    @public
    @param options {Object} the client options to use 
@@ -50,6 +51,7 @@ var BotAdapter = function(j_val) {
   };
 
   /**
+   @return true if the adapter is running
 
    @public
 
@@ -63,6 +65,7 @@ var BotAdapter = function(j_val) {
   };
 
   /**
+   @return true if the adapter is connected
 
    @public
 
@@ -76,7 +79,14 @@ var BotAdapter = function(j_val) {
   };
 
   /**
-   Set the connection request handler.
+   Set the connection request handler. The request handler is called when the adapter needs to connect to the adapted
+   service. The handler can be called many times (reconnect) but manages a single connection per adapter.<p>
+  
+   When the handler is connected, it should call {@link Future#complete} to signal the adapter it is
+   connected, if the connection attempt fails, it should instead call {@link Future#fail}.<p>
+  
+   When the adapter is disconnected, the handler should call  to signal it the adapter.
+   The adapter will likely try to reconnect to the service unless it is in closed state.
 
    @public
    @param handler {function} the connection request handler 
@@ -112,7 +122,7 @@ var BotAdapter = function(j_val) {
   };
 
   /**
-   Close the adapter.
+   Close the adapter, if the adapter is currently running, the current client connection will be closed.
 
    @public
 

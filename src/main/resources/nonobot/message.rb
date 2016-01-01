@@ -30,6 +30,15 @@ module Nonobot
       end
       raise ArgumentError, "Invalid arguments when calling body()"
     end
+    #  Return a group matched in the regex this message matched.
+    # @param [Fixnum] index the index of the group
+    # @return [String] the group
+    def matched_group(index=nil)
+      if index.class == Fixnum && !block_given?
+        return @j_del.java_method(:matchedGroup, [Java::int.java_class]).call(index)
+      end
+      raise ArgumentError, "Invalid arguments when calling matched_group(index)"
+    end
     #  Reply to the message with an acknowledgement handler given a <code>timeout</code>.
     # @param [String] msg the reply
     # @param [Fixnum] ackTimeout the acknowledgement timeout

@@ -43,26 +43,26 @@ public class ChatRouterTest extends BaseTest {
   }
 
   @Test
-  public void testRespondToMessage1(TestContext context) {
-    testRespondToMessage(context, "nono echo hello world");
+  public void testRespond1(TestContext context) {
+    testRespond(context, "nono echo hello world");
   }
 
   @Test
-  public void testRespondToMessage2(TestContext context) {
-    testRespondToMessage(context, "nono:echo hello world");
+  public void testRespond2(TestContext context) {
+    testRespond(context, "nono:echo hello world");
   }
 
   @Test
-  public void testRespondToMessage3(TestContext context) {
-    testRespondToMessage(context, "@nono echo hello world");
+  public void testRespond3(TestContext context) {
+    testRespond(context, "@nono echo hello world");
   }
 
   @Test
-  public void testRespondToMessage4(TestContext context) {
-    testRespondToMessage(context, "@nono:echo hello world");
+  public void testRespond4(TestContext context) {
+    testRespond(context, "@nono:echo hello world");
   }
 
-  private void testRespondToMessage(TestContext context, String message) {
+  private void testRespond(TestContext context, String message) {
     Async handleLatch = context.async();
     router.respond("^echo\\s+(.+)", msg -> {
           context.assertEquals("echo hello world", msg.body());
@@ -74,7 +74,23 @@ public class ChatRouterTest extends BaseTest {
   }
 
   @Test
-  public void testMatchMessage(TestContext context) {
+  public void testRespondGroup(TestContext context) {
+    Async handleLatch = context.async();
+    router.respond("^echo ([a-z]+) ([0-9]+)", msg -> {
+      context.assertEquals("echo hello 12345", msg.body());
+      context.assertNull(msg.matchedGroup(0));
+      context.assertEquals("hello", msg.matchedGroup(1));
+      context.assertEquals("12345", msg.matchedGroup(2));
+      context.assertNull(msg.matchedGroup(3));
+      handleLatch.complete();
+    });
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
+      client.receiveMessage(new ReceiveOptions(), "nono echo hello 12345", ar -> {});
+    }));
+  }
+
+  @Test
+  public void testMatch(TestContext context) {
     Async handleLatch = context.async();
     router.when("^echo\\s+(.+)", msg -> {
           context.assertEquals("echo hello world", msg.body());
@@ -82,6 +98,22 @@ public class ChatRouterTest extends BaseTest {
         });
     BotClient.client(vertx, context.asyncAssertSuccess(client -> {
       client.receiveMessage(new ReceiveOptions(), "echo hello world", ar -> {});
+    }));
+  }
+
+  @Test
+  public void testMatchGroup(TestContext context) {
+    Async handleLatch = context.async();
+    router.when("^([a-z]+) ([0-9]+)", msg -> {
+      context.assertEquals("hello 12345", msg.body());
+      context.assertNull(msg.matchedGroup(0));
+      context.assertEquals("hello", msg.matchedGroup(1));
+      context.assertEquals("12345", msg.matchedGroup(2));
+      context.assertNull(msg.matchedGroup(3));
+      handleLatch.complete();
+    });
+    BotClient.client(vertx, context.asyncAssertSuccess(client -> {
+      client.receiveMessage(new ReceiveOptions(), "hello 12345", ar -> {});
     }));
   }
 

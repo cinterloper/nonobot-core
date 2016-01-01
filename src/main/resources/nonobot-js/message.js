@@ -61,6 +61,20 @@ var Message = function(j_val) {
   };
 
   /**
+   Return a group matched in the regex this message matched.
+
+   @public
+   @param index {number} the index of the group 
+   @return {string} the group
+   */
+  this.matchedGroup = function(index) {
+    var __args = arguments;
+    if (__args.length === 1 && typeof __args[0] ==='number') {
+      return j_message["matchedGroup(int)"](index);
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
    Reply to the message with an acknowledgement handler given a <code>timeout</code>.
 
    @public
