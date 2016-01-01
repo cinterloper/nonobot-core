@@ -17,6 +17,7 @@
 package io.nonobot.core;
 
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -28,17 +29,21 @@ public class BotOptions {
   public static final String DEFAULT_NAME = "nono";
 
   private String name;
+  private HttpServerOptions httpServerOptions;
 
   public BotOptions() {
     name = DEFAULT_NAME;
+    httpServerOptions = null;
   }
 
   public BotOptions(JsonObject json) {
-    throw new UnsupportedOperationException();
+    name = json.getString("name", DEFAULT_NAME);
+    httpServerOptions = json.getJsonObject("httpServerOptions") != null ? new HttpServerOptions(json.getJsonObject("httpServerOptions")) : null;
   }
 
   public BotOptions(BotOptions that) {
     name = that.name;
+    httpServerOptions = that.httpServerOptions != null ? new HttpServerOptions(that.httpServerOptions) : null;
   }
 
   public String getName() {
@@ -47,6 +52,15 @@ public class BotOptions {
 
   public BotOptions setName(String name) {
     this.name = name;
+    return this;
+  }
+
+  public HttpServerOptions getHttpServerOptions() {
+    return httpServerOptions;
+  }
+
+  public BotOptions setHttpServerOptions(HttpServerOptions httpServerOptions) {
+    this.httpServerOptions = httpServerOptions;
     return this;
   }
 }

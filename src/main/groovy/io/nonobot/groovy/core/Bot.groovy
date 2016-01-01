@@ -18,8 +18,12 @@ package io.nonobot.groovy.core;
 import groovy.transform.CompileStatic
 import io.vertx.lang.groovy.InternalHelper
 import io.vertx.core.json.JsonObject
+import io.nonobot.core.BotOptions
 import io.vertx.groovy.core.Vertx
 import io.nonobot.groovy.core.handler.ChatRouter
+import io.vertx.groovy.ext.web.Router
+import io.vertx.core.AsyncResult
+import io.vertx.core.Handler
 /**
  * The bot.
 */
@@ -31,6 +35,17 @@ public class Bot {
   }
   public Object getDelegate() {
     return delegate;
+  }
+  /**
+   * Create a shared bot instance for the Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @param options the bot options (see <a href="../../../../../../cheatsheet/BotOptions.html">BotOptions</a>)
+   * @param completionHandler called when the bot is fully initialized
+   * @return the bot instance
+   */
+  public static Bot createShared(Vertx vertx, Map<String, Object> options, Handler<AsyncResult<Void>> completionHandler) {
+    def ret= InternalHelper.safeCreate(io.nonobot.core.Bot.createShared((io.vertx.core.Vertx)vertx.getDelegate(), options != null ? new io.nonobot.core.BotOptions(new io.vertx.core.json.JsonObject(options)) : null, completionHandler), io.nonobot.groovy.core.Bot.class);
+    return ret;
   }
   /**
    * Gets a shared bot instance for the Vert.x instance.
@@ -90,16 +105,24 @@ public class Bot {
     cached_1 = ret;
     return ret;
   }
+  public Router webRouter() {
+    if (cached_2 != null) {
+      return cached_2;
+    }
+    def ret= InternalHelper.safeCreate(this.delegate.webRouter(), io.vertx.groovy.ext.web.Router.class);
+    cached_2 = ret;
+    return ret;
+  }
   /**
    * @return the bot name
    * @return 
    */
   public String name() {
-    if (cached_2 != null) {
-      return cached_2;
+    if (cached_3 != null) {
+      return cached_3;
     }
     def ret = this.delegate.name();
-    cached_2 = ret;
+    cached_3 = ret;
     return ret;
   }
   /**
@@ -110,5 +133,6 @@ public class Bot {
   }
   private Vertx cached_0;
   private ChatRouter cached_1;
-  private String cached_2;
+  private Router cached_2;
+  private String cached_3;
 }

@@ -20,7 +20,10 @@ import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.impl.BotImpl;
 import io.vertx.codegen.annotations.CacheReturn;
 import io.vertx.codegen.annotations.VertxGen;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.ext.web.Router;
 
 /**
  * The bot.
@@ -29,6 +32,18 @@ import io.vertx.core.Vertx;
  */
 @VertxGen
 public interface Bot {
+
+  /**
+   * Create a shared bot instance for the Vert.x instance.
+   *
+   * @param vertx the Vert.x instance
+   * @param options the bot options
+   * @param completionHandler called when the bot is fully initialized
+   * @return the bot instance
+   */
+  static Bot createShared(Vertx vertx, BotOptions options, Handler<AsyncResult<Void>> completionHandler) {
+    return BotImpl.createShared(vertx, options, completionHandler);
+  }
 
   /**
    * Gets a shared bot instance for the Vert.x instance.
@@ -80,6 +95,18 @@ public interface Bot {
 
   @CacheReturn
   ChatRouter chatRouter();
+
+  /**
+   * The bot's web router, handlers should add their own route to this router or better mount sub routers. This router is shared
+   * between the handlers attached to this bot, therefore an handler should not catch all requests going through the router.<p>
+   *
+   * The main usage of this router is to provide a web server shared between the handlers, whose purpose is usually to provide
+   * web service for pushing data to the botin the web hook style.<p>
+   *
+   * @return the web router
+   */
+  @CacheReturn
+  Router webRouter();
 
   /**
    * @return the bot name

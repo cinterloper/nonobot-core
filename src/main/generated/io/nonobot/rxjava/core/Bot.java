@@ -19,8 +19,12 @@ package io.nonobot.rxjava.core;
 import java.util.Map;
 import io.vertx.lang.rxjava.InternalHelper;
 import rx.Observable;
+import io.nonobot.core.BotOptions;
 import io.vertx.rxjava.core.Vertx;
 import io.nonobot.rxjava.core.handler.ChatRouter;
+import io.vertx.rxjava.ext.web.Router;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 
 /**
  * The bot.
@@ -39,6 +43,18 @@ public class Bot {
 
   public Object getDelegate() {
     return delegate;
+  }
+
+  /**
+   * Create a shared bot instance for the Vert.x instance.
+   * @param vertx the Vert.x instance
+   * @param options the bot options
+   * @param completionHandler called when the bot is fully initialized
+   * @return the bot instance
+   */
+  public static Bot createShared(Vertx vertx, BotOptions options, Handler<AsyncResult<Void>> completionHandler) { 
+    Bot ret= Bot.newInstance(io.nonobot.core.Bot.createShared((io.vertx.core.Vertx) vertx.getDelegate(), options, completionHandler));
+    return ret;
   }
 
   /**
@@ -105,16 +121,25 @@ public class Bot {
     return ret;
   }
 
+  public Router webRouter() { 
+    if (cached_2 != null) {
+      return cached_2;
+    }
+    Router ret= Router.newInstance(this.delegate.webRouter());
+    cached_2 = ret;
+    return ret;
+  }
+
   /**
    * @return the bot name
    * @return 
    */
   public String name() { 
-    if (cached_2 != null) {
-      return cached_2;
+    if (cached_3 != null) {
+      return cached_3;
     }
     String ret = this.delegate.name();
-    cached_2 = ret;
+    cached_3 = ret;
     return ret;
   }
 
@@ -127,7 +152,8 @@ public class Bot {
 
   private Vertx cached_0;
   private ChatRouter cached_1;
-  private java.lang.String cached_2;
+  private Router cached_2;
+  private java.lang.String cached_3;
 
   public static Bot newInstance(io.nonobot.core.Bot arg) {
     return arg != null ? new Bot(arg) : null;

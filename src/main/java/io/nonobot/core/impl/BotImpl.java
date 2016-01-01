@@ -17,9 +17,16 @@
 package io.nonobot.core.impl;
 
 import io.nonobot.core.Bot;
+import io.nonobot.core.BotOptions;
 import io.nonobot.core.handler.ChatRouter;
 import io.nonobot.core.handler.impl.ChatRouterImpl;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.http.HttpServer;
+import io.vertx.ext.web.Router;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -49,26 +56,78 @@ public class BotImpl implements Bot {
     }
   }
 
-  static final ConcurrentMap<Key, BotImpl> routers = new ConcurrentHashMap<>();
+  static final ConcurrentMap<Key, BotImpl> bots = new ConcurrentHashMap<>();
+
+  public static Bot createShared(Vertx vertx, BotOptions options, Handler<AsyncResult<Void>> completionHandler) {
+    BotImpl bot = bots.computeIfAbsent(new Key(vertx, options.getName()), key -> new BotImpl(vertx, options.getName()));
+    HttpServer server;
+    if (options.getHttpServerOptions() != null) {
+      server = vertx.createHttpServer(options.getHttpServerOptions());
+      server.requestHandler(bot.webRouter::accept);
+      server.listen(ar -> {
+        if (ar.succeeded()) {
+          completionHandler.handle(Future.succeededFuture());
+        } else {
+          completionHandler.handle(Future.failedFuture(ar.cause()));
+        }
+      });
+    } else {
+      server = null;
+      completionHandler.handle(Future.succeededFuture());
+    }
+    return new Bot() {
+      @Override
+      public Vertx vertx() {
+        return bot.vertx();
+      }
+      @Override
+      public ChatRouter chatRouter() {
+        return bot.chatRouter();
+      }
+      @Override
+      public Router webRouter() {
+        return bot.webRouter();
+      }
+      @Override
+      public String name() {
+        return bot.name();
+      }
+      @Override
+      public void close() {
+        boolean open = bot.closed;
+        bot.close();
+        if (open && server != null) {
+          server.close();
+        }
+      }
+    };
+  }
 
   public static Bot getShared(Vertx vertx, String name) {
-    return routers.computeIfAbsent(new Key(vertx, name), key -> new BotImpl(vertx, name));
+    return bots.computeIfAbsent(new Key(vertx, name), key -> new BotImpl(vertx, name));
   }
 
   final String name;
   final Vertx vertx;
   private boolean closed;
   private ChatRouterImpl chatRouter;
+  private Router webRouter;
 
   public BotImpl(Vertx vertx, String name) {
     this.vertx = vertx;
     this.name = name;
     this.chatRouter = new ChatRouterImpl(vertx, name);
+    this.webRouter = Router.router(vertx);
   }
 
   @Override
   public ChatRouter chatRouter() {
     return chatRouter;
+  }
+
+  @Override
+  public Router webRouter() {
+    return webRouter;
   }
 
   @Override

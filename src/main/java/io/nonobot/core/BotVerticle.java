@@ -27,6 +27,7 @@ import io.nonobot.core.handlers.TimerHandler;
 import io.nonobot.core.spi.BotAdapterFactory;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
 import java.util.Iterator;
@@ -37,14 +38,14 @@ import java.util.ServiceLoader;
  */
 public class BotVerticle extends AbstractVerticle {
 
-//  private Bot bot;
+  private Bot bot;
   private BotAdapter adapter;
 
   @Override
-  public void start() throws Exception {
+  public void start(Future<Void> startFuture) throws Exception {
 
-    // Get bot name
-    String botName = config().getString("bot.name", "nono");
+    // Get bot options
+    BotOptions botOptions = config().getJsonObject("botOptions") != null ? new BotOptions(config().getJsonObject("botOptions")) : new BotOptions();
 
     // Config
     Config config = new Config() {
@@ -52,14 +53,12 @@ public class BotVerticle extends AbstractVerticle {
       public String getProperty(String name) {
         Object value = config().getValue(name);
         if (value == null) {
-          String envKey = botName + "." + name;
+          String envKey = botOptions.getName() + "." + name;
           value = System.getenv(envKey.replace('.', '_').replace('-', '_').toUpperCase());
         }
         return value != null ? value.toString() : null;
       }
     };
-
-//    bot = Bot.getShared(vertx, botName);
 
     Iterator<BotAdapterFactory> adapterFactoryIt = ServiceLoader.load(BotAdapterFactory.class).iterator();
     while (true) {
@@ -93,18 +92,27 @@ public class BotVerticle extends AbstractVerticle {
       throw new Exception("No adapter found");
     }
 
-    DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("bot.name", botName));
+    DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("bot.name", botOptions.getName()));
 
     vertx.deployVerticle(new GiphyHandler(), options);
     vertx.deployVerticle(new HelpHandler(), options);
     vertx.deployVerticle(new PingHandler(), options);
     vertx.deployVerticle(new EchoHandler(), options);
     vertx.deployVerticle(new TimerHandler(), options);
+
+    bot = Bot.createShared(vertx, botOptions, ar -> {
+      if (ar.succeeded()) {
+        startFuture.complete();
+      } else {
+        startFuture.fail(ar.cause());
+      }
+    });
+
   }
 
   @Override
   public void stop() throws Exception {
-//    bot.close();
+    bot.close();
     if (adapter != null) {
       adapter.close();
     }
