@@ -25,7 +25,10 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -117,6 +120,18 @@ public class BotImpl implements Bot {
     this.name = name;
     this.chatRouter = new ChatRouterImpl(vertx, name);
     this.webRouter = Router.router(vertx);
+
+    webRouter.route("/*").handler(ctx -> {
+      HttpServerRequest req = ctx.request();
+      switch (req.path()) {
+        case "/":
+        case "/index.html":
+          req.response().putHeader("Content-Type", "text/html").end("<html><body><h1>Your bot <i>" + name + "</i> is running</h1></body></html>");
+          return;
+        default:
+          ctx.next();
+      }
+    });
   }
 
   @Override
