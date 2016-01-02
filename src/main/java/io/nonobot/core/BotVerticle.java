@@ -21,6 +21,7 @@ import io.nonobot.core.adapter.ConsoleBotAdapter;
 import io.nonobot.core.client.ClientOptions;
 import io.nonobot.core.handlers.EchoHandler;
 import io.nonobot.core.handlers.GiphyHandler;
+import io.nonobot.core.handlers.GitHubVerticle;
 import io.nonobot.core.handlers.HelpHandler;
 import io.nonobot.core.handlers.PingHandler;
 import io.nonobot.core.handlers.TimerHandler;
@@ -99,6 +100,7 @@ public class BotVerticle extends AbstractVerticle {
     vertx.deployVerticle(new PingHandler(), options);
     vertx.deployVerticle(new EchoHandler(), options);
     vertx.deployVerticle(new TimerHandler(), options);
+    vertx.deployVerticle(new GitHubVerticle(), options);
 
     bot = Bot.createShared(vertx, botOptions, ar -> {
       if (ar.succeeded()) {
